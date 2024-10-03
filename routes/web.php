@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\RoleController;
+use App\Http\Controllers\Category\RegulationCategoryController;
 use App\Http\Controllers\Category\RuleCategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegulationMeetingController;
 use App\Http\Controllers\RuleMeetingController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\Role;
@@ -84,6 +86,16 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/delete/rule-category/{id}', 'DeleteRulesCategory')->name('delete.rule.category');
     });
 
+    // Regulation Category
+    Route::controller(RegulationCategoryController::class)->group(function () {
+        Route::get('/all/regulation-category', 'AllRegulationCategory')->name('all.regulation.category');
+        Route::get('/add/regulation-category', 'AddRegulationCategory')->name('add.regulation.category');
+        Route::post('/store/regulation-category', 'StoreRegulationCategory')->name('store.regulation.category');
+        Route::get('/edit/regulation-category/{id}', 'EditRegulationCategory')->name('edit.regulation.category');
+        Route::post('/update/regulation-category', 'UpdateRegulationCategory')->name('update.regulation.category');
+        Route::get('/delete/regulation-category/{id}', 'DeleteRegulationCategory')->name('delete.regulation.category');
+    });
+
     // Rules of Meeting
     Route::controller(RuleMeetingController::class)->group(function () {
         Route::get('/all/rules-of-meeting', 'AllRulesOfMeeting')->name('all.rule.meeting');
@@ -93,10 +105,22 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/update/rules-of-meeting', 'UpdateRulesOfMeeting')->name('update.rule.meeting');
 
         Route::post('/update/status/rule-meeting/{id}', 'UpdateStatusRulesOfMeeting')->name('update.status.rule.meeting');
-        
+
         Route::get('/delete/rules-of-meeting/{id}', 'DeleteRulesOfMeeting')->name('delete.rule.meeting');
     });
 
+    // Regulation of Meeting
+    Route::controller(RegulationMeetingController::class)->group(function () {
+        Route::get('/all/regulation-of-meeting', 'AllRegulationOfMeeting')->name('all.regulation.meeting');
+        Route::get('/add/regulation-of-meeting', 'AddRegulationOfMeeting')->name('add.regulation.meeting');
+        Route::post('/store/regulation-of-meeting', 'StoreRegulationOfMeeting')->name('store.regulation.meeting');
+        Route::get('/edit/regulation-of-meeting/{id}', 'EditRegulationOfMeeting')->name('edit.regulation.meeting');
+        Route::post('/update/regulation-of-meeting', 'UpdateRegulationOfMeeting')->name('update.regulation.meeting');
+
+        Route::post('/update/status/regulation-meeting/{id}', 'UpdateStatusRegulationMeeting')->name('update.status.regulation.meeting');
+
+        Route::get('/delete/regulation-of-meeting/{id}', 'DeleteRegulationOfMeeting')->name('delete.regulation.meeting');
+    });
 
 
 }); // end of admin middleware

@@ -45,9 +45,9 @@
                 <div class="menu-title"> ระเบียบ </div>
             </a>
             <ul>
-                <li> <a href="{{ route('rule.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทระเบียบ </a>
+                <li> <a href="{{ route('all.regulation.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทระเบียบ </a>
                 </li>
-                <li> <a href="{{ route('all.rule.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบ </a>
+                <li> <a href="{{ route('all.regulation.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบ </a>
                 </li>
             </ul>
         </li>

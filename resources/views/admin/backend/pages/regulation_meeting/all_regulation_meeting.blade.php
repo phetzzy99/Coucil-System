@@ -8,13 +8,13 @@
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">ข้อบังคับ</li>
+                        <li class="breadcrumb-item active" aria-current="page">รายการระเบียบ ทั้งหมด</li>
                     </ol>
                 </nav>
             </div>
             <div class="ms-auto">
                 <div class="btn-group">
-                    <a href="{{ route('add.rule.meeting') }}" class="btn btn-primary  ">เพิ่มข้อบังคับ </a>
+                    <a href="{{ route('add.regulation.meeting') }}" class="btn btn-primary">เพิ่มระเบียบ </a>
 
                 </div>
             </div>
@@ -28,7 +28,7 @@
                         <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>title</th>
+                                <th>Regulation Title</th>
                                 <th>description</th>
                                 <th>date</th>
                                 <th>pdf</th>
@@ -38,15 +38,15 @@
                         </thead>
                         <tbody>
 
-                            @foreach ($rules as $key => $item)
+                            @foreach ($regulation as $key => $item)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $item->title }}</td>
+                                    <td>{{ $item->regulation_title }}</td>
                                     <td>{{ $item->description }}</td>
                                     <td>{{ $item->created_at }}</td>
                                     <td>
-                                        @if ($item->pdf)
-                                            <a href="{{ asset($item->pdf) }}" target="_blank" class="badge bg-success">ดูไฟล์ PDF</a>
+                                        @if ($item->regulation_pdf)
+                                            <a href="{{ asset($item->regulation_pdf) }}" target="_blank" class="badge bg-success">ดูไฟล์ PDF</a>
                                         @else
                                             <span class="badge bg-danger">ไม่มีไฟล์ PDF</span>
                                         @endif
@@ -61,8 +61,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="{{ route('edit.rule.meeting', $item->id) }}" class="btn btn-info px-5">Edit </a>
-                                        <a href="{{ route('delete.rule.meeting', $item->id) }}" class="btn btn-danger px-5" id="delete">Delete </a>
+                                        <a href="" class="btn btn-info px-5">Edit </a>
+                                        <a href="" class="btn btn-danger px-5" id="delete">Delete </a>
                                     </td>
                                 </tr>
                             @endforeach

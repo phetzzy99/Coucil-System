@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rugulation_meetings', function (Blueprint $table) {
+        Schema::create('regulation_meetings', function (Blueprint $table) {
             $table->id();
+            $table->integer('regulation_category_id');
+            $table->string('regulation_title');
+            $table->string('regulation_pdf')->nullable();
+            $table->text('description')->nullable();
+            $table->string('status')->default('1')->comment('1=active, 0=inactive');
             $table->timestamps();
         });
     }
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rugulation_meetings');
+        Schema::dropIfExists('regulation_meetings');
     }
 };

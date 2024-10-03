@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('regulation_categories', function (Blueprint $table) {
             $table->id();
+            $table->string('regulation_category_name');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

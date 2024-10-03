@@ -107,4 +107,23 @@ class RuleMeetingController extends Controller
         );
         return redirect()->route('all.rule.meeting')->with($notification);
     }
+
+    public function DeleteRulesOfMeeting($id)
+    {
+        $rule = RuleofMeeting::findOrFail($id);
+
+        $old_pdf = $rule->pdf;
+
+        if ($old_pdf) {
+            @unlink(public_path($old_pdf));
+        }
+
+        $rule->delete();
+
+        $notification = array(
+            'message' => 'Rule meeting Deleted Successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+    }
 }
