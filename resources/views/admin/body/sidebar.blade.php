@@ -21,6 +21,22 @@
         </li>
 
 
+        <li class="menu-label"></li>
+
+
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-cart'></i>
+                </div>
+                <div class="menu-title"> ข้อบังคับ </div>
+            </a>
+            <ul>
+                <li> <a href=""><i class='bx bx-radio-circle'></i> จัดการข้อบังคับ </a>
+                </li>
+            </ul>
+        </li>
+
+
 
         <li class="menu-label">UI Elements</li>
 

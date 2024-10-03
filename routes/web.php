@@ -71,6 +71,9 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::post('/admin/update/{id}', [AdminController::class, 'UpdateAdmin'])->name('update.admin');
     Route::get('/delete/admin/{id}', [AdminController::class, 'DeleteAdmin'])->name('delete.admin');
 
+    // Rules of Meeting
+
+
 
 }); // end of admin middleware
 
