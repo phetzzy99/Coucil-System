@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\RoleController;
+use App\Http\Controllers\Category\RuleCategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RuleMeetingController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\Role;
 use App\Models\User;
@@ -71,7 +73,29 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::post('/admin/update/{id}', [AdminController::class, 'UpdateAdmin'])->name('update.admin');
     Route::get('/delete/admin/{id}', [AdminController::class, 'DeleteAdmin'])->name('delete.admin');
 
+
+    // Rules Category
+    Route::controller(RuleCategoryController::class)->group(function () {
+        Route::get('/all/rules-category', 'AllRuleCategory')->name('rule.category');
+        Route::get('/add/rules-category', 'AddRuleCategory')->name('add.rule.category');
+        Route::post('/store/rule-category', 'StoreRulesCategory')->name('store.rule.category');
+        Route::get('/edit/rule-category/{id}', 'EditRulesCategory')->name('edit.rule.category');
+        Route::post('/update/rule-category', 'UpdateRulesCategory')->name('update.rule.category');
+        Route::get('/delete/rule-category/{id}', 'DeleteRulesCategory')->name('delete.rule.category');
+    });
+
     // Rules of Meeting
+    Route::controller(RuleMeetingController::class)->group(function () {
+        Route::get('/all/rules-of-meeting', 'AllRulesOfMeeting')->name('all.rule.meeting');
+        Route::get('/add/rules-of-meeting', 'AddRulesOfMeeting')->name('add.rule.meeting');
+        Route::post('/store/rules-of-meeting', 'StoreRulesOfMeeting')->name('store.rule.meeting');
+        Route::get('/edit/rules-of-meeting/{id}', 'EditRulesOfMeeting')->name('edit.rule.meeting');
+        Route::post('/update/rules-of-meeting', 'UpdateRulesOfMeeting')->name('update.rule.meeting');
+
+        Route::post('/update/status/rule-meeting/{id}', 'UpdateStatusRulesOfMeeting')->name('update.status.rule.meeting');
+        
+        Route::get('/delete/rules-of-meeting/{id}', 'DeleteRulesOfMeeting')->name('delete.rule.meeting');
+    });
 
 
 

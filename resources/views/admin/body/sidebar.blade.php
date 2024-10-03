@@ -31,7 +31,23 @@
                 <div class="menu-title"> ข้อบังคับ </div>
             </a>
             <ul>
-                <li> <a href=""><i class='bx bx-radio-circle'></i> จัดการข้อบังคับ </a>
+                <li> <a href="{{ route('rule.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทข้อบังคับ </a>
+                </li>
+                <li> <a href="{{ route('all.rule.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการข้อบังคับ </a>
+                </li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-line-chart'></i>
+                </div>
+                <div class="menu-title"> ระเบียบ </div>
+            </a>
+            <ul>
+                <li> <a href="{{ route('rule.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทระเบียบ </a>
+                </li>
+                <li> <a href="{{ route('all.rule.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบ </a>
                 </li>
             </ul>
         </li>

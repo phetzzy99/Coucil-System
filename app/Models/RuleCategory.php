@@ -5,13 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RuleofMeeting extends Model
+class RuleCategory extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
-
-    public function rule_category() {
-        return $this->belongsTo(RuleCategory::class, 'rule_category_id', 'id');
-    }
 }

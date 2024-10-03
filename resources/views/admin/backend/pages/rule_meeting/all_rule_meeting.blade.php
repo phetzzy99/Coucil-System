@@ -14,7 +14,7 @@
             </div>
             <div class="ms-auto">
                 <div class="btn-group">
-                    <a href="{{ route('add.roles') }}" class="btn btn-primary  ">เพิ่มข้อบังคับ </a>
+                    <a href="{{ route('add.rule.meeting') }}" class="btn btn-primary  ">เพิ่มข้อบังคับ </a>
 
                 </div>
             </div>
@@ -38,20 +38,34 @@
                         </thead>
                         <tbody>
 
-                            {{-- @foreach ($roles as $key => $item) --}}
+                            @foreach ($rules as $key => $item)
                                 <tr>
-                                    <td></td>
-                                    <td>}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $item->title }}</td>
+                                    <td>{{ $item->description }}</td>
+                                    <td>{{ $item->created_at }}</td>
                                     <td>
-                                        <a href="" class="btn btn-info px-5">Edit </a>
+                                        @if ($item->pdf)
+                                            <a href="{{ asset($item->pdf) }}" target="_blank" class="badge bg-success">ดูไฟล์ PDF</a>
+                                        @else
+                                            <span class="badge bg-danger">ไม่มีไฟล์ PDF</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="status{{ $item->id }}"
+                                                {{ $item->status == 1 ? 'checked' : '' }}
+                                                onchange="updateStatus({{ $item->id }})">
+                                            <label class="form-check-label" for="status{{ $item->id }}">
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('edit.rule.meeting', $item->id) }}" class="btn btn-info px-5">Edit </a>
                                         <a href="" class="btn btn-danger px-5" id="delete">Delete </a>
                                     </td>
                                 </tr>
-                            {{-- @endforeach --}}
+                            @endforeach
 
                         </tbody>
 
@@ -59,6 +73,42 @@
                 </div>
             </div>
         </div>
-
     </div>
+
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        function updateStatus(id) {
+            if (id) {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('update.status.rule.meeting', ':id') }}".replace(':id', id),
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status == 1) {
+                            $('#status' + id).prop('checked', true);
+                        } else {
+                            $('#status' + id).prop('checked', false);
+                        }
+                        // แสดงข้อความสำเร็จ
+                        toastr.success(response.message);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        // แสดงข้อความผิดพลาด
+                        toastr.error('An error occurred while updating the status.');
+                    }
+                });
+            } else {
+                toastr.error('Missing required parameter: id');
+            }
+        }
+    </script>
 @endsection
