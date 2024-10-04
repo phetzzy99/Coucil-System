@@ -61,8 +61,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="" class="btn btn-info px-5">Edit </a>
-                                        <a href="" class="btn btn-danger px-5" id="delete">Delete </a>
+                                        <a href="{{ route('edit.regulation.meeting', $item->id) }}" class="btn btn-info px-5">Edit </a>
+                                        <a href="{{ route('delete.regulation.meeting', $item->id) }}" class="btn btn-danger px-5" id="delete">Delete </a>
                                     </td>
                                 </tr>
                             @endforeach

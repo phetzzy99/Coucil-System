@@ -79,12 +79,10 @@ class RuleMeetingController extends Controller
     {
         $rid = $request->rule_meeting_id;
 
-        RuleofMeeting::findOrFail($rid)->update([
-            'rule_category_id' => $request->rule_category_id,
-            'title' => $request->title,
-            'description' => $request->description,
-            'updated_at' => Carbon::now(),
-        ]);
+        $old_pdf = RuleofMeeting::where('id', $rid)->value('pdf');
+        if ($old_pdf) {
+            @unlink(public_path($old_pdf));
+        }
 
         if ($request->hasFile('pdf')) {
             $file = $request->file('pdf');
@@ -100,6 +98,14 @@ class RuleMeetingController extends Controller
                 'pdf' => 'uploads/rule_meeting/' . $filename
             ]);
         }
+
+        RuleofMeeting::findOrFail($rid)->update([
+            'rule_category_id' => $request->rule_category_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'updated_at' => Carbon::now(),
+        ]);
+
 
         $notification = array(
             'message' => 'Rule meeting Updated Successfully',

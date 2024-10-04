@@ -47,9 +47,9 @@
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="input_pdf" class="form-label">PDF File</label>
+                        <label for="input_pdf" class="form-label"><strong>PDF File</strong></label>
                         @if ($rule->pdf)
-                            <a href="{{ asset('uploads/rule_meeting/' . $rule->pdf) }}" target="_blank">View PDF</a>
+                            <a href="{{ asset($rule->pdf) }}" target="_blank"><span class="badge rounded-pill bg-danger text-white">View PDF</span></a>
                         @endif
                         <input type="file" name="pdf" class="form-control" id="input_pdf" accept=".pdf">
                         <span class="text-danger" id="pdfError"></span>

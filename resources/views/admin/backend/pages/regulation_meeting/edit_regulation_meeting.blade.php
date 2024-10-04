@@ -10,7 +10,7 @@
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">แก้ไขข้อบังคับ</li>
+                        <li class="breadcrumb-item active" aria-current="page">แก้ไขระเบียบ</li>
                     </ol>
                 </nav>
             </div>
@@ -20,44 +20,44 @@
 
         <div class="card">
             <div class="card-body p-4">
-                <h5 class="mb-4">แก้ไขข้อบังคับ</h5>
-                <form id="myForm" action="{{ route('update.rule.meeting') }}" method="post" class="row g-3"
+                <h5 class="mb-4">แก้ไขระเบียบ</h5>
+                <form id="myForm" action="{{ route('update.regulation.meeting') }}" method="post" class="row g-3"
                     enctype="multipart/form-data">
                     @csrf
 
-                    <input type="hidden" name="rule_meeting_id" value="{{ $rule->id }}">
+                    <input type="hidden" name="regulation_meeting_id" value="{{ $regulation->id }}">
 
                     <div class="form-group col-md-8">
-                        <label for="input1" class="form-label">Rule Category Name</label>
-                        <select name="rule_category_id" class="form-select mb-3" aria-label="Default select example">
-                            <option selected="" disabled>เลือกประเภทข้อบังคับ</option>
+                        <label for="input1" class="form-label">Regulation Category Name</label>
+                        <select name="regulation_category_id" class="form-select mb-3" aria-label="Default select example">
+                            <option selected="" disabled>เลือกประเภทระเบียบ</option>
                             @foreach ($categories as $item)
                                 <option value="{{ $item->id }}"
-                                    {{ $item->id == $rule->rule_category_id ? 'selected' : '' }}>
-                                    {{ $item->rule_category_name }}</option>
+                                    {{ $item->id == $regulation->regulation_category_id ? 'selected' : '' }}>
+                                    {{ $item->regulation_category_name }}</option>
                             @endforeach
 
                         </select>
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">Rule Title</label>
-                        <input type="text" name="title" class="form-control" id="input1"
-                            value="{{ $rule->title }}">
+                        <label for="input1" class="form-label">Regulation Title</label>
+                        <input type="text" name="regulation_title" class="form-control" id="input1"
+                            value="{{ $regulation->regulation_title }}">
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="input_pdf" class="form-label">PDF File</label>
-                        @if ($rule->pdf)
-                            <a href="{{ asset('uploads/rule_meeting/' . $rule->pdf) }}" target="_blank">View PDF</a>
+                        <label for="input_pdf" class="form-label"><strong>PDF File : </strong></label>
+                        @if ($regulation->regulation_pdf)
+                            <a href="{{ asset($regulation->regulation_pdf) }}" target="_blank"><span class="badge rounded-pill bg-danger text-white">View PDF</span></a>
                         @endif
-                        <input type="file" name="pdf" class="form-control" id="input_pdf" accept=".pdf">
+                        <input type="file" name="regulation_pdf" class="form-control" id="input_pdf" accept=".pdf">
                         <span class="text-danger" id="pdfError"></span>
                     </div>
 
                     <div class="form-group col-md-12">
                         <label for="input1" class="form-label">Description</label>
-                        <textarea name="description" class="form-control" rows="10">{!! $rule->description !!}</textarea>
+                        <textarea name="description" class="form-control" rows="10">{!! $regulation->description !!}</textarea>
                     </div>
 
 
@@ -65,7 +65,7 @@
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">
                             <button type="submit" class="btn btn-primary px-4">Save Changes</button>
-                            <a href="{{ route('all.rule.meeting') }}" class="btn btn-danger px-4">Back</a>
+                            <a href="{{ route('all.regulation.meeting') }}" class="btn btn-danger px-4">Back</a>
                         </div>
                     </div>
                 </form>
@@ -77,19 +77,19 @@
         $(document).ready(function() {
             $('#myForm').validate({
                 rules: {
-                    rule_title: {
+                    regulation_title: {
                         required: true,
                     },
-                    rule_category_id: {
+                    regulation_category_id: {
                         required: true,
                     },
 
                 },
                 messages: {
-                    rule_title: {
-                        required: 'Please Enter SubCategory Name',
+                    regulation_title: {
+                        required: 'Please Enter regulation title',
                     },
-                    rule_category_id: {
+                    regulation_category_id: {
                         required: 'Please Select Category Name',
                     },
 
