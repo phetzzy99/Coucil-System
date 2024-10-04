@@ -38,13 +38,15 @@
                         <select name="group_name" class="form-select mb-3" aria-label="Default select example">
                             <option selected="" disabled>Open this select menu</option>
 
-                            <option value="Category" {{ $permission->group_name == 'Category' ? 'selected' : '' }}>สภามหาวิทยาลัย
+                            <option value="สภามหาวิทยาลัย" {{ $permission->group_name == 'สภามหาวิทยาลัย' ? 'selected' : '' }}>สภามหาวิทยาลัย
                             </option>
-                            <option value="Orders" {{ $permission->group_name == 'Orders' ? 'selected' : '' }}>คณะกรรมการนโยบายด้านการจัดการศึกษา
+                            <option value="คณะกรรมการนโยบายด้านการจัดการศึกษา" {{ $permission->group_name == 'คณะกรรมการนโยบายด้านการจัดการศึกษา' ? 'selected' : '' }}>คณะกรรมการนโยบายด้านการจัดการศึกษา
                             </option>
-                            <option value="Report" {{ $permission->group_name == 'Report' ? 'selected' : '' }}>คณะกรรมการนโยบายด้านการจบริหารจัดการ
+                            <option value="คณะกรรมการนโยบายด้านการจบริหารจัดการ" {{ $permission->group_name == 'คณะกรรมการนโยบายด้านการจบริหารจัดการ' ? 'selected' : '' }}>คณะกรรมการนโยบายด้านการจบริหารจัดการ
                             </option>
-                            <option value="Review" {{ $permission->group_name == 'Review' ? 'selected' : '' }}>คณะกรรมการนโยบายด้านการวิจัยฯ
+                            <option value="คณะกรรมการนโยบายด้านการวิจัยฯ" {{ $permission->group_name == 'คณะกรรมการนโยบายด้านการวิจัยฯ' ? 'selected' : '' }}>คณะกรรมการนโยบายด้านการวิจัยฯ
+                            </option>
+                            <option value="Category" {{ $permission->group_name == 'Category' ? 'selected' : '' }}>Category
                             </option>
                             <option value="All User" {{ $permission->group_name == 'All User' ? 'selected' : '' }}>All User
                             </option>

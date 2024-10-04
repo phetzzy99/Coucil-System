@@ -52,6 +52,22 @@
             </ul>
         </li>
 
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-line-chart'></i>
+                </div>
+                <div class="menu-title"> รายงานการประชุม </div>
+            </a>
+            <ul>
+                <li> <a href="{{ route('all.meeting.type') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทการประชุม </a>
+                </li>
+                <li> <a href="{{ route('all.committee.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทคณะกรรมการ </a>
+                </li>
+                <li> <a href="{{ route('all.meeting.report') }}"><i class='bx bx-radio-circle'></i> จัดการรายงานการประชุม </a>
+                </li>
+            </ul>
+        </li>
+
 
 
         <li class="menu-label">UI Elements</li>
@@ -222,10 +238,10 @@
             <a class="has-arrow" href="javascript:;">
                 <div class="parent-icon"><i class="bx bx-line-chart"></i>
                 </div>
-                <div class="menu-title">Manage Admin</div>
+                <div class="menu-title">Manage User</div>
             </a>
             <ul>
-                <li> <a href="{{ route('all.admin') }}"><i class='bx bx-radio-circle'></i>All Admin</a>
+                <li> <a href="{{ route('all.admin') }}"><i class='bx bx-radio-circle'></i>All User</a>
                 </li>
             </ul>
         </li>

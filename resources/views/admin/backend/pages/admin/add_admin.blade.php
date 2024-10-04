@@ -10,7 +10,7 @@
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Add Admin</li>
+                        <li class="breadcrumb-item active" aria-current="page">Add User</li>
                     </ol>
                 </nav>
             </div>
@@ -20,7 +20,7 @@
 
         <div class="card">
             <div class="card-body p-4">
-                <h5 class="mb-4">Add Admin</h5>
+                <h5 class="mb-4">Add User</h5>
                 <form id="myForm" action="{{ route('store.admin') }}" method="post" class="row g-3"
                     enctype="multipart/form-data">
                     @csrf
@@ -114,7 +114,7 @@
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">
                             <button type="submit" class="btn btn-primary px-4">Save Changes</button>
-
+                            <a href="{{ route('all.admin') }}" class="btn btn-danger px-4">Back</a>
                         </div>
                     </div>
                 </form>

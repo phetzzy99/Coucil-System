@@ -36,10 +36,11 @@
                         <select name="group_name" class="form-select mb-3" aria-label="Default select example">
                             <option selected="" disabled>Open this select menu</option>
 
-                            <option value="Category">สภามหาวิทยาลัย</option>
-                            <option value="Orders">คณะกรรมการนโยบายด้านการจัดการศึกษา </option>
-                            <option value="Report">คณะกรรมการนโยบายด้านการจบริหารจัดการ</option>
-                            <option value="Review">คณะกรรมการนโยบายด้านการวิจัยฯ</option>
+                            <option value="สภามหาวิทยาลัย">สภามหาวิทยาลัย</option>
+                            <option value="คณะกรรมการนโยบายด้านการจัดการศึกษา">คณะกรรมการนโยบายด้านการจัดการศึกษา </option>
+                            <option value="คณะกรรมการนโยบายด้านการจบริหารจัดการ">คณะกรรมการนโยบายด้านการจบริหารจัดการ</option>
+                            <option value="คณะกรรมการนโยบายด้านการวิจัยฯ">คณะกรรมการนโยบายด้านการวิจัยฯ</option>
+                            <option value="Category">Category</option>
                             <option value="All User">All User </option>
                             <option value="Role and Permission">Role and Permission</option>
 

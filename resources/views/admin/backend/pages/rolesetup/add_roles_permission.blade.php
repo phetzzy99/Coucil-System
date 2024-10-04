@@ -53,7 +53,7 @@
 
                     @foreach ($permission_groups as $group)
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-2">
 
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
@@ -75,7 +75,7 @@
                                             for="checkDefault{{ $permission->id }}">{{ $permission->name }}</label>
                                     </div>
                                 @endforeach
-                                <br>
+                                <hr>
 
                             </div>
 

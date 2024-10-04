@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\RoleController;
+use App\Http\Controllers\Category\CommitteeCategoryController;
+use App\Http\Controllers\Category\MeetingTypeController;
 use App\Http\Controllers\Category\RegulationCategoryController;
 use App\Http\Controllers\Category\RuleCategoryController;
+use App\Http\Controllers\MeetingReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegulationMeetingController;
 use App\Http\Controllers\RuleMeetingController;
@@ -120,6 +123,36 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/update/status/regulation-meeting/{id}', 'UpdateStatusRegulationMeeting')->name('update.status.regulation.meeting');
 
         Route::get('/delete/regulation-of-meeting/{id}', 'DeleteRegulationOfMeeting')->name('delete.regulation.meeting');
+    });
+
+    // Committee route list
+    Route::controller(CommitteeCategoryController::class)->group(function () {
+        Route::get('/all/committee-category', 'AllCommitteeCategory')->name('all.committee.category');
+        Route::get('/add/committee-category', 'AddCommitteeCategory')->name('add.committee.category');
+        Route::post('/store/committee-category', 'StoreCommitteeCategory')->name('store.committee.category');
+        Route::get('/edit/committee-category/{id}', 'EditCommitteeCategory')->name('edit.committee.category');
+        Route::post('/update/committee-category', 'UpdateCommitteeCategory')->name('update.committee.category');
+        Route::get('/delete/committee-category/{id}', 'DeleteCommitteeCategory')->name('delete.committee.category');
+    });
+
+    // Meeting Type route list
+    Route::controller(MeetingTypeController::class)->group(function () {
+        Route::get('/all/meeting-type', 'AllMeetingType')->name('all.meeting.type');
+        Route::get('/add/meeting-type', 'AddMeetingType')->name('add.meeting.type');
+        Route::post('/store/meeting-type', 'StoreMeetingType')->name('store.meeting.type');
+        Route::get('/edit/meeting-type/{id}', 'EditMeetingType')->name('edit.meeting.type');
+        Route::post('/update/meeting-type', 'UpdateMeetingType')->name('update.meeting.type');
+        Route::get('/delete/meeting-type/{id}', 'DeleteMeetingType')->name('delete.meeting.type');
+    });
+
+    // Meeting_report
+    Route::controller(MeetingReportController::class)->group(function () {
+        Route::get('/all/meeting-report', 'AllMeetingReport')->name('all.meeting.report');
+        Route::get('/add/meeting-report', 'AddMeetingReport')->name('add.meeting.report');
+        Route::post('/store/meeting-report', 'StoreMeetingReport')->name('store.meeting.report');
+        Route::get('/edit/meeting-report/{id}', 'EditMeetingReport')->name('edit.meeting.report');
+        Route::post('/update/meeting-report', 'UpdateMeetingReport')->name('update.meeting.report');
+        Route::get('/delete/meeting-report/{id}', 'DeleteMeetingReport')->name('delete.meeting.report');
     });
 
 
