@@ -65,19 +65,24 @@
                         <input type="text" name="meeting_no" class="form-control" id="input1" value="{{ old('meeting_no') }}">
                     </div>
 
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label for="input1" class="form-label">วันที่</label>
                         <input type="date" name="date" class="form-control" id="input1" value="{{ old('date') }}">
                     </div>
 
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label for="input1" class="form-label">เวลา</label>
                         <input type="time" name="time" class="form-control" id="input1" value="{{ old('time') }}">
                     </div>
 
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label for="input1" class="form-label">ปี </label>
                         <input type="text" name="year" class="form-control" id="input1" value="{{ old('year') }}">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="input1" class="form-label">สถานที่</label>
+                        <input type="text" name="location" class="form-control" id="input1" value="{{ old('location') }}">
                     </div>
 
                     <div class="form-group col-md-6">

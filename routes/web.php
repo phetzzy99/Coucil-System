@@ -6,6 +6,7 @@ use App\Http\Controllers\Category\CommitteeCategoryController;
 use App\Http\Controllers\Category\MeetingTypeController;
 use App\Http\Controllers\Category\RegulationCategoryController;
 use App\Http\Controllers\Category\RuleCategoryController;
+use App\Http\Controllers\MeetingAgendaController;
 use App\Http\Controllers\MeetingReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegulationMeetingController;
@@ -151,10 +152,33 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/add/meeting-report', 'AddMeetingReport')->name('add.meeting.report');
         Route::post('/store/meeting-report', 'StoreMeetingReport')->name('store.meeting.report');
         Route::get('/edit/meeting-report/{id}', 'EditMeetingReport')->name('edit.meeting.report');
-        Route::post('/update/meeting-report', 'UpdateMeetingReport')->name('update.meeting.report');
+        Route::post('/update/meeting-report/{id}', 'UpdateMeetingReport')->name('update.meeting.report');
         Route::get('/delete/meeting-report/{id}', 'DeleteMeetingReport')->name('delete.meeting.report');
     });
 
+    // Meeting agenda route list (วาระการประชุม)
+    Route::controller(MeetingAgendaController::class)->group(function () {
+        Route::get('/all/meeting-agenda', 'AllMeetingAgenda')->name('all.meeting.agenda');
+        Route::get('/add/meeting-agenda', 'AddMeetingAgenda')->name('add.meeting.agenda');
+        Route::post('/store/meeting-agenda', 'StoreMeetingAgenda')->name('store.meeting.agenda');
+        Route::get('/edit/meeting-agenda/{id}', 'EditMeetingAgenda')->name('edit.meeting.agenda');
+        Route::post('/update/meeting-agenda/{id}', 'UpdateMeetingAgenda')->name('update.meeting.agenda');
+
+        Route::post('/update/status/meeting-agenda/{id}', 'UpdateStatusMeetingAgenda')->name('update.status.meeting.agenda');
+
+        Route::get('/delete/meeting-agenda/{id}', 'DeleteMeetingAgenda')->name('delete.meeting.agenda');
+
+        // Meeting Section and Lecture route list (หัวข้อวาระการประชุม และวาระการประชุมย่อย)
+        Route::get('/add/meeting/agenda/lecture/{id}', 'AddMeetingAgendaLecture')->name('add.meeting.agenda.lecture');
+        Route::post('/add/meeting/agenda/section', 'AddMeetingAgendaSection')->name('add.meeting.agenda.section');
+        Route::post('/save/meeting/agenda/lecture/',[MeetingAgendaController::class, 'SaveMeetingAgendaLecture'])->name('save.meeting.agenda.lecture');
+        Route::get('/edit/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'EditMeetingAgendaLecture'])->name('edit.meeting.agenda.lecture');
+        Route::post('/update/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'UpdateMeetingAgendaLecture'])->name('update.meeting.agenda.lecture');
+        Route::get('/delete/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'DeleteMeetingAgendaLecture'])->name('delete.meeting.agenda.lecture');
+
+        Route::post('/save/meeting/agenda/item', [MeetingAgendaController::class, 'SaveMeetingAgendaItem'])->name('save.meeting.agenda.item');
+
+    });
 
 }); // end of admin middleware
 

@@ -10,7 +10,7 @@
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">แก้ไขระเบียบ</li>
+                        <li class="breadcrumb-item active" aria-current="page">แก้ไขรายงานการประชุม</li>
                     </ol>
                 </nav>
             </div>
@@ -20,52 +20,100 @@
 
         <div class="card">
             <div class="card-body p-4">
-                <h5 class="mb-4">แก้ไขระเบียบ</h5>
-                <form id="myForm" action="{{ route('update.regulation.meeting') }}" method="post" class="row g-3"
-                    enctype="multipart/form-data">
+                <h5 class="mb-4">แก้ไขรายงานการประชุม</h5>
+                <form id="myForm" action="{{ route('update.meeting.report', $meeting_report->id) }}" method="post"
+                    class="row g-3" enctype="multipart/form-data">
                     @csrf
+                    @method('POST')
 
-                    <input type="hidden" name="regulation_meeting_id" value="{{ $regulation->id }}">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
                     <div class="form-group col-md-8">
-                        <label for="input1" class="form-label">Regulation Category Name</label>
-                        <select name="regulation_category_id" class="form-select mb-3" aria-label="Default select example">
-                            <option selected="" disabled>เลือกประเภทระเบียบ</option>
-                            @foreach ($categories as $item)
+                        <label for="input1" class="form-label">ประเภทคณะกรรมการ</label>
+                        <select name="committee_category_id" class="form-select mb-3" aria-label="Default select example">
+                            <option selected="" disabled>เลือกประเภทคณะกรรมการ</option>
+                            @foreach ($committees as $item)
                                 <option value="{{ $item->id }}"
-                                    {{ $item->id == $regulation->regulation_category_id ? 'selected' : '' }}>
-                                    {{ $item->regulation_category_name }}</option>
+                                    {{ $meeting_report->committee_category_id == $item->id ? 'selected' : '' }}>
+                                    {{ $item->name }}</option>
                             @endforeach
+                        </select>
+                    </div>
 
+                    <div class="form-group col-md-8">
+                        <label for="input1" class="form-label">ประเภทการประชุม</label>
+                        <select name="meeting_type_id" class="form-select mb-3" aria-label="Default select example">
+                            <option selected="" disabled>เลือกประเภทการประชุม</option>
+                            @foreach ($meeting_types as $item)
+                                <option value="{{ $item->id }}"
+                                    {{ $meeting_report->meeting_type_id == $item->id ? 'selected' : '' }}>
+                                    {{ $item->name }}</option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">Regulation Title</label>
-                        <input type="text" name="regulation_title" class="form-control" id="input1"
-                            value="{{ $regulation->regulation_title }}">
+                        <label for="input1" class="form-label">ชื่อรายงานการประชุม</label>
+                        <input type="text" name="title" class="form-control" id="input1"
+                            value="{{ $meeting_report->title }}">
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="input_pdf" class="form-label"><strong>PDF File : </strong></label>
-                        @if ($regulation->regulation_pdf)
-                            <a href="{{ asset($regulation->regulation_pdf) }}" target="_blank"><span class="badge rounded-pill bg-danger text-white">View PDF</span></a>
+                        <label for="input1" class="form-label">ครั้งที่</label>
+                        <input type="text" name="meeting_no" class="form-control" id="input1"
+                            value="{{ $meeting_report->meeting_no }}">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="input1" class="form-label">วันที่</label>
+                        <input type="date" name="date" class="form-control" id="input1"
+                            value="{{ $meeting_report->date }}">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="input1" class="form-label">เวลา</label>
+                        <input type="time" name="time" class="form-control" id="input1"
+                            value="{{ $meeting_report->time }}">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="input1" class="form-label">ปี </label>
+                        <input type="text" name="year" class="form-control" id="input1"
+                            value="{{ $meeting_report->year }}">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="input1" class="form-label">สถานที่</label>
+                        <input type="text" name="location" class="form-control" id="input1" value="{{ $meeting_report->location }}">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="input_pdf" class="form-label">PDF File</label>
+                        @if ($meeting_report->pdf)
+                            <a href="{{ asset($meeting_report->pdf) }}" target="_blank"><span class="badge rounded-pill bg-danger text-white">View PDF</span></a>
                         @endif
-                        <input type="file" name="regulation_pdf" class="form-control" id="input_pdf" accept=".pdf">
+                        <input type="file" name="pdf" class="form-control" id="input_pdf" accept=".pdf">
                         <span class="text-danger" id="pdfError"></span>
                     </div>
 
                     <div class="form-group col-md-12">
-                        <label for="input1" class="form-label">Description</label>
-                        <textarea name="description" class="form-control" rows="10">{!! $regulation->description !!}</textarea>
+                        <label for="input1" class="form-label">รายละเอียด</label>
+                        <textarea name="description" class="form-control" rows="10">{{ $meeting_report->description }}</textarea>
                     </div>
-
 
 
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">
-                            <button type="submit" class="btn btn-primary px-4">Save Changes</button>
-                            <a href="{{ route('all.regulation.meeting') }}" class="btn btn-danger px-4">Back</a>
+                            <button type="submit" class="btn btn-primary px-4">บันทึก</button>
+                            <a href="{{ route('all.meeting.report') }}" class="btn btn-danger px-4">ยกเลิก</a>
                         </div>
                     </div>
                 </form>
@@ -77,19 +125,19 @@
         $(document).ready(function() {
             $('#myForm').validate({
                 rules: {
-                    regulation_title: {
+                    title: {
                         required: true,
                     },
-                    regulation_category_id: {
+                    committee_category_id: {
                         required: true,
                     },
 
                 },
                 messages: {
-                    regulation_title: {
-                        required: 'Please Enter regulation title',
+                    title: {
+                        required: 'Please Enter Category Name',
                     },
-                    regulation_category_id: {
+                    committee_category_id: {
                         required: 'Please Select Category Name',
                     },
 
@@ -121,4 +169,6 @@
             }
         });
     </script>
+
 @endsection
+

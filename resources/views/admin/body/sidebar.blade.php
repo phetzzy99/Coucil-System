@@ -68,6 +68,22 @@
             </ul>
         </li>
 
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-line-chart'></i>
+                </div>
+                <div class="menu-title"> ระเบียบวาระการประชุม </div>
+            </a>
+            <ul>
+                <li> <a href="{{ route('all.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบวาระการประชุม </a>
+                </li>
+                {{-- <li> <a href=""><i class='bx bx-radio-circle'></i> จัดการประเภทคณะกรรมการ </a>
+                </li>
+                <li> <a href=""><i class='bx bx-radio-circle'></i> จัดการรายงานการประชุม </a>
+                </li> --}}
+            </ul>
+        </li>
+
 
 
         <li class="menu-label">UI Elements</li>
