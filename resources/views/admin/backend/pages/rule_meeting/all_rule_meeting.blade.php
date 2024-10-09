@@ -86,7 +86,7 @@
             if (id) {
                 $.ajax({
                     type: 'POST',
-                    url: "{{ route('update.status.regulation.meeting', ':id') }}".replace(':id', id),
+                    url: "{{ route('update.status.rule.meeting', ':id') }}".replace(':id', id),
                     data: {
                         _token: "{{ csrf_token() }}"
                     },

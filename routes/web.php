@@ -173,11 +173,15 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/add/meeting/agenda/section', 'AddMeetingAgendaSection')->name('add.meeting.agenda.section');
         Route::post('/save/meeting/agenda/lecture/',[MeetingAgendaController::class, 'SaveMeetingAgendaLecture'])->name('save.meeting.agenda.lecture');
         Route::get('/edit/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'EditMeetingAgendaLecture'])->name('edit.meeting.agenda.lecture');
-        Route::post('/update/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'UpdateMeetingAgendaLecture'])->name('update.meeting.agenda.lecture');
-        Route::get('/delete/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'DeleteMeetingAgendaLecture'])->name('delete.meeting.agenda.lecture');
+        Route::post('/update/meeting/agenda/lecture',[MeetingAgendaController::class, 'UpdateMeetingAgendaLecture'])->name('update.meeting.agenda.lecture');
+        Route::get('/delete/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'DeleteMeetingAgendaLecture'])->name('delete.meeting.agenda.lecture'); // ลบหัวข้อวาระการประชุม Lecture_id
 
         Route::post('/save/meeting/agenda/item', [MeetingAgendaController::class, 'SaveMeetingAgendaItem'])->name('save.meeting.agenda.item');
-
+        // Route::get('/edit/meeting/agenda/item/{id}', [MeetingAgendaController::class, 'EditMeetingAgendaItem'])->name('edit.meeting.agenda.item');
+        Route::get('/get-agenda-items/{lecture_id}', [MeetingAgendaController::class, 'GetAgendaItem'])->name('get.agenda.item');  // แสดงหัวข้อวาระการประชุม และวาระการประชุมย่อย
+        Route::get('/edit/get-agenda-items/{itemId}', [MeetingAgendaController::class, 'getAgendaItems'])->name('edit.get.agenda.item'); // แสดงหัวข้อวาระการประชุม สำหรับแก้ไข
+        Route::post('/update-agenda-item/{itemId}', [MeetingAgendaController::class, 'UpdateAgendaItem'])->name('update.agenda.item');
+        Route::delete('/delete-agenda-item/{id}', [MeetingAgendaController::class, 'DeleteAgendaItem'])->name('delete.agenda.item');
     });
 
 }); // end of admin middleware

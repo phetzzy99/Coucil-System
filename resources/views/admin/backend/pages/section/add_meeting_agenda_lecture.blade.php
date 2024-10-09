@@ -1,6 +1,7 @@
 @extends('admin.admin_dashboard')
 @section('admin')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
     <div class="page-content">
         <div class="row">
@@ -47,14 +48,18 @@
                                                 @foreach ($item->meetingAgendaLectures as $lecture)
                                                     <div class="lectureDiv mb-3">
                                                         <div class="d-flex align-items-center justify-content-between">
-                                                            <strong style="width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $lecture->lecture_title }}</strong>
+                                                            <strong
+                                                                style="margin-left: 10px">{{ $lecture->lecture_title }}</strong>
                                                             <div class="btn-group">
                                                                 <a class="btn btn-sm btn-primary me-2"
-                                                                    onclick="addAgendaDiv({{ $meeting_agenda->id }}, {{ $item->id }}, {{ $lecture->id }}, 'agendaContainer{{ $lecture->id }}')">Add Item</a>
+                                                                    onclick="addAgendaDiv({{ $meeting_agenda->id }}, {{ $item->id }}, {{ $lecture->id }}, 'agendaContainer{{ $lecture->id }}')">Add
+                                                                    Item</a>
                                                                 <a href="{{ route('edit.meeting.agenda.lecture', ['id' => $lecture->id]) }}"
-                                                                    class="btn btn-sm btn-success"><i class="bx bx-edit"></i></a>
+                                                                    class="btn btn-sm btn-success"><i
+                                                                        class="bx bx-edit"></i></a>
                                                                 <a href="{{ route('delete.meeting.agenda.lecture', ['id' => $lecture->id]) }}"
-                                                                    class="btn btn-sm btn-danger" id="delete"><i class="bx bx-trash"></i></a>
+                                                                    class="btn btn-sm btn-danger" id="delete"><i
+                                                                        class="bx bx-trash"></i></a>
                                                             </div>
                                                         </div>
                                                         <div id="agendaContainer{{ $lecture->id }}" class="mt-2">
@@ -119,6 +124,7 @@
             <div class="container">
                 <h6 class="mt-3"> ระเบียบวาระย่อย </h6>
                 <input type="text" class="form-control" placeholder="Enter Lecture Title">
+                <textarea class="form-control" placeholder="Enter Lecture Description"></textarea>
 
                 <button class="btn btn-primary mt-3" onclick="SaveMeetingAgendaLecture('${courseId}',${sectionId},'${containerId}')" >Save Lecture</button>
                 <button class="btn btn-secondary mt-3" onclick="hideLectureContainer('${containerId}')">Cancel</button>
@@ -145,15 +151,18 @@
 
             newAgendaDiv.innerHTML = `
             <div class="container">
-                <h6>Agenda Item</h6>
+                <h6>Meeting Agenda Item</h6>
                 <input type="text" class="form-control mb-2" placeholder="Enter Agenda Title">
-                <input type="file" class="form-control mb-2" placeholder="Upload PDF File">
+                <textarea id="editor-${containerId}" class="form-control" placeholder="Enter Agenda Description"></textarea>
                 <button class="btn btn-primary mt-2" onclick="saveAgendaItem(${courseId}, ${lectureId}, ${sectionId}, '${containerId}')">Save Agenda Item</button>
                 <button class="btn btn-secondary mt-2" onclick="hideAgendaContainer('${containerId}')">Cancel</button>
             </div>
             `;
 
             agendaContainer.appendChild(newAgendaDiv);
+
+            // Initialize CKEditor
+            CKEDITOR.replace(`editor-${containerId}`);
         }
 
         function hideAgendaContainer(containerId) {
@@ -164,14 +173,14 @@
         function saveAgendaItem(courseId, sectionId, lectureId, containerId) {
             const agendaContainer = document.getElementById(containerId);
             const agendaTitle = agendaContainer.querySelector('input[type="text"]').value;
-            const agendaFile = agendaContainer.querySelector('input[type="file"]').files[0];
+            const agendaDescription = CKEDITOR.instances[`editor-${containerId}`].getData();
 
             const formData = new FormData();
             formData.append('course_id', courseId);
             formData.append('section_id', sectionId);
             formData.append('lecture_id', lectureId);
-            formData.append('agenda_title', agendaTitle);
-            formData.append('pdf', agendaFile);
+            formData.append('item_title', agendaTitle);
+            formData.append('content', agendaDescription);
 
             fetch('{{ route('save.meeting.agenda.item') }}', {
                     method: 'POST',
@@ -180,16 +189,23 @@
                     },
                     body: formData,
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(text);
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     console.log(data);
                     hideAgendaContainer(containerId);
                     loadAgendaItems(lectureId, containerId);
 
-                    // Show success message
                     Swal.fire({
                         icon: 'success',
-                        title: 'Agenda item added successfully',
+                        title: 'Success',
+                        text: 'Agenda item added successfully',
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -198,35 +214,107 @@
                     console.error('Error:', error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!',
+                        title: 'ขออภัย',
+                        text: 'เกิดข้อผิดพลาด: ' + error.message,
                     });
                 });
         }
 
         function loadAgendaItems(lectureId, containerId) {
             fetch(`/get-agenda-items/${lectureId}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     const agendaContainer = document.getElementById(containerId);
                     agendaContainer.innerHTML = '';
+                    if (data.length === 0) {
+                        agendaContainer.innerHTML =
+                        '<p class="text-sm text-muted ms-4 mb-0">No agenda items found.</p>';
+                        return;
+                    }
                     data.forEach((item, index) => {
                         const agendaItem = document.createElement('div');
                         agendaItem.classList.add('agendaItem', 'ml-4', 'mt-2');
+                        agendaItem.style.marginLeft = '1rem';
                         agendaItem.innerHTML = `
-                <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">${index + 1}.<strong>${item.agenda_title}</strong></p>
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-sm btn-primary" onclick="editAgendaItem(${item.id})">Edit</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteAgendaItem(${item.id}, '${containerId}')">Delete</button>
-                    </div>
-                </div>
-                ${item.pdf ? `<p class="text-sm text-muted mb-0"><img src="{{ asset('upload/logo/pdf.png') }}" alt="PDF" style="width: 16px; height: 16px;"> File: ${item.pdf}</p>` : ''}
-            `;
+                            <div class="d-flex justify-content-between align-items-center ml-4">
+                                <p class="mb-0"><strong>${item.item_title}</strong></p>
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-primary" onclick="editAgendaItem(${item.id})">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteAgendaItem(${item.id}, '${containerId}')">Delete</button>
+                                </div>
+                            </div>
+                            <div class="text-sm text-muted ms-4 mb-0">${item.content}</div>
+                            <hr>
+                        `;
                         agendaContainer.appendChild(agendaItem);
                     });
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    const agendaContainer = document.getElementById(containerId);
+                    agendaContainer.innerHTML =
+                        `<p class="text-danger">Error loading agenda items: ${error.message}</p>`;
+                });
+        }
+
+        function editAgendaItem(itemId) {
+            fetch(`/edit/get-agenda-items/${itemId}`)
+                .then(response => response.json())
+                .then(item => {
+                    Swal.fire({
+                        title: 'Edit Agenda Item',
+                        html:
+                            `<input id="swal-input1" class="swal2-input" value="${item.item_title}" placeholder="Enter item title">` +
+                            `<textarea id="swal-input2" class="swal2-textarea">${item.content}</textarea>`,
+                        didOpen: () => {
+                            CKEDITOR.replace('swal-input2');
+                        },
+                        preConfirm: () => {
+                            return {
+                                item_title: document.getElementById('swal-input1').value,
+                                content: CKEDITOR.instances['swal-input2'].getData()
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            updateAgendaItem(itemId, result.value.item_title, result.value.content);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Failed to load agenda item data', 'error');
+                });
+        }
+
+        function updateAgendaItem(itemId, item_title, content) {
+            fetch(`/update-agenda-item/${itemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ item_title: item_title, content: content })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Success', 'Agenda item updated successfully', 'success');
+                    // Reload the agenda items
+                    loadAgendaItems(data.meeting_agenda_lecture_id, `agendaContainer${data.meeting_agenda_lecture_id}`);
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Failed to update agenda item', 'error');
+            });
         }
 
         function loadAllAgendaItems() {
@@ -265,7 +353,7 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                loadAgendaItems(data.lecture_id, containerId);
+                                loadAgendaItems(data.meeting_agenda_lecture_id, containerId);
                                 Swal.fire(
                                     'Deleted!',
                                     'Agenda item has been deleted.',
@@ -283,15 +371,16 @@
                                 'error'
                             );
                         });
-                }
-            });
-        }
+                    }
+                });
+            }
     </script>
 
     <script>
         function SaveMeetingAgendaLecture(courseId, sectionId, containerId) {
             const lectureContainer = document.getElementById(containerId);
             const lectureTitle = lectureContainer.querySelector('input[type="text"]').value;
+            const lectureContent = lectureContainer.querySelector('textarea').value;
 
             fetch('{{ route('save.meeting.agenda.lecture') }}', {
                     method: 'POST',
@@ -303,6 +392,7 @@
                         meeting_agenda_id: courseId,
                         meeting_agenda_section_id: sectionId,
                         lecture_title: lectureTitle,
+                        content: lectureContent,
                     }),
                 })
                 .then(response => {
@@ -338,4 +428,5 @@
                 });
         }
     </script>
+
 @endsection
