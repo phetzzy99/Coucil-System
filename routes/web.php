@@ -7,6 +7,7 @@ use App\Http\Controllers\Category\MeetingTypeController;
 use App\Http\Controllers\Category\RegulationCategoryController;
 use App\Http\Controllers\Category\RuleCategoryController;
 use App\Http\Controllers\MeetingAgendaController;
+use App\Http\Controllers\MeetingFormatController;
 use App\Http\Controllers\MeetingReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegulationMeetingController;
@@ -134,6 +135,16 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/committee-category/{id}', 'EditCommitteeCategory')->name('edit.committee.category');
         Route::post('/update/committee-category', 'UpdateCommitteeCategory')->name('update.committee.category');
         Route::get('/delete/committee-category/{id}', 'DeleteCommitteeCategory')->name('delete.committee.category');
+    });
+
+    // Meeting Format route list
+    Route::controller(MeetingFormatController::class)->group(function () {
+        Route::get('/all/meeting-format', 'AllMeetingFormat')->name('all.meeting.format');
+        Route::get('/add/meeting-format', 'AddMeetingFormat')->name('add.meeting.format');
+        Route::post('/store/meeting-format', 'StoreMeetingFormat')->name('store.meeting.format');
+        Route::get('/edit/meeting-format/{id}', 'EditMeetingFormat')->name('edit.meeting.format');
+        Route::post('/update/meeting-format', 'UpdateMeetingFormat')->name('update.meeting.format');
+        Route::get('/delete/meeting-format/{id}', 'DeleteMeetingFormat')->name('delete.meeting.format');
     });
 
     // Meeting Type route list
