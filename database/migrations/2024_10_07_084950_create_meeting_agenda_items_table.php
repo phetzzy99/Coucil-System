@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('meeting_agenda_id');
             $table->unsignedBigInteger('meeting_agenda_section_id');
             $table->unsignedBigInteger('meeting_agenda_lecture_id');
+            $table->unsignedBigInteger('rule_of_meeting_id');
+            $table->unsignedBigInteger('regulation_meeting_id');
             $table->string('item_title');
             $table->longText('content')->nullable();
             $table->string('pdf')->nullable();
@@ -24,6 +26,8 @@ return new class extends Migration
             $table->foreign('meeting_agenda_id')->references('id')->on('meeting_agendas')->onDelete('cascade');
             $table->foreign('meeting_agenda_section_id')->references('id')->on('meeting_agenda_sections')->onDelete('cascade');
             $table->foreign('meeting_agenda_lecture_id')->references('id')->on('meeting_agenda_lectures')->onDelete('cascade');
+            $table->foreign('rule_of_meeting_id')->references('id')->on('ruleof_meetings')->onDelete('cascade');
+            $table->foreign('regulation_meeting_id')->references('id')->on('regulation_meetings')->onDelete('cascade');
         });
     }
 

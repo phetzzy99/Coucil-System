@@ -32,9 +32,12 @@
                                             <h6>{{ $item->section_title }}</h6>
                                             <div style="margin-top: 10px"
                                                 class="d-flex justify-content-between align-items-center">
-                                                <form action="" method="POST">
+                                                <form action="{{ route('delete.meeting.agenda.section', ['id' => $item->id]) }}"
+                                                    method="POST">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-danger px-2 ms-auto me-2">Delete
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger px-2 ms-auto me-2"
+                                                        onclick="return confirm('Are you sure you want to delete this section?')">Delete
                                                         Section </button>
                                                 </form>
                                                 <a style="margin-left: 10px" class="btn btn-primary ms-2"
@@ -84,34 +87,58 @@
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Section </h5>
+                    <h5 class="modal-title" id="exampleModalLabel">เพิ่มวาระการประชุม</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
                     <form action="{{ route('add.meeting.agenda.section') }}" method="POST">
                         @csrf
-
                         <input type="hidden" name="id" value="{{ $meeting_agenda->id }}">
 
                         <div class="form-group mb-3">
-                            <label for="input1" class="form-label">Meeting Agenda Section</label>
-                            <input type="text" name="section_title" class="form-control" id="input1">
+                            <label for="section_title" class="form-label">หัวข้อวาระการประชุม</label>
+                            <input type="text" name="section_title" class="form-control" id="section_title" required>
                         </div>
 
+                        <div class="form-group mb-3">
+                            <label for="section_content" class="form-label">รายละเอียด</label>
+                            <textarea name="section_content" id="section_content" class="form-control"></textarea>
+                        </div>
 
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                            <button type="submit" class="btn btn-primary">บันทึก</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">บันทึก</button>
-                </div>
-                </form>
-
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('section_content', {
+            language: 'th',
+            height: 300,
+            removeButtons: 'PasteFromWord'
+        });
+    </script>
+    @endpush
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#ckeditor'))
+            .then(editor => {
+                console.log(editor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
 
     <script>
         function addLectureDiv(courseId, sectionId, containerId) {

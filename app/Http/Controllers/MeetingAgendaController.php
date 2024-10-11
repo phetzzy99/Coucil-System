@@ -148,6 +148,7 @@ class MeetingAgendaController extends Controller
         MeetingAgendaSection::insert([
             'meeting_agenda_id' => $meeting_agenda_id,
             'section_title' => $request->section_title,
+            'description' => $request->description,
             'created_at' => Carbon::now()
         ]);
 
@@ -156,6 +157,20 @@ class MeetingAgendaController extends Controller
             'alert-type' => 'success'
         );
         return redirect()->back()->with($notification);
+    }
+
+    public function DeleteMeetingAgendaSection($id)
+    {
+        try {
+            MeetingAgendaSection::findOrFail($id)->delete();
+            $notification = array(
+                'message' => 'ลบหัวข้อส่วนของระเบียบวาระการประชุมแล้ว',
+                'alert-type' => 'success'
+            );
+            return redirect()->back()->with($notification);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Unable to delete meeting agenda section. Please try again.');
+        }
     }
 
     public function SaveMeetingAgendaLecture(Request $request)

@@ -96,6 +96,20 @@
             </ul>
         </li>
 
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-line-chart'></i>
+                </div>
+                <div class="menu-title"> การประชุม </div>
+            </a>
+            <ul>
+                <li> <a href="{{ route('all.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการการประชุม </a>
+                </li>
+                <li> <a href="{{ route('my.meetings') }}"><i class='bx bx-radio-circle'></i> แสดงรายงานการประชุม </a>
+                </li>
+            </ul>
+        </li
+
 
 
         <li class="menu-label">UI Elements</li>

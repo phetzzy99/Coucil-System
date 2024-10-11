@@ -7,6 +7,7 @@ use App\Http\Controllers\Category\MeetingTypeController;
 use App\Http\Controllers\Category\RegulationCategoryController;
 use App\Http\Controllers\Category\RuleCategoryController;
 use App\Http\Controllers\MeetingAgendaController;
+use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MeetingFormatController;
 use App\Http\Controllers\MeetingReportController;
 use App\Http\Controllers\ProfileController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\RegulationMeetingController;
 use App\Http\Controllers\RuleMeetingController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\Role;
+use App\Models\Meeting;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -185,6 +187,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/save/meeting/agenda/lecture/',[MeetingAgendaController::class, 'SaveMeetingAgendaLecture'])->name('save.meeting.agenda.lecture');
         Route::get('/edit/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'EditMeetingAgendaLecture'])->name('edit.meeting.agenda.lecture');
         Route::post('/update/meeting/agenda/lecture',[MeetingAgendaController::class, 'UpdateMeetingAgendaLecture'])->name('update.meeting.agenda.lecture');
+        Route::delete('/delete/meeting/agenda/section/{id}',[MeetingAgendaController::class, 'DeleteMeetingAgendaSection'])->name('delete.meeting.agenda.section');
         Route::get('/delete/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'DeleteMeetingAgendaLecture'])->name('delete.meeting.agenda.lecture'); // ลบหัวข้อวาระการประชุม Lecture_id
 
         Route::post('/save/meeting/agenda/item', [MeetingAgendaController::class, 'SaveMeetingAgendaItem'])->name('save.meeting.agenda.item');
@@ -194,6 +197,21 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/update-agenda-item/{itemId}', [MeetingAgendaController::class, 'UpdateAgendaItem'])->name('update.agenda.item');
         Route::delete('/delete-agenda-item/{id}', [MeetingAgendaController::class, 'DeleteAgendaItem'])->name('delete.agenda.item');
     });
+
+    // Meeting route list
+    Route::controller(MeetingController::class)->group(function () {
+        Route::get('/all/meeting', 'AllMeeting')->name('all.meeting');
+        Route::get('/add/meeting', 'AddMeeting')->name('add.meeting');
+        Route::post('/store/meeting', 'StoreMeeting')->name('store.meeting');
+        Route::get('/edit/meeting/{id}', 'EditMeeting')->name('edit.meeting');
+        Route::post('/update/meeting', 'UpdateMeeting')->name('update.meeting');
+        Route::get('/delete/meeting/{id}', 'DeleteMeeting')->name('delete.meeting');
+    });
+
+    // Show Meeting
+    Route::get('/my/meetings', [MeetingController::class, 'MyMeetings'])->name('my.meetings');
+    Route::get('/meeting/details/{id}', [MeetingController::class, 'MeetingDetails'])->name('meeting.detail');
+    // Route::get('/show/meeting/{id}', [MeetingController::class, 'ShowMeeting'])->name('show.meeting');
 
 }); // end of admin middleware
 
