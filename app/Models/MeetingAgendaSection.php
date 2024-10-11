@@ -15,4 +15,14 @@ class MeetingAgendaSection extends Model
     {
         return $this->hasMany(MeetingAgendaLecture::class, 'meeting_agenda_section_id');
     }
+
+    public function meetingAgendaItems()
+    {
+        return $this->hasMany(MeetingAgendaItems::class, 'meeting_agenda_section_id', 'id');
+    }
+
+    public function meetingAgenda()
+    {
+        return $this->belongsTo(MeetingAgenda::class, 'meeting_agenda_id');
+    }
 }

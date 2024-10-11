@@ -36,6 +36,46 @@
                     </div>
 
                     <div class="form-group col-md-6">
+                        <label for="input1" class="form-label">ประเภทคณะกรรมการ</label>
+                        <select name="committee_category_id" class="form-select mb-3" aria-label="Default select example">
+                            <option selected="" disabled>เลือกประเภทคณะกรรมการ</option>
+                            @foreach ($committee_categories as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="input1" class="form-label">รูปแบบการประชุม</label>
+                        <select name="meeting_format_id" class="form-select mb-3" aria-label="Default select example">
+                            <option selected="" disabled>เลือกรูปแบบการประชุม</option>
+                            @foreach ($meeting_format as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="input1" class="form-label">กฎการประชุม</label>
+                        <select name="rule_of_meeting_id" class="form-select mb-3" aria-label="Default select example">
+                            <option selected="" disabled>เลือกกฎการประชุม</option>
+                            @foreach ($rule_of_meetings as $item)
+                                <option value="{{ $item->id }}">{{ $item->title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="input1" class="form-label">ระเบียบการประชุม</label>
+                        <select name="regulation_meeting_id" class="form-select mb-3" aria-label="Default select example">
+                            <option selected="" disabled>เลือกระเบียบการประชุม</option>
+                            @foreach ($regulation_meetings as $item)
+                                <option value="{{ $item->id }}">{{ $item->regulation_title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
                         <label for="input1" class="form-label">ชื่อระเบียบวาระการประชุม</label>
                         <input type="text" name="meeting_agenda_title" class="form-control" id="input1" required>
                     </div>
@@ -88,9 +128,34 @@
                     meeting_type_id: {
                         required: true,
                     },
+                    committee_category_id: {
+                        required: true,
+                    },
+                    meeting_format_id: {
+                        required: true,
+                    },
+                    rule_of_meeting_id: {
+                        required: true,
+                    },
+                    regulation_meeting_id: {
+                        required: true,
+                    },
+
                 },
                 messages: {
                     meeting_type_id: {
+                        required: 'Please Enter Category Name',
+                    },
+                    committee_category_id: {
+                        required: 'Please Enter Category Name',
+                    },
+                    meeting_format_id: {
+                        required: 'Please Enter Category Name',
+                    },
+                    rule_of_meeting_id: {
+                        required: 'Please Enter Category Name',
+                    },
+                    regulation_meeting_id: {
                         required: 'Please Enter Category Name',
                     },
 

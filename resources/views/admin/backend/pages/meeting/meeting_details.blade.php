@@ -130,16 +130,56 @@
                                 @endif
                             </div>
                         @endforeach
+                        @php
+                            // $meeting_formats = App\Models\MeetingAgenda::where('meeting_format_id', $my_meetings->id)->get();
+                            $meeting_formats = App\Models\MeetingFormat::where('id', $my_meetings->meeting_format_id)->get();
+                        @endphp
+
+                        {{-- @dd($meeting_formats->id); --}}
+                        <div class="mb-3">
+                            @if ($meeting_formats->count() > 0)
+                                <ul class="list-group list-group-flush">
+                                    @foreach ($meeting_formats as $meeting_format)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <p class="mb-0"><strong>รูปแบบการประชุม:</strong> {{ $meeting_format->name }}</p>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-muted">ไม่มีข้อมูล</p>
+                            @endif
+
+                        </div>
+
+                        @php
+                            // $meeting_formats = App\Models\MeetingAgenda::where('meeting_format_id', $my_meetings->id)->get();
+                            $regulations = App\Models\RegulationMeeting::where('id', $my_meetings->regulation_meeting_id)->get();
+                        @endphp
+
+                        <div class="mb-3">
+                            @if ($regulations->count() > 0)
+                                <ul class="list-group list-group-flush">
+                                    @foreach ($regulations as $regulation)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <p class="mb-0"><strong>ระเบียบ:</strong> <a href="{{ asset($regulation->regulation_pdf) }}" target="_blank"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-muted">ไม่มีข้อมูล</p>
+                            @endif
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 @endsection
 
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap" rel="stylesheet">
-<style>
+{{-- <style>
     body {
         font-family: 'Kanit', sans-serif;
         line-height: 1.6;
@@ -189,5 +229,5 @@
     .bg-light {
         background-color: #f1f3f5 !important;
     }
-</style>
+</style> --}}
 @endpush

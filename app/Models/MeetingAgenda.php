@@ -16,6 +16,16 @@ class MeetingAgenda extends Model
         return $this->belongsTo(MeetingType::class , 'meeting_type_id', 'id');
     }
 
+    public function meetingFormat()
+    {
+        return $this->belongsTo(MeetingFormat::class , 'meeting_format_id', 'id');
+    }
+
+    public function meetingAgendaSections()
+    {
+        return $this->hasMany(MeetingAgendaSection::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

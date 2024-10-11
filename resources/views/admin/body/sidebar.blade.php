@@ -108,9 +108,38 @@
                 <li> <a href="{{ route('my.meetings') }}"><i class='bx bx-radio-circle'></i> แสดงรายงานการประชุม </a>
                 </li>
             </ul>
-        </li
+        </li>
 
+        <hr>
 
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <i class='bx bx-list-ul'></i>
+                <div class="menu-title"> หมวดวาระการประชุม </div>
+            </a>
+            <ul>
+                @php
+                    $meetingAgendas = \App\Models\MeetingAgenda::where('status', 1)->get();
+                @endphp
+                @if ($meetingAgendas && $meetingAgendas->count() > 0)
+                    @foreach ($meetingAgendas as $agenda)
+                        @php
+                            $meetingAgendaSections = \App\Models\MeetingAgendaSection::where('meeting_agenda_id', $agenda->id)->get();
+                        @endphp
+                        @if ($meetingAgendaSections && $meetingAgendaSections->count() > 0)
+                            @foreach ($meetingAgendaSections as $section)
+                                <li> <a href="{{ route('meeting.section.detail', $section->id) }}"><i class='bx bx-radio-circle'></i>{{ $section->section_title }}</a>
+                                </li>
+                            @endforeach
+                        @endif
+                    @endforeach
+                @else
+                    <li> <a href=""><i class='bx bx-radio-circle'></i>ไม่พบหมวดวาระการประชุม</a>
+                    </li>
+                @endif
+            </ul>
+            </a>
+        </li>
 
         <li class="menu-label">UI Elements</li>
 
@@ -289,7 +318,7 @@
         </li>
 
 
-        <li class="menu-label">Charts & Maps</li>
+        {{-- <li class="menu-label">Charts & Maps</li>
         <li>
             <a class="has-arrow" href="javascript:;">
                 <div class="parent-icon"><i class="bx bx-line-chart"></i>
@@ -326,6 +355,6 @@
                 <div class="menu-title">Support</div>
             </a>
         </li>
-    </ul>
+    </ul> --}}
     <!--end navigation-->
 </div>

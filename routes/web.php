@@ -184,6 +184,11 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         // Meeting Section and Lecture route list (หัวข้อวาระการประชุม และวาระการประชุมย่อย)
         Route::get('/add/meeting/agenda/lecture/{id}', 'AddMeetingAgendaLecture')->name('add.meeting.agenda.lecture');
         Route::post('/add/meeting/agenda/section', 'AddMeetingAgendaSection')->name('add.meeting.agenda.section');
+
+        Route::get('/edit/meeting/agenda/section/{id}',[MeetingAgendaController::class, 'EditMeetingAgendaSection'])->name('edit.meeting.agenda.section');
+        Route::post('/update/meeting/agenda/section/',[MeetingAgendaController::class, 'UpdateMeetingAgendaSection'])->name('update.meeting.agenda.section');
+
+
         Route::post('/save/meeting/agenda/lecture/',[MeetingAgendaController::class, 'SaveMeetingAgendaLecture'])->name('save.meeting.agenda.lecture');
         Route::get('/edit/meeting/agenda/lecture/{id}',[MeetingAgendaController::class, 'EditMeetingAgendaLecture'])->name('edit.meeting.agenda.lecture');
         Route::post('/update/meeting/agenda/lecture',[MeetingAgendaController::class, 'UpdateMeetingAgendaLecture'])->name('update.meeting.agenda.lecture');
@@ -211,6 +216,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     // Show Meeting
     Route::get('/my/meetings', [MeetingController::class, 'MyMeetings'])->name('my.meetings');
     Route::get('/meeting/details/{id}', [MeetingController::class, 'MeetingDetails'])->name('meeting.detail');
+    Route::get('/meeting/section/detail/{id}', [MeetingController::class, 'sectionAgendaItemDetail'])->name('meeting.section.detail');
     // Route::get('/show/meeting/{id}', [MeetingController::class, 'ShowMeeting'])->name('show.meeting');
 
 }); // end of admin middleware

@@ -87,26 +87,59 @@ class MeetingController extends Controller
         return redirect()->route('all.meeting')->with($notification);
     }
 
-    public function ShowMeeting($id)
+    public function sectionAgendaItemDetail($id)
     {
-        $meetings = MeetingAgendaItems::with(['meetingAgendaSection','meetingAgendaSection'])
-                       ->orderBy('created_at', 'asc')
-                       ->paginate(10);
-        return view('admin.backend.pages.meeting.show_meeting_all', compact('meetings'));
+        $meetingAgendaSection = MeetingAgendaSection::findOrFail($id);
+        $meetingAgenda = $meetingAgendaSection->meetingAgenda;
 
-        // $meetings = Meeting::with([
-        //     'meetingType',
-        //     'committeeCategory',
-        //     'meetingFormat',
-        //     'meetingAgenda',
-        //     'ruleOfMeeting',
-        //     'regulationMeeting',
-        //     'meetingAgendaSection',
-        //     'meetingAgendaLecture',
-        //     'meetingAgendaItems',
-        //     'user'
-        // ])->findOrFail($id);
+        $meetingAgendaItems = MeetingAgendaItems::where('meeting_agenda_section_id', $id)
+            ->with('meetingAgendaLecture')
+            ->get();
 
-        // return view('admin.backend.pages.meeting.show_meeting_all', compact('meetings'));
+        $meetingAgendaLectures = MeetingAgendaLecture::where('meeting_agenda_section_id', $id)->get();
+
+        return view('admin.backend.pages.meeting_section_detail.section_agenda_item_detail',
+            compact('meetingAgendaSection', 'meetingAgendaItems', 'meetingAgenda', 'meetingAgendaLectures'));
     }
+
+    // public function sectionAgendaItemDetail($id)
+    // {
+    //     $meetingAgendaSection = MeetingAgendaSection::findOrFail($id);
+
+    //     // ดึงข้อมูล MeetingAgenda ที่เกี่ยวข้องกับ MeetingAgendaSection
+    //     $meetingAgenda = $meetingAgendaSection->meetingAgenda;
+
+    //     // ดึงข้อมูล MeetingAgendaItems พร้อมกับ MeetingAgendaLecture ที่เกี่ยวข้อง
+    //     $meetingAgendaItems = MeetingAgendaItems::where('meeting_agenda_section_id', $id)
+    //         ->with('meetingAgendaLecture')
+    //         ->get();
+
+    //     $meetingAgendaLectures = MeetingAgendaLecture::where('meeting_agenda_id', $meetingAgenda->id)->get();
+
+    //     return view('admin.backend.pages.meeting_section_detail.section_agenda_item_detail',
+    //         compact('meetingAgendaSection', 'meetingAgendaItems', 'meetingAgenda', 'meetingAgendaLectures'));
+    // }
+
+    // public function ShowMeeting($id)
+    // {
+    //     $meetings = MeetingAgendaItems::with(['meetingAgendaSection','meetingAgendaSection'])
+    //                    ->orderBy('created_at', 'asc')
+    //                    ->paginate(10);
+    //     return view('admin.backend.pages.meeting.show_meeting_all', compact('meetings'));
+
+    //     // $meetings = Meeting::with([
+    //     //     'meetingType',
+    //     //     'committeeCategory',
+    //     //     'meetingFormat',
+    //     //     'meetingAgenda',
+    //     //     'ruleOfMeeting',
+    //     //     'regulationMeeting',
+    //     //     'meetingAgendaSection',
+    //     //     'meetingAgendaLecture',
+    //     //     'meetingAgendaItems',
+    //     //     'user'
+    //     // ])->findOrFail($id);
+
+    //     // return view('admin.backend.pages.meeting.show_meeting_all', compact('meetings'));
+    // }
 }

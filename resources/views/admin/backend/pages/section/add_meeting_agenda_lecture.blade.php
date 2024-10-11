@@ -40,6 +40,7 @@
                                                         onclick="return confirm('Are you sure you want to delete this section?')">Delete
                                                         Section </button>
                                                 </form>
+                                                <a style="margin-left: 10px" class="btn btn-warning ms-2" href="{{ route('edit.meeting.agenda.section', ['id' => $item->id]) }}">Edit Section</a>
                                                 <a style="margin-left: 10px" class="btn btn-primary ms-2"
                                                     onclick="addLectureDiv({{ $meeting_agenda->id }}, {{ $item->id }}, 'lectureContainer{{ $key }}')"
                                                     id="addLectureBtn($key)">Add Agenda item</a>
@@ -105,8 +106,13 @@
 
                         <div class="form-group mb-3">
                             <label for="section_content" class="form-label">รายละเอียด</label>
-                            <textarea name="section_content" id="section_content" class="form-control"></textarea>
+                            <textarea name="section_content" id="section_content" class="form-control ckeditor"></textarea>
                         </div>
+
+                        {{-- <div class="form-group mb-3">
+                            <label for="section_content" class="form-label">รายละเอียด</label>
+                            <textarea name="section_content" id="section_content" class="form-control"></textarea>
+                        </div> --}}
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
@@ -117,6 +123,16 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            CKEDITOR.replace('section_content', {
+                language: 'th',
+                height: 300,
+                removeButtons: 'PasteFromWord'
+            });
+        });
+    </script>
 
     @push('scripts')
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
@@ -151,7 +167,7 @@
             <div class="container">
                 <h6 class="mt-3"> ระเบียบวาระย่อย </h6>
                 <input type="text" class="form-control" placeholder="Enter Lecture Title">
-                <textarea class="form-control" placeholder="Enter Lecture Description"></textarea>
+                <textarea id="editor-${containerId}" class="form-control" placeholder="Enter Lecture Description"></textarea>
 
                 <button class="btn btn-primary mt-3" onclick="SaveMeetingAgendaLecture('${courseId}',${sectionId},'${containerId}')" >Save Lecture</button>
                 <button class="btn btn-secondary mt-3" onclick="hideLectureContainer('${containerId}')">Cancel</button>
@@ -159,6 +175,9 @@
             `;
 
             lectureContainer.appendChild(newLectureDiv);
+
+            // Initialize CKEditor
+            CKEDITOR.replace(`editor-${containerId}`);
 
         }
 

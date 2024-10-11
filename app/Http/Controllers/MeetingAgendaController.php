@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CommitteeCategory;
 use App\Models\MeetingAgenda;
 use App\Models\MeetingAgendaItems;
 use App\Models\MeetingAgendaLecture;
 use App\Models\MeetingAgendaSection;
+use App\Models\MeetingFormat;
 use App\Models\MeetingType;
+use App\Models\RegulationMeeting;
+use App\Models\RuleofMeeting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,13 +28,22 @@ class MeetingAgendaController extends Controller
     public function AddMeetingAgenda()
     {
         $meeting_types = MeetingType::latest()->get();
-        return view('admin.backend.pages.meeting_agenda.add_meeting_agenda', compact('meeting_types'));
+        $meeting_format = MeetingFormat::latest()->get();
+        $committee_categories = CommitteeCategory::latest()->get();
+        $rule_of_meetings = RuleofMeeting::latest()->get();
+        $regulation_meetings = RegulationMeeting::latest()->get();
+        return view('admin.backend.pages.meeting_agenda.add_meeting_agenda', compact('meeting_types', 'meeting_format', 'committee_categories', 'rule_of_meetings', 'regulation_meetings'));
     }
 
     public function StoreMeetingAgenda(Request $request)
     {
         $request->validate([
             'meeting_type_id' => 'required',
+            'committee_category_id' => 'required',
+            'meeting_format_id' => 'required',
+            'rule_of_meeting_id' => 'required',
+            'regulation_meeting_id' => 'required',
+
             'meeting_agenda_title' => 'required',
             'meeting_agenda_number' => 'required',
             'meeting_agenda_year' => 'required',
@@ -41,6 +54,10 @@ class MeetingAgendaController extends Controller
 
         $meeting_agenda = new MeetingAgenda();
         $meeting_agenda->meeting_type_id = $request->meeting_type_id;
+        $meeting_agenda->committee_category_id = $request->committee_category_id;
+        $meeting_agenda->meeting_format_id = $request->meeting_format_id;
+        $meeting_agenda->rule_of_meeting_id = $request->rule_of_meeting_id;
+        $meeting_agenda->regulation_meeting_id = $request->regulation_meeting_id;
         $meeting_agenda->meeting_agenda_title = $request->meeting_agenda_title;
         $meeting_agenda->meeting_agenda_number = $request->meeting_agenda_number;
         $meeting_agenda->meeting_agenda_year = $request->meeting_agenda_year;
@@ -148,7 +165,7 @@ class MeetingAgendaController extends Controller
         MeetingAgendaSection::insert([
             'meeting_agenda_id' => $meeting_agenda_id,
             'section_title' => $request->section_title,
-            'description' => $request->description,
+            'description' => $request->section_content,
             'created_at' => Carbon::now()
         ]);
 
@@ -159,6 +176,30 @@ class MeetingAgendaController extends Controller
         return redirect()->back()->with($notification);
     }
 
+
+    public function EditMeetingAgendaSection($id)
+    {
+        $meeting_agenda_section = MeetingAgendaSection::findOrFail($id);
+        $meeting_agenda = MeetingAgenda::where('id', $meeting_agenda_section->meeting_agenda_id)->first();
+
+        return view('admin.backend.pages.section.edit_meeting_agenda_section', compact('meeting_agenda_section', 'meeting_agenda'));
+    }
+
+
+    public function UpdateMeetingAgendaSection(Request $request)
+    {
+        $meeting_agenda_section = MeetingAgendaSection::findOrFail($request->id);
+        $meeting_agenda_section->section_title = $request->section_title;
+        $meeting_agenda_section->description = $request->description;
+        $meeting_agenda_section->updated_at = Carbon::now();
+        $meeting_agenda_section->save();
+
+        $notification = array(
+            'message' => 'แก้ไขหัวข้อส่วนของระเบียบวาระการประชุมแล้ว',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+    }
     public function DeleteMeetingAgendaSection($id)
     {
         try {
