@@ -156,8 +156,68 @@
                             @endif
 
                             @if (!$meetingAgendaSection->description && $meetingAgendaLectures->count() == 0 && $meetingAgendaItems->count() == 0)
-                                <p>ไม่พบรายการวาระการประชุมในหมวดนี้</p>
+                                <p>-ไม่พบรายการ-</p>
                             @endif
+
+                            <div style="width: 100%;" class="p-3 border border-danger rounded mb-4">
+                                <p class="mb-0 text-center text-secondary fst-italic">* ท่านสามารถดูรายละเอียดเอกสารที่เกี่ยวกับการประชุม</p>
+
+                                @php
+                                    $my_meetings = App\Models\MeetingAgenda::where('status', 1)->get();
+                                @endphp
+
+                                @if ($my_meetings->count() > 0)
+                                    @php
+                                        $meeting_formats = App\Models\MeetingFormat::where('id', $my_meetings->first()->meeting_format_id)->get();
+                                    @endphp
+
+                                    @if ($meeting_formats->count() > 0)
+                                        <ul class="list-group list-group-flush">
+                                            @foreach ($meeting_formats as $meeting_format)
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <p class="mb-0"><strong>รูปแบบการประชุม:</strong> {{ $meeting_format->name }}</p>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <p class="text-muted">ไม่มีข้อมูล</p>
+                                    @endif
+
+                                    @php
+                                        $regulations = App\Models\RegulationMeeting::where('id', $my_meetings->first()->regulation_meeting_id)->get();
+                                    @endphp
+
+                                    @if ($regulations->count() > 0)
+                                        <ul class="list-group list-group-flush">
+                                            @foreach ($regulations as $regulation)
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <p class="mb-0"><strong>*ระเบียบ:</strong> <a href="{{ asset($regulation->regulation_pdf) }}" target="_blank"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <p class="text-muted">ไม่มีข้อมูล</p>
+                                    @endif
+
+                                    @php
+                                        $ruleofmeeting = App\Models\RuleofMeeting::where('id', $my_meetings->first()->rule_of_meeting_id)->get();
+                                    @endphp
+
+                                    @if ($ruleofmeeting->count() > 0)
+                                        <ul class="list-group list-group-flush">
+                                            @foreach ($ruleofmeeting as $ruleofmeet)
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <p class="mb-0"><strong>*ข้อบังคับ:</strong> <a href="{{ asset($ruleofmeet->pdf) }}" target="_blank"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <p class="text-muted">ไม่มีข้อมูล</p>
+                                    @endif
+
+                                @endif
+                            </div>
+
                         </div>
                     </div>
                 </div>

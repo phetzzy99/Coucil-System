@@ -8,15 +8,15 @@
         <div class="col-12">
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-white py-3">
-                    <h5 class="mb-0">รับรองรายการการประชุม</h5>
+                    <h5 class="mb-0" style="text-align: center">รับรองรายการการประชุม</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
                         @foreach ($my_meetings as $item)
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="rounded-circle bg-primary p-1 me-3">
-                                    <img src="{{ asset('uploads/no_image.jpg') }}" class="rounded-circle"
+                        <div class="col">
+                            <div class="card h-100 border-0">
+                                <div>
+                                    <img src="{{ asset('uploads/no_image.jpg') }}" class="rounded-circle mx-auto d-block"
                                         width="90" height="90" alt="...">
                                 </div>
                                 <div class="card-body">
@@ -48,12 +48,10 @@
                                         </span>
                                     </p>
                                 </div>
-                                <div class="card-footer bg-white border-top-0">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <a href="{{ route('meeting.approval.detail', $item->id) }}" class="btn btn-outline-primary btn-sm">
-                                            <i class="bi bi-eye me-1"></i> ดูรายละเอียด
-                                        </a>
-                                    </div>
+                                <div class="card-footer bg-white border-top-0 d-flex align-items-center justify-content-center">
+                                    <a href="{{ route('meeting.approval.detail', $item->id) }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye me-1"></i> ดูรายละเอียด
+                                    </a>
                                 </div>
                             </div>
                         </div>
