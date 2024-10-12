@@ -7,6 +7,7 @@ use App\Http\Controllers\Category\MeetingTypeController;
 use App\Http\Controllers\Category\RegulationCategoryController;
 use App\Http\Controllers\Category\RuleCategoryController;
 use App\Http\Controllers\MeetingAgendaController;
+use App\Http\Controllers\MeetingApprovalController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MeetingFormatController;
 use App\Http\Controllers\MeetingReportController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegulationMeetingController;
 use App\Http\Controllers\RuleMeetingController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\Role;
 use App\Models\Meeting;
 use App\Models\User;
@@ -50,6 +52,7 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth', 'roles:admin'])->group(function () {
 
     Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
+    Route::get('/admin/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');
 
     // All Role & permission
     Route::get('/admin/permission', [RoleController::class, 'AllPermission'])->name('all.permission');
@@ -69,7 +72,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
     Route::get('/admin/roles/permission', [RoleController::class, 'AddRolesPermission'])->name('add.roles.permission');
     Route::post('/admin/role/permission/store', [RoleController::class, 'RolePermissionStore'])->name('role.permission.store');
-    Route::get('/admin/roles/permission/all', [RoleController::class, 'AllRolePermission'])->name('all.roles.permission');
+    Route::get('/admin/roles/permission/all', [RoleController::class, 'AllRolePermission'])->name('all.roles.permission')->middleware('permission:All.User.Menu');
     Route::get('/admin/roles/permission/edit/{id}', [RoleController::class, 'AdminEditRoles'])->name('admin.edit.roles');
     Route::post('/admin/roles/permission/update/{id}', [RoleController::class, 'AdminUpdateRoles'])->name('admin.roles.update');
     Route::get('/admin/roles/permission/delete/{id}', [RoleController::class, 'AdminDeleteRoles'])->name('admin.delete.roles');
@@ -219,9 +222,16 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::get('/meeting/section/detail/{id}', [MeetingController::class, 'sectionAgendaItemDetail'])->name('meeting.section.detail');
     // Route::get('/show/meeting/{id}', [MeetingController::class, 'ShowMeeting'])->name('show.meeting');
 
+    // Meeting Approval route list
+
+    Route::get('/all/meeting-approval', [MeetingApprovalController::class, 'AllMeetingApproval'])->name('all.meeting.approval');
+    Route::get('/meeting/approval/detail/{id}', [MeetingApprovalController::class, 'MeetingApprovalDetail'])->name('meeting.approval.detail');
+
+
 }); // end of admin middleware
 
 
+Route::get('/user/login', [AdminController::class, 'UserLogin'])->name('user.login')->middleware(RedirectIfAuthenticated::class);
 
 
 

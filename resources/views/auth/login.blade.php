@@ -5,6 +5,11 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
+        <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap" rel="stylesheet">
+        <div class="text-center mb-4">
+            <h1 class="text-3xl font-sans font-bold" style="font-family: 'Kanit', sans-serif;">{{ config('app.name') }}</h1>
+        </div>
+
         <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />

@@ -20,9 +20,9 @@
             </a>
         </li>
 
+        @if (Auth::user()->can('category.menu'))
 
         <li class="menu-label"></li>
-
 
         <li>
             <a href="javascript:;" class="has-arrow">
@@ -103,12 +103,14 @@
                 <div class="menu-title"> การประชุม </div>
             </a>
             <ul>
-                <li> <a href="{{ route('all.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการการประชุม </a>
-                </li>
+                {{-- <li> <a href="{{ route('all.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการการประชุม </a>
+                </li> --}}
                 <li> <a href="{{ route('my.meetings') }}"><i class='bx bx-radio-circle'></i> แสดงรายงานการประชุม </a>
                 </li>
             </ul>
         </li>
+
+        @endif
 
         <hr>
 
@@ -140,6 +142,40 @@
             </ul>
             </a>
         </li>
+
+        <hr>
+
+        <li>
+            <a href="javascript:;" class="has-arrow">
+                <i class='bx bx-list-ul'></i>
+                <div class="menu-title"> รับรองรายงานการประชุม </div>
+            </a>
+            <ul>
+                {{-- @php
+                    $meetingAgendas = \App\Models\MeetingAgenda::where('status', 1)->get();
+                @endphp
+                @if ($meetingAgendas && $meetingAgendas->count() > 0)
+                    @foreach ($meetingAgendas as $agenda)
+                        @php
+                            $meetingAgendaSections = \App\Models\MeetingAgendaSection::where('meeting_agenda_id', $agenda->id)->get();
+                        @endphp
+                        @if ($meetingAgendaSections && $meetingAgendaSections->count() > 0)
+                            @foreach ($meetingAgendaSections as $section)
+                                <li> <a href="{{ route('meeting.section.detail', $section->id) }}"><i class='bx bx-radio-circle'></i>{{ $section->section_title }}</a>
+                                </li>
+                            @endforeach
+                        @endif
+                    @endforeach
+                @else
+                    <li> <a href=""><i class='bx bx-radio-circle'></i>ไม่พบหมวดวาระการประชุม</a>
+                    </li>
+                @endif --}}
+                <li> <a href="{{ route('all.meeting.approval') }}"><i class='bx bx-radio-circle'></i> รับรองรายงานการประชุม </a></li>
+            </ul>
+            </a>
+        </li>
+
+        @if(Auth::user()->can('category.menu'))
 
         <li class="menu-label">UI Elements</li>
 
@@ -317,6 +353,7 @@
             </ul>
         </li>
 
+        @endif
 
         {{-- <li class="menu-label">Charts & Maps</li>
         <li>

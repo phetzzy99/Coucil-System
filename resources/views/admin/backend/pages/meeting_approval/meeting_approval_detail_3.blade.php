@@ -38,9 +38,9 @@
                     <div class="text-center mb-5">
                         <h5 class="mb-3 text-primary">{{ $my_meetings->meeting_agenda_title }}</h5>
                         <div class="d-inline-block p-3 border border-primary rounded">
-                            <p class="mb-1"><strong>การประชุมครั้งที่:</strong> {{ $my_meetings->meeting_agenda_number }} / {{ $my_meetings->meeting_agenda_year }}</p>
-                            <p class="mb-1"><strong>วันที่:</strong> {{ $thai_date }}</p>
-                            <p class="mb-0"><strong>สถานที่:</strong> {{ $my_meetings->meeting_location }}</p>
+                            <h5 class="mb-1">การประชุมครั้งที่: {{ $my_meetings->meeting_agenda_number }} / {{ $my_meetings->meeting_agenda_year }}</h5>
+                            <h5 class="mb-1">วันที่: {{ $thai_date }}</h5>
+                            <h5 class="mb-0">สถานที่:{{ $my_meetings->meeting_location }}</h5>
                         </div>
                     </div>
 
@@ -52,7 +52,9 @@
 
                     @foreach ($sections as $index => $section)
                         <div class="mb-5">
-                            <h5 class="mb-3 pb-2 border-bottom">{{ $section->section_title }}</h5>
+                            <div class="d-flex align-items-center mb-3 pb-2 border-bottom">
+                                <h5 class="mb-0">{{ $section->section_title }}</h5>
+                            </div>
                             @if ($section->description != null)
                                 <div class="ms-4 mb-3">
                                     <p>{!! $section->description !!}</p>
@@ -116,16 +118,17 @@
                             @endif
 
                             @if ($section->description == null && $lectures->count() == 0 && $agendaItems->count() == 0)
-                                <p class="ms-4 text-muted fst-italic">ไม่มีรายการในวาระนี้</p>
+                                <p class="ms-4 text-muted fst-italic">-ไม่มีรายการ-</p>
                             @endif
                         </div>
                     @endforeach
 
-                    @php
-                        $meeting_formats = App\Models\MeetingFormat::where('id', $my_meetings->meeting_format_id)->get();
-                    @endphp
+                    <div style="width: 100%;" class="p-3 border border-secondary rounded mb-4">
+                        <p class="mb-0 text-center text-secondary fst-italic">* ท่านสามารถดูรายละเอียดเอกสารที่เกี่ยวกับการประชุม</p>
+                        @php
+                            $meeting_formats = App\Models\MeetingFormat::where('id', $my_meetings->meeting_format_id)->get();
+                        @endphp
 
-                    <div class="mb-3">
                         @if ($meeting_formats->count() > 0)
                             <ul class="list-group list-group-flush">
                                 @foreach ($meeting_formats as $meeting_format)
@@ -137,13 +140,11 @@
                         @else
                             <p class="text-muted">ไม่มีข้อมูลรูปแบบการประชุม</p>
                         @endif
-                    </div>
 
-                    @php
-                        $regulations = App\Models\RegulationMeeting::where('id', $my_meetings->regulation_meeting_id)->get();
-                    @endphp
+                        @php
+                            $regulations = App\Models\RegulationMeeting::where('id', $my_meetings->regulation_meeting_id)->get();
+                        @endphp
 
-                    <div class="mb-3">
                         @if ($regulations->count() > 0)
                             <ul class="list-group list-group-flush">
                                 @foreach ($regulations as $regulation)
@@ -156,11 +157,60 @@
                             <p class="text-muted">ไม่มีข้อมูลระเบียบ</p>
                         @endif
                     </div>
+
+                    <!-- ส่วนการรับรองรายงานการประชุม -->
+                    <form id="meetingApprovalForm">
+                        <div class="mb-4 p-3 border border-danger rounded" style="width: 100%;">
+                            <h6 class="mb-3">การรับรองรายงานการประชุม</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="approval_type" id="noChanges" value="no_changes" checked>
+                                <label class="form-check-label" for="noChanges">
+                                    รับรองโดยไม่มีข้อแก้ไข
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="approval_type" id="withChanges" value="with_changes">
+                                <label class="form-check-label" for="withChanges">
+                                    รับรองโดยมีข้อแก้ไข
+                                </label>
+                            </div>
+                            <div id="commentsSection" class="mt-3" style="display: none;">
+                                <textarea class="form-control" id="comments" name="comments" rows="4" placeholder="กรุณาระบุข้อแก้ไข"></textarea>
+                            </div>
+
+                            <div class="mt-4">
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success"><i class="bx bx-check-circle me-2"></i>บันทึกการรับรอง</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        // ฟังก์ชันสำหรับแสดง/ซ่อนช่องความคิดเห็น
+        $('input[name="approval_type"]').change(function() {
+            if ($(this).val() === 'with_changes') {
+                $('#commentsSection').show();
+            } else {
+                $('#commentsSection').hide();
+            }
+        });
+
+        $('#meetingApprovalForm').submit(function(e) {
+            e.preventDefault();
+            // Add your form submission logic here
+            console.log('Form submitted');
+        });
+    });
+</script>
+
 @endsection
 
 @push('styles')

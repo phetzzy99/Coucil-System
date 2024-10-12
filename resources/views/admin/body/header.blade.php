@@ -4,17 +4,17 @@
             <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
             </div>
 
-            <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal"
+            {{-- <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal"
                 data-bs-target="#SearchModal">
                 <input class="form-control px-5" disabled type="search" placeholder="Search">
                 <span class="position-absolute top-50 search-show ms-3 translate-middle-y start-0 top-50 fs-5"><i
                         class='bx bx-search'></i></span>
-            </div>
+            </div> --}}
 
 
             <div class="top-menu ms-auto">
                 <ul class="navbar-nav align-items-center gap-1">
-                    <li class="nav-item mobile-search-icon d-flex d-lg-none" data-bs-toggle="modal"
+                    {{-- <li class="nav-item mobile-search-icon d-flex d-lg-none" data-bs-toggle="modal"
                         data-bs-target="#SearchModal">
                         <a class="nav-link" href="avascript:;"><i class='bx bx-search'></i>
                         </a>
@@ -25,14 +25,14 @@
                                 alt="">
                         </a>
 
-                    </li>
-                    <li class="nav-item dark-mode d-none d-sm-flex">
+                    </li> --}}
+                    {{-- <li class="nav-item dark-mode d-none d-sm-flex">
                         <a class="nav-link dark-mode-icon" href="javascript:;"><i class='bx bx-moon'></i>
                         </a>
-                    </li>
+                    </li> --}}
 
 
-                    <li class="nav-item dropdown dropdown-large">
+                    {{-- <li class="nav-item dropdown dropdown-large">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
                             data-bs-toggle="dropdown"><span class="alert-count">7</span>
                             <i class='bx bx-bell'></i>
@@ -163,8 +163,8 @@
                                 </div>
                             </a>
                         </div>
-                    </li>
-                    <li class="nav-item dropdown dropdown-large">
+                    </li> --}}
+                    {{-- <li class="nav-item dropdown dropdown-large">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
                             role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span
                                 class="alert-count">8</span>
@@ -360,7 +360,7 @@
                                 </div>
                             </a>
                         </div>
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
 
@@ -380,7 +380,7 @@
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item d-flex align-items-center" href=""><i
+                    {{-- <li><a class="dropdown-item d-flex align-items-center" href=""><i
                                 class="bx bx-user fs-5"></i><span>Profile</span></a>
                     </li>
                     <li><a class="dropdown-item d-flex align-items-center"
@@ -398,8 +398,8 @@
                     </li>
                     <li>
                         <div class="dropdown-divider mb-0"></div>
-                    </li>
-                    <li><a class="dropdown-item d-flex align-items-center" href=""><i
+                    </li> --}}
+                    <li><a class="dropdown-item d-flex align-items-center" href="{{ route('admin.logout') }}"><i
                                 class="bx bx-log-out-circle"></i><span>Logout</span></a>
                     </li>
                 </ul>
