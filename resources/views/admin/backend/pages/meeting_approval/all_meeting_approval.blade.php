@@ -10,22 +10,22 @@
                 <div class="card-header bg-white py-3">
                     <h5 class="mb-0" style="text-align: center">รับรองรายการการประชุม</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3">
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         @foreach ($my_meetings as $item)
                         <div class="col">
                             <div class="card h-100 border-0">
-                                <div>
+                                <div class="d-flex flex-column justify-content-center">
                                     <img src="{{ asset('uploads/no_image.jpg') }}" class="rounded-circle mx-auto d-block"
                                         width="90" height="90" alt="...">
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body p-2">
                                     <h5 class="card-title">
                                         <a href="{{ route('meeting.detail', $item->id) }}" class="text-decoration-none text-dark">
                                             {{ $item->meeting_agenda_title }}
                                         </a>
                                     </h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">
+                                    <h6 class="card-subtitle mb-1 text-muted">
                                         ครั้งที่ {{ $item->meeting_agenda_number }} / {{ $item->meeting_agenda_year }}
                                     </h6>
                                     <p class="card-text">
@@ -49,8 +49,8 @@
                                     </p>
                                 </div>
                                 <div class="card-footer bg-white border-top-0 d-flex align-items-center justify-content-center">
-                                    <a href="{{ route('meeting.approval.detail', $item->id) }}" class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-eye me-1"></i> ดูรายละเอียด
+                                    <a href="{{ route('meeting.approval.detail', $item->id) }}" class="btn btn-outline-primary btn-md">
+                                        <i class="lni lni-eye me-1"></i> ดูรายละเอียด
                                     </a>
                                 </div>
                             </div>
@@ -67,3 +67,4 @@
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 @endpush
+

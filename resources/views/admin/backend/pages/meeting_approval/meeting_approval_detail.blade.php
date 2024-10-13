@@ -146,7 +146,7 @@
                             </div>
                         @endforeach
 
-                        <div style="width: 100%;" class="p-3 border border-secondary rounded mb-4">
+                        <div style="width: 100%;" class="p-3 border border-secondary rounded mb-4" style="border-style: dashed;">
                             <p class="mb-0 text-center text-secondary fst-italic">* ท่านสามารถดูรายละเอียดเอกสารที่เกี่ยวกับการประชุม</p>
                             @php
                                 $meeting_formats = App\Models\MeetingFormat::where('id', $my_meetings->meeting_format_id)->get();
@@ -218,7 +218,6 @@
 
 @endsection
 
-@push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
     body {
@@ -261,4 +260,3 @@
         background-color: #f1f3f5 !important;
     }
 </style>
-@endpush
