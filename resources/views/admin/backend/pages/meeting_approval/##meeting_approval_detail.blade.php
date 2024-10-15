@@ -39,7 +39,7 @@
                     </div>
 
                     <!-- แสดงรายการการรับรองที่มีอยู่ -->
-                    {{-- @if($approvals->isNotEmpty())
+                    @if($approvals->isNotEmpty())
                         <h6 class="mb-3 text-danger">การรับรองที่มีอยู่:</h6>
                         <ul class="list-group mb-4">
                             @foreach($approvals as $approval)
@@ -50,21 +50,7 @@
                                 </li>
                             @endforeach
                         </ul>
-                    @endif --}}
-
-                    @if($approvals->isNotEmpty())
-                        <h6 class="mb-3 text-danger">การรับรองที่มีอยู่:</h6>
-                        <ul class="list-group mb-4">
-                            @foreach($approvals as $approval)
-                                <li class="list-group-item {{ $approval->user_id == Auth::id() ? 'bg-warning' : 'bg-danger' }} text-white">
-                                    <strong>ผู้รับรอง:</strong> {{ $approval->user->first_name }}
-                                    {{-- <strong>วันที่รับรอง:</strong> {{ Carbon\Carbon::parse($approval->approval_date)->format('d/m/Y H:i') }} --}}
-                                    <button class="btn btn-sm btn-{{ $approval->user_id == Auth::id() ? 'warning' : 'danger' }} float-end show-details" data-approval-id="{{ $approval->id }}">รายละเอียด</button>
-                                </li>
-                            @endforeach
-                        </ul>
                     @endif
-
 
                     <!-- ฟอร์มสำหรับการรับรองใหม่ -->
                     <form id="meetingApprovalForm" action="{{ route('meeting.approval.store', $my_meetings->id) }}" method="POST">
@@ -158,7 +144,7 @@
                                 </ul>
                             @endif
 
-                            {{-- @if (!$hasContent)
+                            @if (!$hasContent)
                                 <p class="ms-4 text-muted fst-italic">ไม่มีรายการในวาระนี้</p>
                             @else
                                 <div class="approval-section mt-3">
@@ -183,32 +169,6 @@
                                 </div>
                             @endif
                         </div>
-                        @endforeach --}}
-
-                        @if (!$hasContent)
-                        <p class="ms-4 text-muted fst-italic">ไม่มีรายการในวาระนี้</p>
-                            @else
-                                <div class="approval-section mt-3">
-                                    <div class="mb-4 p-3 border border-danger rounded" style="width: 100%;">
-                                        <h6 class="mb-3">การรับรองรายงานการประชุม - {{ $section->section_title }}</h6>
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio" name="approvals[{{ $section->id }}][type]" id="noChanges_{{ $section->id }}" value="no_changes" checked>
-                                            <label class="form-check-label" for="noChanges_{{ $section->id }}">
-                                                รับรองโดยไม่มีข้อแก้ไข
-                                            </label>
-                                        </div>
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio" name="approvals[{{ $section->id }}][type]" id="withChanges_{{ $section->id }}" value="with_changes">
-                                            <label class="form-check-label" for="withChanges_{{ $section->id }}">
-                                                รับรองโดยมีข้อแก้ไข
-                                            </label>
-                                        </div>
-                                        <div id="commentsSection_{{ $section->id }}" class="mt-3" style="display: none;">
-                                            <textarea class="form-control" name="approvals[{{ $section->id }}][comments]" rows="4" placeholder="กรุณาระบุข้อแก้ไข"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
                         @endforeach
 
                         <div style="width: 100%;" class="p-3 border border-danger rounded">
@@ -286,25 +246,7 @@
             }
         });
 
-        // $('#meetingApprovalForm').submit(function(e) {
-        //     e.preventDefault();
-        //     var formData = $(this).serialize();
-
-        //     $.ajax({
-        //         url: $(this).attr('action'),
-        //         method: 'POST',
-        //         data: formData,
-        //         success: function(response) {
-        //             alert(response.message);
-        //             window.location.href = "{{ route('all.meeting.approval') }}";
-        //         },
-        //         error: function(xhr) {
-        //             alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-        //             console.error(xhr.responseText);
-        //         }
-        //     });
-        // });
-            $('#meetingApprovalForm').submit(function(e) {
+        $('#meetingApprovalForm').submit(function(e) {
             e.preventDefault();
             var formData = $(this).serialize();
 
@@ -314,7 +256,7 @@
                 data: formData,
                 success: function(response) {
                     alert(response.message);
-                    location.reload(); // รีโหลดหน้าเพื่อแสดงการเปลี่ยนแปลง
+                    window.location.href = "{{ route('all.meeting.approval') }}";
                 },
                 error: function(xhr) {
                     alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
