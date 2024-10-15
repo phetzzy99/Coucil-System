@@ -25,55 +25,68 @@
                     enctype="multipart/form-data">
                     @csrf
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">ประเภทการประชุม</label>
-                        <select name="meeting_type_id" class="form-select mb-3" aria-label="Default select example">
-                            <option selected="" disabled>เลือกประเภทการประชุม</option>
-                            @foreach ($meeting_types as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <fieldset style="border: 1px solid #007bff; border-radius: 5px;" class="p-2">
+                        <legend>ประเภทการประชุม</legend>
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">ประเภทการประชุม</label>
+                            <select name="meeting_type_id" class="form-select mb-3" aria-label="Default select example">
+                                <option selected="" disabled>เลือกประเภทการประชุม</option>
+                                @foreach ($meeting_types as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">ประเภทคณะกรรมการ</label>
-                        <select name="committee_category_id" class="form-select mb-3" aria-label="Default select example">
-                            <option selected="" disabled>เลือกประเภทคณะกรรมการ</option>
-                            @foreach ($committee_categories as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                        <legend>ประเภทคณะกรรมการ</legend>
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">ประเภทคณะกรรมการ</label>
+                            <select name="committee_category_id" class="form-select mb-3"
+                                aria-label="Default select example">
+                                <option selected="" disabled>เลือกประเภทคณะกรรมการ</option>
+                                @foreach ($committee_categories as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">รูปแบบการประชุม</label>
-                        <select name="meeting_format_id" class="form-select mb-3" aria-label="Default select example">
-                            <option selected="" disabled>เลือกรูปแบบการประชุม</option>
-                            @foreach ($meeting_format as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                        <legend>รูปแบบการประชุม</legend>
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">รูปแบบการประชุม</label>
+                            <select name="meeting_format_id" class="form-select mb-3" aria-label="Default select example">
+                                <option selected="" disabled>เลือกรูปแบบการประชุม</option>
+                                @foreach ($meeting_format as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </fieldset>
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">กฎการประชุม</label>
-                        <select name="rule_of_meeting_id" class="form-select mb-3" aria-label="Default select example">
-                            <option selected="" disabled>เลือกกฎการประชุม</option>
-                            @foreach ($rule_of_meetings as $item)
-                                <option value="{{ $item->id }}">{{ $item->title }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <div></div>
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">ระเบียบการประชุม</label>
-                        <select name="regulation_meeting_id" class="form-select mb-3" aria-label="Default select example">
-                            <option selected="" disabled>เลือกระเบียบการประชุม</option>
-                            @foreach ($regulation_meetings as $item)
-                                <option value="{{ $item->id }}">{{ $item->regulation_title }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <fieldset style="border: 1px solid #007bff; border-radius: 5px;" class="p-2">
+                        <p class="mb-0 text-center text-secondary fst-italic">* ข้อบังคับ / ระเบียบ</p>
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">ข้อบังคับ</label>
+                            <select name="rule_of_meeting_id" class="form-select mb-3" aria-label="Default select example">
+                                <option selected="" disabled>เลือกกฎการประชุม</option>
+                                @foreach ($rule_of_meetings as $item)
+                                    <option value="{{ $item->id }}">{{ $item->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">ระเบียบ</label>
+                            <select name="regulation_meeting_id" class="form-select mb-3"
+                                aria-label="Default select example">
+                                <option selected="" disabled>เลือกระเบียบการประชุม</option>
+                                @foreach ($regulation_meetings as $item)
+                                    <option value="{{ $item->id }}">{{ $item->regulation_title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    </fieldset>
 
                     <div class="form-group col-md-6">
                         <label for="input1" class="form-label">ชื่อระเบียบวาระการประชุม</label>
@@ -175,5 +188,4 @@
             });
         });
     </script>
-
 @endsection

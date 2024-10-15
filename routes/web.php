@@ -223,10 +223,14 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     // Route::get('/show/meeting/{id}', [MeetingController::class, 'ShowMeeting'])->name('show.meeting');
 
     // Meeting Approval route list
-
     Route::get('/all/meeting-approval', [MeetingApprovalController::class, 'AllMeetingApproval'])->name('all.meeting.approval');
     Route::get('/meeting/approval/detail/{id}', [MeetingApprovalController::class, 'MeetingApprovalDetail'])->name('meeting.approval.detail');
 
+    // Routes สำหรับการรับรองรายงานการประชุม
+    // Route::get('/meeting-approval/{id}', [MeetingApprovalController::class, 'show'])->name('meeting.approval.show'); //** */
+    Route::post('/meeting-approval/{id}', [MeetingApprovalController::class, 'store'])->name('meeting.approval.store');
+    // Route::get('/meeting-approvals', [MeetingApprovalController::class, 'index'])->name('meeting.approvals.index');
+    Route::get('/meeting-approval-details/{id}', [MeetingApprovalController::class, 'getApprovalDetails'])->name('meeting.approval.details');
 
 }); // end of admin middleware
 
