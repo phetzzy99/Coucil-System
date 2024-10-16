@@ -11,6 +11,8 @@ use App\Http\Controllers\MeetingApprovalController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MeetingFormatController;
 use App\Http\Controllers\MeetingReportController;
+use App\Http\Controllers\PositionController;
+use App\Http\Controllers\PrefixNameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegulationMeetingController;
 use App\Http\Controllers\RuleMeetingController;
@@ -85,6 +87,21 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::post('/admin/update/{id}', [AdminController::class, 'UpdateAdmin'])->name('update.admin');
     Route::get('/delete/admin/{id}', [AdminController::class, 'DeleteAdmin'])->name('delete.admin');
 
+    // Prefix Name Route
+    Route::get('/all/prefix-name', [PrefixNameController::class, 'AllPrefixName'])->name('all.prefix.name');
+    Route::get('/add/prefix-name', [PrefixNameController::class, 'AddPrefixName'])->name('add.prefix.name');
+    Route::post('/store/prefix-name', [PrefixNameController::class, 'StorePrefixName'])->name('store.prefix.name');
+    Route::get('/edit/prefix-name/{id}', [PrefixNameController::class, 'EditPrefixName'])->name('edit.prefix.name');
+    Route::post('/update/prefix-name/{id}', [PrefixNameController::class, 'UpdatePrefixName'])->name('update.prefix.name');
+    Route::get('/delete/prefix-name/{id}', [PrefixNameController::class, 'DeletePrefixName'])->name('delete.prefix.name');
+
+    // Position Route
+    Route::get('/all/position', [PositionController::class, 'AllPosition'])->name('all.position');
+    Route::get('/add/position', [PositionController::class, 'AddPosition'])->name('add.position');
+    Route::post('/store/position', [PositionController::class, 'StorePosition'])->name('store.position');
+    Route::get('/edit/position/{id}', [PositionController::class, 'EditPosition'])->name('edit.position');
+    Route::post('/update/position/{id}', [PositionController::class, 'UpdatePosition'])->name('update.position');
+    Route::get('/delete/position/{id}', [PositionController::class, 'DeletePosition'])->name('delete.position');
 
     // Rules Category
     Route::controller(RuleCategoryController::class)->group(function () {

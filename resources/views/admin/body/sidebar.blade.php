@@ -24,70 +24,82 @@
 
         <li class="menu-label"></li>
 
-        <li>
+        <li class="{{ (request()->routeIs('rule.category') || request()->routeIs('all.rule.meeting')) ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-cart'></i>
                 </div>
                 <div class="menu-title"> ข้อบังคับ </div>
             </a>
             <ul>
-                <li> <a href="{{ route('rule.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทข้อบังคับ </a>
+                <li class="{{ request()->routeIs('rule.category') ? 'mm-active' : '' }}"> <a href="{{ route('rule.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทข้อบังคับ </a>
                 </li>
-                <li> <a href="{{ route('all.rule.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการข้อบังคับ </a>
+                <li class="{{ request()->routeIs('all.rule.meeting') ? 'mm-active' : '' }}"> <a href="{{ route('all.rule.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการข้อบังคับ </a>
                 </li>
             </ul>
         </li>
 
-        <li>
+        <li class="{{ (request()->routeIs('all.regulation.category') || request()->routeIs('all.regulation.meeting')) ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
                 <div class="menu-title"> ระเบียบ </div>
             </a>
             <ul>
-                <li> <a href="{{ route('all.regulation.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทระเบียบ </a>
+                <li class="{{ request()->routeIs('all.regulation.category') ? 'mm-active' : '' }}"> <a href="{{ route('all.regulation.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทระเบียบ </a>
                 </li>
-                <li> <a href="{{ route('all.regulation.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบ </a>
+                <li class="{{ request()->routeIs('all.regulation.meeting') ? 'mm-active' : '' }}"> <a href="{{ route('all.regulation.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบ </a>
                 </li>
             </ul>
         </li>
 
-        <li>
+        <li class="{{ request()->routeIs('all.meeting.format') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
                 <div class="menu-title"> รูปแบบการประชุม </div>
             </a>
             <ul>
-                <li> <a href="{{ route('all.meeting.format') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทรูปแบบการประชุม </a>
+                <li class="{{ request()->routeIs('all.meeting.format') ? 'mm-active' : '' }}"> <a href="{{ route('all.meeting.format') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทรูปแบบการประชุม </a>
                 </li>
             </ul>
         </li>
 
-        <li>
+        <li class="{{ (request()->routeIs('all.meeting.type') || request()->routeIs('all.committee.category')) ? 'mm-active' : '' }}">
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-line-chart'></i>
+                </div>
+                <div class="menu-title"> ประเภทการประชุม / คณะกรรมการ </div>
+            </a>
+            <ul>
+                <li class="{{ request()->routeIs('all.meeting.type') ? 'mm-active' : '' }}"> <a href="{{ route('all.meeting.type') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทการประชุม </a>
+                </li>
+                <li class="{{ request()->routeIs('all.committee.category') ? 'mm-active' : '' }}"> <a href="{{ route('all.committee.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทคณะกรรมการ </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="{{ request()->routeIs('all.meeting.report') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
                 <div class="menu-title"> รายงานการประชุม </div>
             </a>
             <ul>
-                <li> <a href="{{ route('all.meeting.type') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทการประชุม </a>
-                </li>
-                <li> <a href="{{ route('all.committee.category') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทคณะกรรมการ </a>
-                </li>
-                <li> <a href="{{ route('all.meeting.report') }}"><i class='bx bx-radio-circle'></i> จัดการรายงานการประชุม </a>
+                <li class="{{ request()->routeIs('all.meeting.report') ? 'mm-active' : '' }}"> <a href="{{ route('all.meeting.report') }}"><i class='bx bx-radio-circle'></i> จัดการรายงานการประชุม </a>
                 </li>
             </ul>
         </li>
 
-        <li>
+        <li class="{{ (request()->routeIs('all.meeting.agenda') || request()->routeIs('add.meeting.agenda') || request()->routeIs('edit.meeting.agenda')) ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
                 <div class="menu-title"> ระเบียบวาระการประชุม </div>
             </a>
             <ul>
-                <li> <a href="{{ route('all.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบวาระการประชุม </a>
+                <li class="{{ request()->routeIs('all.meeting.agenda') ? 'mm-active' : '' }}"> <a href="{{ route('all.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบวาระการประชุม </a>
+                </li>
+                <li class="{{ request()->routeIs('add.meeting.agenda') ? 'mm-active' : '' }}"> <a href="{{ route('add.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> เพิ่มระเบียบวาระการประชุม </a>
                 </li>
                 {{-- <li> <a href=""><i class='bx bx-radio-circle'></i> จัดการประเภทคณะกรรมการ </a>
                 </li>
@@ -96,7 +108,7 @@
             </ul>
         </li>
 
-        <li>
+        <li class="{{ request()->routeIs('my.meetings') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
@@ -105,7 +117,7 @@
             <ul>
                 {{-- <li> <a href="{{ route('all.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการการประชุม </a>
                 </li> --}}
-                <li> <a href="{{ route('my.meetings') }}"><i class='bx bx-radio-circle'></i> แสดงรายงานการประชุม </a>
+                <li class="{{ request()->routeIs('my.meetings') ? 'mm-active' : '' }}"> <a href="{{ route('my.meetings') }}"><i class='bx bx-radio-circle'></i> แสดงรายงานการประชุม </a>
                 </li>
             </ul>
         </li>
@@ -349,6 +361,10 @@
             </a>
             <ul>
                 <li> <a href="{{ route('all.admin') }}"><i class='bx bx-radio-circle'></i>All User</a>
+                </li>
+                <li> <a href="{{ route('all.prefix.name') }}"><i class='bx bx-radio-circle'></i>จัดการคำนำหน้า</a>
+                </li>
+                <li> <a href="{{ route('all.position') }}"><i class='bx bx-radio-circle'></i>ตำแหน่ง</a>
                 </li>
             </ul>
         </li>

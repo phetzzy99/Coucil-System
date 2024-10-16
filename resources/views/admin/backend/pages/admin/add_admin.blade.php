@@ -25,24 +25,23 @@
                     enctype="multipart/form-data">
                     @csrf
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Title</label>
-                        <select name="title" class="form-control" required>
-                            <option value="Mr.">Mr.</option>
-                            <option value="Mrs.">Mrs.</option>
-                            <option value="Ms.">Ms.</option>
-                            <option value="Dr.">Dr.</option>
-                            <option value="Prof.">Prof.</option>
+                    <div class="form-group col-md-3">
+                        <label for="input1" class="form-label"> คํานําหน้า</label>
+                        <select name="prefix_name" class="form-select mb-3" required>
+                            <option selected="" disabled>เลือกคํานําหน้า</option>
+                            @foreach ($prefixnames as $prefixname)
+                                <option value="{{ $prefixname->id }}">{{ $prefixname->title }}</option>
+                            @endforeach
                         </select>
                     </div>
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Firstname</label>
+                    <div class="form-group col-md-4">
+                        <label for="input1" class="form-label"> ชื่อ</label>
                         <input type="text" name="first_name" class="form-control" id="input1" required>
                     </div>
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Lastname</label>
+                    <div class="form-group col-md-4">
+                        <label for="input1" class="form-label"> นามสกุล</label>
                         <input type="text" name="last_name" class="form-control" id="input1" required>
                     </div>
 
@@ -52,36 +51,62 @@
                         <input type="text" name="username" class="form-control" id="input1" required>
                     </div> --}}
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Phone</label>
+                    {{-- <div class="form-group col-md-3">
+                        <label for="input1" class="form-label"> โทร</label>
                         <input type="text" name="phone" class="form-control" id="input1" required>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Email</label>
-                        <input type="email" name="email" class="form-control" id="input1" required>
-                        <span class="text-danger" id="emailError"></span>
-                    </div>
-
-                    {{-- <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Address</label>
-                        <input type="text" name="address" class="form-control" id="input1">
                     </div> --}}
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Password</label>
-                        <input type="password" name="password" class="form-control" id="input1" required>
-                    </div>
+                    <fieldset class="border border-primary p-2">
+                        <legend class="float-none w-auto">Credentials</legend>
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label"> Email/Username</label>
+                            <input type="email" name="email" class="form-control" id="input1" required>
+                            <span class="text-danger" id="emailError"></span>
+                        </div>
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Role Name</label>
-                        <select name="roles" class="form-select mb-3" aria-label="Default select example" required>
-                            <option selected="" disabled>Open this select menu</option>
-                            @foreach ($roles as $role)
-                                <option value="{{ $role->name }}"> {{ $role->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label"> Password</label>
+                            <input type="password" name="password" class="form-control" id="input1" required>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="border border-primary p-2">
+                        <legend class="float-none w-auto">Role</legend>
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label"> Role Name</label>
+                            <select name="roles" class="form-select mb-3" aria-label="Default select example" required>
+                                <option selected="" disabled>Open this select menu</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->name }}"> {{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset class="border border-primary p-2 mt-3">
+                        <legend class="float-none w-auto">Committee and Position</legend>
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label"> Committee</label>
+                            <select name="committee_id" class="form-select mb-3" aria-label="Default select example" required>
+                                <option selected="" disabled>Open this select menu</option>
+                                @foreach ($committeecategories as $committee)
+                                    <option value="{{ $committee->id }}"> {{ $committee->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label"> Position</label>
+                            <select name="position_id" class="form-select mb-3" aria-label="Default select example" required>
+                                <option selected="" disabled>Open this select menu</option>
+                                {{-- @foreach ($positions as $position)
+                                    <option value="{{ $position->id }}"> {{ $position->name }}</option>
+                                @endforeach --}}
+                            </select>
+                        </div>
+
+                    </fieldset>
 
                     {{-- @section('script')
                         <script>

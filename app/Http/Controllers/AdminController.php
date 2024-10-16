@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 // use App\Http\Middleware\Role;
+
+use App\Models\CommitteeCategory;
+use App\Models\PrefixName;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +28,9 @@ class AdminController extends Controller
     public function AddAdmin() {
 
         $roles = Role::all();
-        return view('admin.backend.pages.admin.add_admin', compact('roles'));
+        $committeecategories = CommitteeCategory::all();
+        $prefixnames = PrefixName::all();
+        return view('admin.backend.pages.admin.add_admin', compact('roles', 'committeecategories', 'prefixnames'));
     }
 
     public function StoreAdmin(Request $request) {
