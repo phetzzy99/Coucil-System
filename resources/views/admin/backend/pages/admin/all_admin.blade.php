@@ -32,11 +32,16 @@
                                 {{-- <th>Image </th> --}}
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Phone</th>
+                                <th>Committee</th>
                                 <th>Role</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            @php
+                                $committees = App\Models\CommitteeCategory::all();
+                                $prefixname = App\Models\PrefixName::all();
+                            @endphp
                         <tbody>
 
                             @foreach ($alladmin as $key => $item)
@@ -45,9 +50,20 @@
                                     {{-- <td> <img
                                             src="{{ !empty($item->photo) ? url('upload/admin_images/' . $item->photo) : url('upload/no_image.jpg') }}"
                                             alt="" style="width: 70px; height:40px;"> </td> --}}
-                                    <td>{{ $item->first_name }} {{ $item->last_name }}</td>
+                                    <td>
+                                        @foreach ($prefixname as $prefix)
+                                            @if ($prefix->id == $item->prefix_name_id)
+                                                {{ $prefix->title }}
+                                            @endif
+                                        @endforeach
+                                        {{ $item->first_name }} {{ $item->last_name }}
+                                    </td>
                                     <td>{{ $item->email }}</td>
-                                    <td>{{ $item->phone }}</td>
+                                    <td>
+                                        @foreach ($item->committees as $committee)
+                                            <span class="badge bg-danger">{{ $committee->name }}</span>
+                                        @endforeach
+                                    </td>
                                     <td>
                                         @foreach ($item->roles as $role)
                                             <span class="badge bg-primary">{{ $role->name }}</span>

@@ -1,90 +1,149 @@
 @extends('admin.admin_dashboard')
 @section('admin')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
-    <div class="page-content">
-        <!--breadcrumb-->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="ps-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">Edit Admin</li>
-                    </ol>
-                </nav>
-            </div>
-
+<div class="page-content">
+    <!--breadcrumb-->
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <div class="ps-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 p-0">
+                    <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">แก้ไขข้อมูลผู้ใช้</li>
+                </ol>
+            </nav>
         </div>
-        <!--end breadcrumb-->
+    </div>
+    <!--end breadcrumb-->
 
-        <div class="card">
-            <div class="card-body p-4">
-                <h5 class="mb-4">Edit Admin</h5>
-                <form id="myForm" action="{{ route('update.admin', $user->id) }}" method="post" class="row g-3"
-                    enctype="multipart/form-data">
-                    @csrf
+    <div class="card">
+        <div class="card-body p-4">
+            <h5 class="mb-4">แก้ไขข้อมูลผู้ใช้</h5>
+            <form id="myForm" action="{{ route('update.admin', $user->id) }}" method="post" class="row g-3" enctype="multipart/form-data">
+                @csrf
 
+                <div class="form-group col-md-3">
+                    <label for="prefix_name" class="form-label">คํานําหน้า</label>
+                    <select name="prefix_name" class="form-select mb-3" required>
+                        <option disabled>เลือกคํานําหน้า</option>
+                        @foreach ($prefixnames as $prefixname)
+                            <option value="{{ $prefixname->id }}" {{ $user->prefix_name_id == $prefixname->id ? 'selected' : '' }}>{{ $prefixname->title }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Title</label>
-                        <select name="title" class="form-control" required>
-                            <option value="Mr." {{ $user->title == 'Mr.' ? 'selected' : '' }}>Mr.</option>
-                            <option value="Mrs." {{ $user->title == 'Mrs.' ? 'selected' : '' }}>Mrs.</option>
-                            <option value="Ms." {{ $user->title == 'Ms.' ? 'selected' : '' }}>Ms.</option>
-                            <option value="Dr." {{ $user->title == 'Dr.' ? 'selected' : '' }}>Dr.</option>
-                            <option value="Prof." {{ $user->title == 'Prof.' ? 'selected' : '' }}>Prof.</option>
-                        </select>
+                <div class="form-group col-md-4">
+                    <label for="first_name" class="form-label">ชื่อ</label>
+                    <input type="text" name="first_name" class="form-control" id="first_name" value="{{ $user->first_name }}" required>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="last_name" class="form-label">นามสกุล</label>
+                    <input type="text" name="last_name" class="form-control" id="last_name" value="{{ $user->last_name }}" required>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="position_id" class="form-label">ตำแหน่ง</label>
+                    <select name="position_id" class="form-select mb-3" required>
+                        <option disabled>เลือกตำแหน่ง</option>
+                        @foreach ($positions as $position)
+                            <option value="{{ $position->id }}" {{ $user->position_id == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">คณะกรรมการที่สภาฯ แต่งตั้ง</label>
+                    <div class="d-flex flex-wrap">
+                        @foreach($committeecategories as $committee)
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="checkbox" name="committees[]" value="{{ $committee->id }}" id="committee_{{ $committee->id }}"
+                                    {{ in_array($committee->id, $user->committees->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="committee_{{ $committee->id }}">
+                                    {{ $committee->name }}
+                                </label>
+                            </div>
+                        @endforeach
                     </div>
+                    @error('committees')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
 
+                <fieldset class="border border-primary rounded p-2 mt-3">
+                    <legend class="float-none w-auto">Credentials</legend>
                     <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Firstname</label>
-                        <input type="text" name="first_name" class="form-control" id="input1"
-                            value="{{ $user->first_name }}">
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Lastname</label>
-                        <input type="text" name="last_name" class="form-control" id="input1"
-                            value="{{ $user->last_name }}">
-                    </div>
-
-
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Phone</label>
-                        <input type="text" name="phone" class="form-control" id="input1"
-                            value="{{ $user->phone }}">
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Email</label>
-                        <input type="email" name="email" class="form-control" id="input1"
-                            value="{{ $user->email }}">
+                        <label for="email" class="form-label">Email/Username</label>
+                        <input type="email" name="email" class="form-control" id="email" value="{{ $user->email }}" required>
                         <span class="text-danger" id="emailError"></span>
                     </div>
 
-
                     <div class="form-group col-md-6">
-                        <label for="input1" class="form-label"> Role Name</label>
-                        <select name="roles" class="form-select mb-3" aria-label="Default select example">
-                            <option selected="" disabled>Open this select menu</option>
+                        <label for="password" class="form-label">Password (ปล่อยว่างถ้าไม่ต้องการเปลี่ยน)</label>
+                        <input type="password" name="password" class="form-control" id="password">
+                    </div>
+                </fieldset>
+
+                <fieldset class="border border-primary rounded p-2 mt-3">
+                    <legend class="float-none w-auto">Role</legend>
+                    <div class="form-group col-md-6">
+                        <label for="roles" class="form-label">Role Name</label>
+                        <select name="roles" class="form-select mb-3" required>
+                            <option disabled>Open this select menu</option>
                             @foreach ($roles as $role)
-                                <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
-                                    {{ $role->name }}</option>
+                                <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>{{ $role->name }}</option>
                             @endforeach
                         </select>
                     </div>
+                </fieldset>
 
-
-                    <div class="col-md-12">
-                        <div class="d-md-flex d-grid align-items-center gap-3">
-                            <button type="submit" class="btn btn-primary px-4">Save Changes</button>
-                            <a href="{{ route('all.admin') }}" class="btn btn-danger px-4">Back</a>
+                <fieldset class="border border-primary rounded p-2 mt-3">
+                    <legend class="float-none w-auto">รูปแบบการประชุม</legend>
+                    <div class="mb-3">
+                        <div class="d-flex flex-wrap">
+                            @foreach($meeting_formats as $format)
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="radio" name="meeting_format_id" value="{{ $format->id }}" id="meeting_format_{{ $format->id }}"
+                                        {{ $user->meeting_format_id == $format->id ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="meeting_format_{{ $format->id }}">
+                                        {{ $format->name }}
+                                    </label>
+                                </div>
+                            @endforeach
                         </div>
+                        @error('meeting_format_id')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
-                </form>
-            </div>
-        </div>
+                </fieldset>
 
+                {{-- <fieldset class="border border-primary rounded p-2 mt-3">
+                    <legend class="float-none w-auto">รูปแบบการประชุม</legend>
+                    <div class="mb-3">
+                        <div class="d-flex flex-wrap">
+                            @foreach($meeting_formats as $format)
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" name="meeting_formats[]" value="{{ $format->id }}" id="meeting_format_{{ $format->id }}"
+                                        {{ in_array($format->id, $user->meetingFormats->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="meeting_format_{{ $format->id }}">
+                                        {{ $format->name }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        @error('meeting_formats')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </fieldset> --}}
+
+                <div class="col-md-12">
+                    <div class="d-md-flex d-grid align-items-center gap-3">
+                        <button type="submit" class="btn btn-primary px-4">บันทึกการเปลี่ยนแปลง</button>
+                        <a href="{{ route('all.admin') }}" class="btn btn-secondary px-4">กลับ</a>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 @endsection

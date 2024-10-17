@@ -56,12 +56,12 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-body p-5">
                         <div class="text-center mb-5">
-                            <h5 class="mb-3 text-primary">{{ $my_meetings->meeting_agenda_title }}</h5>
-                            <div class="d-inline-block p-3 border border-primary rounded">
-                                <p class="mb-1"><strong>การประชุมครั้งที่:</strong>
-                                    {{ $my_meetings->meeting_agenda_number }} / {{ $my_meetings->meeting_agenda_year }}</p>
-                                <p class="mb-1"><strong>วันที่:</strong> {{ $thai_date }}</p>
-                                <p class="mb-0"><strong>สถานที่:</strong> {{ $my_meetings->meeting_location }}</p>
+                            <h5 class="mb-3">{{ $my_meetings->meeting_agenda_title }}</h5>
+                            <div class="p-1">
+                                <h5 class="mb-1">การประชุมครั้งที่:
+                                    {{ $my_meetings->meeting_agenda_number }} / {{ $my_meetings->meeting_agenda_year }}</h5>
+                                <h5 class="mb-1">วันที่: {{ $thai_date }}</h5>
+                                <h5 class="mb-0">สถานที่: {{ $my_meetings->meeting_location }}</h5>
                             </div>
                         </div>
 
@@ -84,9 +84,9 @@
                             <ul class="list-group mb-4">
                                 @foreach ($approvals as $approval)
                                     <li
-                                        class="list-group-item {{ $approval->user_id == Auth::id() ? 'bg-warning' : 'bg-danger' }} text-white">
-                                        <strong>ผู้รับรอง:</strong> {{ $approval->user->first_name }}
-                                        {{-- <strong>วันที่รับรอง:</strong> {{ Carbon\Carbon::parse($approval->approval_date)->format('d/m/Y H:i') }} --}}
+                                        class="list-group-item {{ $approval->user_id == Auth::id() ? 'bg-warning' : 'bg-danger' }} text-black">
+                                        <strong>ผู้รับรอง:</strong> {{ $approval->user->prefixname->title }}{{ $approval->user->first_name }} {{ $approval->user->last_name }}
+                                        <strong>วันที่รับรอง:</strong> {{ $thai_date_approval }}
                                         <button
                                             class="btn btn-sm btn-{{ $approval->user_id == Auth::id() ? 'warning' : 'danger' }} float-end show-details"
                                             data-approval-id="{{ $approval->id }}">รายละเอียด</button>
@@ -153,10 +153,10 @@
 
                                     @foreach ($lectures as $lectureIndex => $lecture)
                                         <div class="ms-4 mb-3">
-                                            <div class="ms-4 bg-light p-3 rounded">
+                                            <div class="ms-4 rounded">
                                                 <h6 class="mb-2">{{ $lecture->lecture_title }}</h6>
                                                 @if ($lecture->content)
-                                                    <div class="mb-2">{!! $lecture->content !!}</div>
+                                                    <div style="margin-left: 2rem;" class="mb-2">{!! $lecture->content !!}</div>
                                                 @endif
                                             </div>
 

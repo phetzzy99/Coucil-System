@@ -69,19 +69,25 @@ class User extends Authenticatable
         return $hasPermission;
     }
 
-    public function committee()
+    public function committees()
     {
-        return $this->belongsTo(CommitteeCategory::class, 'committee_id', 'id');
+        return $this->belongsToMany(CommitteeCategory::class);
+        // return $this->belongsTo(CommitteeCategory::class, 'committee_id', 'id');
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
+    }
+
+    public function meetingFormat()
+    {
+        return $this->belongsTo(MeetingFormat::class);
     }
 
     public function prefixName()
     {
         return $this->belongsTo(PrefixName::class, 'prefix_name_id', 'id');
-    }
-
-    public function position()
-    {
-        return $this->belongsTo(Position::class, 'position_id', 'id');
     }
 
 }

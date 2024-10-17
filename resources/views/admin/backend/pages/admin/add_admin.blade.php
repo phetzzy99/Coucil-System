@@ -45,6 +45,33 @@
                         <input type="text" name="last_name" class="form-control" id="input1" required>
                     </div>
 
+                    <div class="form-group col-md-3">
+                        <label for="input1" class="form-label"> ตำแหน่ง</label>
+                        <select name="position_id" class="form-select mb-3" required>
+                            <option selected="" disabled>เลือกตำแหน่ง</option>
+                            @foreach ($positions as $position)
+                                <option value="{{ $position->id }}" {{ old('position_id') == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">คณะกรรมการที่สภาฯ แต่งตั้ง</label>
+                        <div class="d-flex flex-wrap">
+                            @foreach($committeecategories as $committee)
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="checkbox" name="committees[]" value="{{ $committee->id }}" id="committee_{{ $committee->id }}"
+                                        {{ (is_array(old('committees')) && in_array($committee->id, old('committees'))) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="committee_{{ $committee->id }}">
+                                        {{ $committee->name }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        @error('committees')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     {{-- <div class="form-group col-md-6">
                         <label for="input1" class="form-label"> User Name</label>
@@ -56,7 +83,7 @@
                         <input type="text" name="phone" class="form-control" id="input1" required>
                     </div> --}}
 
-                    <fieldset class="border border-primary p-2">
+                    <fieldset class="border border-primary rounded p-2 mt-3">
                         <legend class="float-none w-auto">Credentials</legend>
                         <div class="form-group col-md-6">
                             <label for="input1" class="form-label"> Email/Username</label>
@@ -70,7 +97,7 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="border border-primary p-2">
+                    <fieldset class="border border-primary rounded p-2 mt-3">
                         <legend class="float-none w-auto">Role</legend>
                         <div class="form-group col-md-6">
                             <label for="input1" class="form-label"> Role Name</label>
@@ -84,29 +111,45 @@
 
                     </fieldset>
 
-                    <fieldset class="border border-primary p-2 mt-3">
-                        <legend class="float-none w-auto">Committee and Position</legend>
-                        <div class="form-group col-md-6">
-                            <label for="input1" class="form-label"> Committee</label>
-                            <select name="committee_id" class="form-select mb-3" aria-label="Default select example" required>
-                                <option selected="" disabled>Open this select menu</option>
-                                @foreach ($committeecategories as $committee)
-                                    <option value="{{ $committee->id }}"> {{ $committee->name }}</option>
+                    <fieldset class="border border-primary rounded p-2 mt-3">
+                        <legend class="float-none w-auto">รูปแบบการประชุม</legend>
+                        <div class="mb-3">
+                            <div class="d-flex flex-wrap">
+                                @foreach($meeting_formats as $key => $format)
+                                    <div class="form-check me-3">
+                                        <input class="form-check-input" type="radio" name="meeting_format_id" value="{{ $format->id }}" id="meeting_format_{{ $format->id }}"
+                                            {{ $key == 0 ? 'checked' : (old('meeting_format_id') == $format->id ? 'checked' : '') }}>
+                                        <label class="form-check-label" for="meeting_format_{{ $format->id }}">
+                                            {{ $format->name }}
+                                        </label>
+                                    </div>
                                 @endforeach
-                            </select>
+                            </div>
+                            @error('meeting_format_id')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
-
-                        <div class="form-group col-md-6">
-                            <label for="input1" class="form-label"> Position</label>
-                            <select name="position_id" class="form-select mb-3" aria-label="Default select example" required>
-                                <option selected="" disabled>Open this select menu</option>
-                                {{-- @foreach ($positions as $position)
-                                    <option value="{{ $position->id }}"> {{ $position->name }}</option>
-                                @endforeach --}}
-                            </select>
-                        </div>
-
                     </fieldset>
+
+                    {{-- <fieldset class="border border-primary rounded p-2 mt-3">
+                        <legend class="float-none w-auto">รูปแบบการประชุม</legend>
+                        <div class="mb-3">
+                            <div class="d-flex flex-wrap">
+                                @foreach($meeting_formats as $format)
+                                    <div class="form-check me-3">
+                                        <input class="form-check-input" type="checkbox" name="meeting_formats[]" value="{{ $format->id }}" id="meeting_format_{{ $format->id }}"
+                                            {{ (is_array(old('meeting_formats')) && in_array($format->id, old('meeting_formats'))) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="meeting_format_{{ $format->id }}">
+                                            {{ $format->name }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                            @error('meeting_formats')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </fieldset> --}}
 
                     {{-- @section('script')
                         <script>

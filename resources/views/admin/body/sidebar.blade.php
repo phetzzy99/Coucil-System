@@ -1,11 +1,11 @@
 <div class="sidebar-wrapper" data-simplebar="true">
     <div class="sidebar-header">
         <div>
-            <img src="{{ asset('backend/assets/images/logo-icon.png') }}" class="logo-icon" alt="logo icon">
+            <a href=""><img src="{{ asset('backend/assets/images/logo-system-logo.png') }}" class="logo-icon" alt="logo icon" style="width:239px"></a>
         </div>
-        <div>
+        {{-- <div>
             <h4 class="logo-text">Admin</h4>
-        </div>
+        </div> --}}
         <div class="toggle-icon ms-auto"><i class='bx bx-arrow-back'></i>
         </div>
     </div>
@@ -16,7 +16,7 @@
             <a href="{{ route('admin.dashboard') }}">
                 <div class="parent-icon"><i class='bx bx-home-alt'></i>
                 </div>
-                <div class="menu-title">Dashboard</div>
+                <div class="menu-title">หน้าหลัก</div>
             </a>
         </li>
 
@@ -99,8 +99,8 @@
             <ul>
                 <li class="{{ request()->routeIs('all.meeting.agenda') ? 'mm-active' : '' }}"> <a href="{{ route('all.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบวาระการประชุม </a>
                 </li>
-                <li class="{{ request()->routeIs('add.meeting.agenda') ? 'mm-active' : '' }}"> <a href="{{ route('add.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> เพิ่มระเบียบวาระการประชุม </a>
-                </li>
+                {{-- <li class="{{ request()->routeIs('add.meeting.agenda') ? 'mm-active' : '' }}"> <a href="{{ route('add.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> เพิ่มระเบียบวาระการประชุม </a>
+                </li> --}}
                 {{-- <li> <a href=""><i class='bx bx-radio-circle'></i> จัดการประเภทคณะกรรมการ </a>
                 </li>
                 <li> <a href=""><i class='bx bx-radio-circle'></i> จัดการรายงานการประชุม </a>
@@ -126,7 +126,7 @@
 
         <hr>
 
-        <li>
+        <li class="{{ request()->routeIs('meeting.section.detail') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <i class='bx bx-list-ul'></i>
                 <div class="menu-title"> หมวดวาระการประชุม </div>
@@ -142,7 +142,7 @@
                         @endphp
                         @if ($meetingAgendaSections && $meetingAgendaSections->count() > 0)
                             @foreach ($meetingAgendaSections as $section)
-                                <li> <a href="{{ route('meeting.section.detail', $section->id) }}"><i class='bx bx-radio-circle'></i>{{ $section->section_title }}</a>
+                                <li class="{{ request()->routeIs('meeting.section.detail') && request()->route('id') == $section->id ? 'mm-active' : '' }}"> <a href="{{ route('meeting.section.detail', $section->id) }}"><i class='bx bx-radio-circle'></i>{{ $section->section_title }}</a>
                                 </li>
                             @endforeach
                         @endif
@@ -360,7 +360,7 @@
                 <div class="menu-title">Manage User</div>
             </a>
             <ul>
-                <li> <a href="{{ route('all.admin') }}"><i class='bx bx-radio-circle'></i>All User</a>
+                <li> <a href="{{ route('all.admin') }}"><i class='bx bx-radio-circle'></i>จัดการสมาชิก</a>
                 </li>
                 <li> <a href="{{ route('all.prefix.name') }}"><i class='bx bx-radio-circle'></i>จัดการคำนำหน้า</a>
                 </li>

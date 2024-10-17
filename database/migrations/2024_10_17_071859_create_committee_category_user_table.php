@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('committee_user', function (Blueprint $table) {
+        Schema::create('committee_category_user', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('committee_id');
+            $table->unsignedBigInteger('committee_category_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
-            $table->foreign('committee_id')->references('id')->on('committee_categories')->onDelete('cascade');
+            $table->foreign('committee_category_id')->references('id')->on('committee_categories')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->unique(['committee_id', 'user_id']);
+            $table->unique(['committee_category_id', 'user_id']);
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('committee_user');
+        Schema::dropIfExists('committee_category_user');
     }
 };

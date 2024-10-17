@@ -14,6 +14,11 @@ class Position extends Model
         'parent_id',
     ];
 
+    public function users()
+    {
+        return $this->hasMany(User::class, 'position_id');
+    }
+
     public function parent()
     {
         return $this->belongsTo(Position::class, 'parent_id');

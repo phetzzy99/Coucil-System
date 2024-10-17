@@ -28,7 +28,13 @@ class MeetingApprovalController extends Controller
         ->orderBy('created_at', 'desc')
         ->get();
 
-        return view('admin.backend.pages.meeting_approval.meeting_approval_detail', compact('my_meetings', 'approvals'));
+        // เพิ่ม prefix name สำหรับนำไปแสดง title
+        $prefixNames = [];
+        foreach ($approvals as $approval) {
+            $prefixNames[$approval->id] = $approval->user->prefixName();
+        }
+
+        return view('admin.backend.pages.meeting_approval.meeting_approval_detail', compact('my_meetings', 'approvals', 'prefixNames'));
         // return view('admin.backend.pages.meeting_approval.meeting_approval_detail_2',compact('my_meetings'));
         // return view('admin.backend.pages.meeting_approval.meeting_approval_detail_3',compact('my_meetings'));
     }

@@ -167,7 +167,7 @@
             <div class="container">
                 <h6 class="mt-3"> ระเบียบวาระย่อย </h6>
                 <input type="text" class="form-control" placeholder="Enter Lecture Title">
-                <textarea id="editor-${containerId}" class="form-control" placeholder="Enter Lecture Description"></textarea>
+                <textarea id="editor-${containerId}" class="form-control"></textarea>
 
                 <button class="btn btn-primary mt-3" onclick="SaveMeetingAgendaLecture('${courseId}',${sectionId},'${containerId}')" >Save Lecture</button>
                 <button class="btn btn-secondary mt-3" onclick="hideLectureContainer('${containerId}')">Cancel</button>

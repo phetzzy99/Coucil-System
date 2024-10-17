@@ -1,3 +1,3 @@
 <footer class="page-footer">
-    <p class="mb-0">Copyright © 2023. All right reserved.</p>
+    <p class="mb-0">พัฒนาโดย ศูนย์นวัตกรรมและเทคโนโลยีดิจิทัล © IDTC 2024.</p>
 </footer>

@@ -107,9 +107,9 @@
 
                             @if ($meetingAgendaLectures && $meetingAgendaLectures->count() > 0)
                                 @foreach ($meetingAgendaLectures as $lecture)
-                                    <div class="lecture-title">{{ $lecture->lecture_title }}</div>
+                                    <div class="lecture-title"><strong>{{ $lecture->lecture_title }}</strong></div>
                                     @if ($lecture->content)
-                                        <div class="lecture-content ck-content">{!! $lecture->content !!}</div>
+                                        <div style="margin-left: 2rem;" class="lecture-content ck-content">{!! $lecture->content !!}</div>
                                     @endif
 
                                     @php
@@ -127,7 +127,7 @@
                                                         <div class="item-title">{{ $item->item_title }}</div>
                                                     @endif
                                                     @if ($item->content)
-                                                        <div class="item-content ck-content">{!! $item->content !!}</div>
+                                                        <div style="margin-left: 2rem;" class="item-content ck-content">{!! $item->content !!}</div>
                                                     @endif
                                                 </li>
                                             @endforeach
@@ -148,7 +148,7 @@
                                                 <div class="item-title">{{ $item->item_title }}</div>
                                             @endif
                                             @if ($item->content)
-                                                <div class="item-content ck-content">{!! $item->content !!}</div>
+                                                <div style="margin-left: 2rem;" class="item-content ck-content">{!! $item->content !!}</div>
                                             @endif
                                         </li>
                                     @endforeach
@@ -158,6 +158,8 @@
                             @if (!$meetingAgendaSection->description && $meetingAgendaLectures->count() == 0 && $meetingAgendaItems->count() == 0)
                                 <p>-ไม่พบรายการ-</p>
                             @endif
+
+                            <br>
 
                             <div style="width: 100%;" class="p-3 border border-danger rounded mb-4">
                                 <p class="mb-0 text-center text-secondary fst-italic">* ท่านสามารถดูรายละเอียดเอกสารที่เกี่ยวกับการประชุม</p>
@@ -191,7 +193,7 @@
                                         <ul class="list-group list-group-flush">
                                             @foreach ($regulations as $regulation)
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    <p class="mb-0"><strong>*ระเบียบ:</strong> <a href="{{ asset($regulation->regulation_pdf) }}" target="_blank"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
+                                                    <p class="mb-0"><strong>*ระเบียบ:</strong> {{ $regulation->regulation_title }}<a href="{{ asset($regulation->regulation_pdf) }}" target="_blank"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -207,7 +209,7 @@
                                         <ul class="list-group list-group-flush">
                                             @foreach ($ruleofmeeting as $ruleofmeet)
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    <p class="mb-0"><strong>*ข้อบังคับ:</strong> <a href="{{ asset($ruleofmeet->pdf) }}" target="_blank"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
+                                                    <p class="mb-0"><strong>*ข้อบังคับ:</strong> {{ $ruleofmeet->title }}<a href="{{ asset($ruleofmeet->pdf) }}" target="_blank"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
                                                 </li>
                                             @endforeach
                                         </ul>
