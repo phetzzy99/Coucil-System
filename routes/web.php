@@ -6,6 +6,7 @@ use App\Http\Controllers\Category\CommitteeCategoryController;
 use App\Http\Controllers\Category\MeetingTypeController;
 use App\Http\Controllers\Category\RegulationCategoryController;
 use App\Http\Controllers\Category\RuleCategoryController;
+use App\Http\Controllers\MainMeetingController;
 use App\Http\Controllers\MeetingAgendaController;
 use App\Http\Controllers\MeetingApprovalController;
 use App\Http\Controllers\MeetingController;
@@ -157,6 +158,16 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/committee-category/{id}', 'EditCommitteeCategory')->name('edit.committee.category');
         Route::post('/update/committee-category', 'UpdateCommitteeCategory')->name('update.committee.category');
         Route::get('/delete/committee-category/{id}', 'DeleteCommitteeCategory')->name('delete.committee.category');
+    });
+
+    // Main Meeting Route list
+    Route::controller(MainMeetingController::class)->group(function () {
+        Route::get('/all/main-meeting', 'AllMainMeeting')->name('all.main.meeting');
+        Route::get('/add/main-meeting', 'AddMainMeeting')->name('add.main.meeting');
+        Route::post('/store/main-meeting', 'StoreMainMeeting')->name('store.main.meeting');
+        Route::get('/edit/main-meeting/{id}', 'EditMainMeeting')->name('edit.main.meeting');
+        Route::post('/update/main-meeting', 'UpdateMainMeeting')->name('update.main.meeting');
+        Route::get('/delete/main-meeting/{id}', 'DeleteMainMeeting')->name('delete.main.meeting');
     });
 
     // Meeting Format route list

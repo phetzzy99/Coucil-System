@@ -37,6 +37,7 @@
                 </li>
             </ul>
         </li>
+        <hr>
 
         <li class="{{ (request()->routeIs('all.regulation.category') || request()->routeIs('all.regulation.meeting')) ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -51,6 +52,7 @@
                 </li>
             </ul>
         </li>
+        <hr>
 
         <li class="{{ request()->routeIs('all.meeting.format') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -63,6 +65,20 @@
                 </li>
             </ul>
         </li>
+
+        <hr>
+            <li>
+                <a href="javascript:;" class="has-arrow">
+                    <div class="parent-icon"><i class='bx bx-cart'></i>
+                    </div>
+                    <div class="menu-title"> ประชุมหลัก </div>
+                </a>
+                <ul>
+                    <li> <a href="{{ route('all.main.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการประชุมหลัก </a>
+                    </li>
+                </ul>
+            </li>
+        <hr>
 
         <li class="{{ (request()->routeIs('all.meeting.type') || request()->routeIs('all.committee.category')) ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -77,6 +93,7 @@
                 </li>
             </ul>
         </li>
+        <hr>
 
         <li class="{{ request()->routeIs('all.meeting.report') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -89,6 +106,7 @@
                 </li>
             </ul>
         </li>
+        <hr>
 
         <li class="{{ (request()->routeIs('all.meeting.agenda') || request()->routeIs('add.meeting.agenda') || request()->routeIs('edit.meeting.agenda')) ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -107,6 +125,7 @@
                 </li> --}}
             </ul>
         </li>
+        <hr>
 
         <li class="{{ request()->routeIs('my.meetings') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -186,6 +205,7 @@
             </ul>
             </a>
         </li>
+        <hr>
 
         @if(Auth::user()->can('category.menu'))
 
