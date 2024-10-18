@@ -84,7 +84,7 @@
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
-                <div class="menu-title"> ประเภทการประชุม / คณะกรรมการ </div>
+                <div class="menu-title"> ประเภทการประชุม / คณะกรรมการ (ยุบเป็น Main Meeting)</div>
             </a>
             <ul>
                 <li class="{{ request()->routeIs('all.meeting.type') ? 'mm-active' : '' }}"> <a href="{{ route('all.meeting.type') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทการประชุม </a>

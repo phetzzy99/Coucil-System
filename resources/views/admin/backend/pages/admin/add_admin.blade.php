@@ -57,9 +57,27 @@
 
                     <div class="mb-3">
                         <label class="form-label">คณะกรรมการที่สภาฯ แต่งตั้ง</label>
-                        <div class="d-flex flex-wrap">
+                        <div style="column-count: 1;">
                             @foreach($committeecategories as $committee)
-                                <div class="form-check me-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="committees[]" value="{{ $committee->id }}" id="committee_{{ $committee->id }}"
+                                        {{ (is_array(old('committees')) && in_array($committee->id, old('committees'))) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="committee_{{ $committee->id }}">
+                                        {{ $committee->name }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                        @error('committees')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">ประเภทการประชุม</label>
+                        <div style="column-count: 2;">
+                            @foreach($committeecategories as $committee)
+                                <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="committees[]" value="{{ $committee->id }}" id="committee_{{ $committee->id }}"
                                         {{ (is_array(old('committees')) && in_array($committee->id, old('committees'))) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="committee_{{ $committee->id }}">

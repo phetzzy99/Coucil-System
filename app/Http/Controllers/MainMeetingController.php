@@ -99,4 +99,29 @@ class MainMeetingController extends Controller
 
         return redirect()->route('all.main.meeting')->with($notification);
     }
+
+    public function DeleteMainMeeting($id)
+    {
+        $mainMeeting = MainMeeting::findOrFail($id);
+
+        // ลบความสัมพันธ์กับ MeetingTypes และ CommitteeCategories
+        $mainMeeting->meetingTypes()->detach();
+        $mainMeeting->committeeCategories()->detach();
+
+        $mainMeeting->delete();
+
+        if ($mainMeeting) {
+            $notification = array(
+                'message' => 'ลบข้อมูลสําเร็จ',
+                'alert-type' => 'success'
+            );
+        } else {
+            $notification = array(
+                'message' => 'ลบข้อมูลไม่สําเร็จ',
+                'alert-type' => 'error'
+            );
+        }
+
+        return redirect()->route('all.main.meeting')->with($notification);
+    }
 }
