@@ -64,42 +64,35 @@ class MainMeetingController extends Controller
         $meeting_types = MeetingType::all();
         $committee_categories = CommitteeCategory::all();
 
-        return view('backend.main_meeting.edit', compact('main_meeting', 'meeting_types', 'committee_categories'));
+        return view('admin.backend.pages.main_meeting.edit_main_meeting', compact('main_meeting', 'meeting_types', 'committee_categories'));
     }
 
     public function UpdateMainMeeting(Request $request, $id)
     {
-        $request->validate([
-            'meeting_type' => 'required',
-            'committee_category' => 'required',
-            'meeting_name' => 'required',
-            'meeting_date' => 'required',
-            'meeting_start_time' => 'required',
-            'meeting_end_time' => 'required',
-            'meeting_location' => 'required',
-            'meeting_description' => 'required',
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'description' => 'nullable',
+            'meeting_types_id' => 'required|array|exists:meeting_types,id',
+            'committee_categories_id' => 'required|array|exists:committee_categories,id',
         ]);
 
-        $main_meeting = MainMeeting::findOrFail($id);
-        $main_meeting->update([
-            'meeting_type_id' => $request->meeting_type,
-            'committee_category_id' => $request->committee_category,
-            'meeting_name' => $request->meeting_name,
-            'meeting_date' => $request->meeting_date,
-            'meeting_start_time' => $request->meeting_start_time,
-            'meeting_end_time' => $request->meeting_end_time,
-            'meeting_location' => $request->meeting_location,
-            'meeting_description' => $request->meeting_description,
+        $mainMeeting = MainMeeting::findOrFail($id);
+        $mainMeeting->update([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
         ]);
 
-        if ($main_meeting) {
+        $mainMeeting->meetingTypes()->sync($validatedData['meeting_types_id']);
+        $mainMeeting->committeeCategories()->sync($validatedData['committee_categories_id']);
+
+        if ($mainMeeting) {
             $notification = array(
-                'message' => 'บันทึกข้อมูลสําเร็จ',
+                'message' => 'แก้ไขข้อมูลสําเร็จ',
                 'alert-type' => 'success'
             );
         } else {
             $notification = array(
-                'message' => 'บันทึกข้อมูลไม่สําเร็จ',
+                'message' => 'แก้ไขข้อมูลไม่สําเร็จ',
                 'alert-type' => 'error'
             );
         }

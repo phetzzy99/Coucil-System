@@ -166,7 +166,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/add/main-meeting', 'AddMainMeeting')->name('add.main.meeting');
         Route::post('/store/main-meeting', 'StoreMainMeeting')->name('store.main.meeting');
         Route::get('/edit/main-meeting/{id}', 'EditMainMeeting')->name('edit.main.meeting');
-        Route::post('/update/main-meeting', 'UpdateMainMeeting')->name('update.main.meeting');
+        Route::post('/update/main-meeting/{id}', 'UpdateMainMeeting')->name('update.main.meeting');
         Route::get('/delete/main-meeting/{id}', 'DeleteMainMeeting')->name('delete.main.meeting');
     });
 

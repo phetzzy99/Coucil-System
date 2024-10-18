@@ -12,7 +12,7 @@
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Add User</li>
+                        <li class="breadcrumb-item active" aria-current="page">เพิ่มประชุมหลัก</li>
                     </ol>
                 </nav>
             </div>
@@ -25,6 +25,7 @@
                 <h1 class="mb-4">Create Main Meeting</h1>
                 <form action="{{ route('store.main.meeting') }}" method="POST">
                     @csrf
+
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
                         <input type="text" class="form-control" id="title" name="title" required>
@@ -39,7 +40,7 @@
                         <div>
                             @foreach ($meeting_types as $meetingType)
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" name="meeting_types[]"
+                                    <input class="form-check-input" type="checkbox" name="meeting_types_id[]"
                                         value="{{ $meetingType->id }}" id="meetingType{{ $meetingType->id }}">
                                     <label class="form-check-label" for="meetingType{{ $meetingType->id }}">
                                         {{ $meetingType->name }}
@@ -54,7 +55,7 @@
                         <div>
                             @foreach ($committee_categories as $committeeCategory)
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" name="committee_categories[]"
+                                    <input class="form-check-input" type="checkbox" name="committee_categories_id[]"
                                         value="{{ $committeeCategory->id }}"
                                         id="committeeCategory{{ $committeeCategory->id }}">
                                     <label class="form-check-label" for="committeeCategory{{ $committeeCategory->id }}">
