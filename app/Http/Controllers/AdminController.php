@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CommitteeCategory;
 use App\Models\MeetingFormat;
+use App\Models\MeetingType;
 use App\Models\Position;
 use App\Models\PrefixName;
 use App\Models\User;
@@ -35,7 +36,8 @@ class AdminController extends Controller
         $prefixnames = PrefixName::all();
         $positions = Position::all();
         $meeting_formats = MeetingFormat::all();
-        return view('admin.backend.pages.admin.add_admin', compact('roles', 'committeecategories', 'prefixnames', 'positions', 'meeting_formats'));
+        $meeting_types = MeetingType::all();
+        return view('admin.backend.pages.admin.add_admin', compact('roles', 'committeecategories', 'prefixnames', 'positions', 'meeting_formats', 'meeting_types'));
     }
 
     public function StoreAdmin(Request $request) {

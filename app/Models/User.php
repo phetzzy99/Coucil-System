@@ -75,6 +75,11 @@ class User extends Authenticatable
         // return $this->belongsTo(CommitteeCategory::class, 'committee_id', 'id');
     }
 
+    public function meetingTypes()
+    {
+        return $this->belongsToMany(MeetingType::class);
+    }
+
     public function position()
     {
         return $this->belongsTo(Position::class);

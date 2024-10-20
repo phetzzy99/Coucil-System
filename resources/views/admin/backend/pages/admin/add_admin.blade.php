@@ -75,18 +75,17 @@
 
                     <div class="mb-3">
                         <label class="form-label">ประเภทการประชุม</label>
-                        <div style="column-count: 2;">
-                            @foreach($committeecategories as $committee)
+                            @foreach($meeting_types as $type)
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="committees[]" value="{{ $committee->id }}" id="committee_{{ $committee->id }}"
-                                        {{ (is_array(old('committees')) && in_array($committee->id, old('committees'))) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="committee_{{ $committee->id }}">
-                                        {{ $committee->name }}
+                                    <input class="form-check-input" type="checkbox" name="meeting_types[]" value="{{ $type->id }}" id="meeting_type_{{ $type->id }}"
+                                        {{ (is_array(old('meeting_types')) && in_array($type->id, old('meeting_types'))) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="meeting_type_{{ $type->id }}">
+                                        {{ $type->name }}
                                     </label>
                                 </div>
                             @endforeach
                         </div>
-                        @error('committees')
+                        @error('meeting_types')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>

@@ -10,4 +10,9 @@ class MeetingType extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'meeting_type_user', 'meeting_type_id', 'user_id');
+    }
 }
