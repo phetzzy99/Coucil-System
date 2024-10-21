@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -77,7 +78,9 @@ class User extends Authenticatable
 
     public function meetingTypes()
     {
-        return $this->belongsToMany(MeetingType::class);
+        return $this->belongsToMany(MeetingType::class)
+            ->withPivot('committee_ids')
+            ->withTimestamps();
     }
 
     public function position()
@@ -93,6 +96,12 @@ class User extends Authenticatable
     public function prefixName()
     {
         return $this->belongsTo(PrefixName::class, 'prefix_name_id', 'id');
+    }
+
+    // User Active Now
+    public function UserOnline()
+    {
+        return Cache::has('user-is-online' . $this->id);
     }
 
 }

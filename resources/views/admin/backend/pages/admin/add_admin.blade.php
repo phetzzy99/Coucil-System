@@ -50,18 +50,47 @@
                         <select name="position_id" class="form-select mb-3" required>
                             <option selected="" disabled>เลือกตำแหน่ง</option>
                             @foreach ($positions as $position)
-                                <option value="{{ $position->id }}" {{ old('position_id') == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                                <option value="{{ $position->id }}"
+                                    {{ old('position_id') == $position->id ? 'selected' : '' }}>{{ $position->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div class="mb-3">
+                    <fieldset class="border border-primary rounded p-2 mt-3">
+                        <legend class="float-none w-auto">ประเภทการประชุมและคณะกรรมการ</legend>
+                        @foreach ($meeting_types as $type)
+                            <div class="mb-3">
+                                <h6>{{ $type->name }}</h6>
+                                <div class="ms-3">
+                                    @foreach ($committeecategories as $committee)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="meeting_committees[{{ $type->id }}][]"
+                                                   value="{{ $committee->id }}"
+                                                   id="committee_{{ $type->id }}_{{ $committee->id }}"
+                                                   {{ (is_array(old('meeting_committees.'.$type->id)) && in_array($committee->id, old('meeting_committees.'.$type->id))) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="committee_{{ $type->id }}_{{ $committee->id }}">
+                                                {{ $committee->name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                        @error('meeting_committees')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </fieldset>
+
+                    {{-- <div class="mb-3">
                         <label class="form-label">คณะกรรมการที่สภาฯ แต่งตั้ง</label>
                         <div style="column-count: 1;">
-                            @foreach($committeecategories as $committee)
+                            @foreach ($committeecategories as $committee)
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="committees[]" value="{{ $committee->id }}" id="committee_{{ $committee->id }}"
-                                        {{ (is_array(old('committees')) && in_array($committee->id, old('committees'))) ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="checkbox" name="committees[]"
+                                        value="{{ $committee->id }}" id="committee_{{ $committee->id }}"
+                                        {{ is_array(old('committees')) && in_array($committee->id, old('committees')) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="committee_{{ $committee->id }}">
                                         {{ $committee->name }}
                                     </label>
@@ -71,24 +100,24 @@
                         @error('committees')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
-                    </div>
+                    </div> --}}
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label class="form-label">ประเภทการประชุม</label>
-                            @foreach($meeting_types as $type)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="meeting_types[]" value="{{ $type->id }}" id="meeting_type_{{ $type->id }}"
-                                        {{ (is_array(old('meeting_types')) && in_array($type->id, old('meeting_types'))) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="meeting_type_{{ $type->id }}">
-                                        {{ $type->name }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
-                        @error('meeting_types')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
+                        @foreach ($meeting_types as $type)
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="meeting_types[]"
+                                    value="{{ $type->id }}" id="meeting_type_{{ $type->id }}"
+                                    {{ is_array(old('meeting_types')) && in_array($type->id, old('meeting_types')) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="meeting_type_{{ $type->id }}">
+                                    {{ $type->name }}
+                                </label>
+                            </div>
+                        @endforeach
                     </div>
+                    @error('meeting_types')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror --}}
 
                     {{-- <div class="form-group col-md-6">
                         <label for="input1" class="form-label"> User Name</label>
@@ -132,9 +161,10 @@
                         <legend class="float-none w-auto">รูปแบบการประชุม</legend>
                         <div class="mb-3">
                             <div class="d-flex flex-wrap">
-                                @foreach($meeting_formats as $key => $format)
+                                @foreach ($meeting_formats as $key => $format)
                                     <div class="form-check me-3">
-                                        <input class="form-check-input" type="radio" name="meeting_format_id" value="{{ $format->id }}" id="meeting_format_{{ $format->id }}"
+                                        <input class="form-check-input" type="radio" name="meeting_format_id"
+                                            value="{{ $format->id }}" id="meeting_format_{{ $format->id }}"
                                             {{ $key == 0 ? 'checked' : (old('meeting_format_id') == $format->id ? 'checked' : '') }}>
                                         <label class="form-check-label" for="meeting_format_{{ $format->id }}">
                                             {{ $format->name }}
@@ -152,7 +182,7 @@
                         <legend class="float-none w-auto">รูปแบบการประชุม</legend>
                         <div class="mb-3">
                             <div class="d-flex flex-wrap">
-                                @foreach($meeting_formats as $format)
+                                @foreach ($meeting_formats as $format)
                                     <div class="form-check me-3">
                                         <input class="form-check-input" type="checkbox" name="meeting_formats[]" value="{{ $format->id }}" id="meeting_format_{{ $format->id }}"
                                             {{ (is_array(old('meeting_formats')) && in_array($format->id, old('meeting_formats'))) ? 'checked' : '' }}>
@@ -205,9 +235,6 @@
                 </form>
             </div>
         </div>
-
-
-
-
     </div>
+
 @endsection

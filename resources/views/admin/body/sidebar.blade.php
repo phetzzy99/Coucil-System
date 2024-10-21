@@ -54,6 +54,36 @@
         </li>
         <hr>
 
+        <li class="">
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-line-chart'></i>
+                </div>
+                <div class="menu-title"> กฎหมาย </div>
+            </a>
+            <ul>
+                <li class=""> <a href=""><i class='bx bx-radio-circle'></i> จัดการประเภทกฎหมาย </a>
+                </li>
+                <li class=""> <a href=""><i class='bx bx-radio-circle'></i> จัดการกฎหมาย </a>
+                </li>
+            </ul>
+        </li>
+        <hr>
+
+        <li class="">
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-line-chart'></i>
+                </div>
+                <div class="menu-title"> กฎหมายอื่นๆ ที่เกี่ยวข้อง </div>
+            </a>
+            <ul>
+                <li class=""> <a href=""><i class='bx bx-radio-circle'></i> จัดการประเภทกฎหมายอื่นๆ </a>
+                </li>
+                <li class=""> <a href=""><i class='bx bx-radio-circle'></i> จัดการกฎหมายอื่นๆ </a>
+                </li>
+            </ul>
+        </li>
+        <hr>
+
         <li class="{{ request()->routeIs('all.meeting.format') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
@@ -71,7 +101,7 @@
                 <a href="javascript:;" class="has-arrow">
                     <div class="parent-icon"><i class='bx bx-cart'></i>
                     </div>
-                    <div class="menu-title"> ประชุมหลัก </div>
+                    <div class="menu-title"> ประชุมหลัก (อาจไม่ใช้)</div>
                 </a>
                 <ul>
                     <li> <a href="{{ route('all.main.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการประชุมหลัก </a>
@@ -145,7 +175,7 @@
 
         <hr>
 
-        <li class="{{ request()->routeIs('meeting.section.detail') ? 'mm-active' : '' }}">
+        {{-- <li class="{{ request()->routeIs('meeting.section.detail') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <i class='bx bx-list-ul'></i>
                 <div class="menu-title"> หมวดวาระการประชุม </div>
@@ -172,6 +202,52 @@
                 @endif
             </ul>
             </a>
+        </li> --}}
+
+        <li class="{{ request()->routeIs('meeting.section.detail') ? 'mm-active' : '' }}">
+            <a href="javascript:;" class="has-arrow">
+                <i class='bx bx-list-ul'></i>
+                <div class="menu-title"> หมวดวาระการประชุม </div>
+            </a>
+            <ul>
+                @php
+                    $user = Auth::user();
+                    $userMeetingTypes = $user->meetingTypes;
+                    $userCommitteeIds = [];
+                    foreach ($userMeetingTypes as $meetingType) {
+                        $committeeIds = json_decode($meetingType->pivot->committee_ids, true);
+                        $userCommitteeIds = array_merge($userCommitteeIds, $committeeIds ?? []);
+                    }
+                    $userCommitteeIds = array_unique($userCommitteeIds);
+
+                    $meetingAgendas = \App\Models\MeetingAgenda::where('status', 1)
+                        ->whereIn('meeting_type_id', $userMeetingTypes->pluck('id'))
+                        ->whereIn('committee_category_id', $userCommitteeIds)
+                        ->get();
+                @endphp
+                @if ($meetingAgendas->count() > 0)
+                    @foreach ($meetingAgendas as $agenda)
+                        @php
+                            $meetingAgendaSections = \App\Models\MeetingAgendaSection::where('meeting_agenda_id', $agenda->id)->get();
+                        @endphp
+                        @if ($meetingAgendaSections->count() > 0)
+                            @foreach ($meetingAgendaSections as $section)
+                                <li class="{{ request()->routeIs('meeting.section.detail') && request()->route('id') == $section->id ? 'mm-active' : '' }}">
+                                    <a href="{{ route('meeting.section.detail', $section->id) }}">
+                                        <i class='bx bx-radio-circle'></i>{{ $section->section_title }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        @endif
+                    @endforeach
+                @else
+                    <li>
+                        <a href="javascript:void(0);">
+                            <i class='bx bx-radio-circle'></i>ไม่พบหมวดวาระการประชุมที่คุณมีสิทธิ์เข้าถึง
+                        </a>
+                    </li>
+                @endif
+            </ul>
         </li>
 
         <hr>

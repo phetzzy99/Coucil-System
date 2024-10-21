@@ -193,7 +193,22 @@
                                         <ul class="list-group list-group-flush">
                                             @foreach ($regulations as $regulation)
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    <p class="mb-0"><strong>*ระเบียบ:</strong> {{ $regulation->regulation_title }}<a href="{{ asset($regulation->regulation_pdf) }}" target="_blank"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
+                                                    <p class="mb-0"><strong>*ระเบียบ:</strong> {{ $regulation->regulation_title }}<a href="#" data-bs-toggle="modal" data-bs-target="#regulationModal{{ $regulation->id }}"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
+
+                                                    <!-- Modal สำหรับแสดงรายละเอียดระเบียบ -->
+                                                    <div class="modal fade" id="regulationModal{{ $regulation->id }}" tabindex="-1" aria-labelledby="regulationModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="regulationModalLabel">ระเบียบ</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <embed src="{{ asset($regulation->regulation_pdf) }}" width="100%" height="600" type="application/pdf">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -209,8 +224,25 @@
                                         <ul class="list-group list-group-flush">
                                             @foreach ($ruleofmeeting as $ruleofmeet)
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    <p class="mb-0"><strong>*ข้อบังคับ:</strong> {{ $ruleofmeet->title }}<a href="{{ asset($ruleofmeet->pdf) }}" target="_blank"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
+                                                    <p class="mb-0"><strong>*ข้อบังคับ:</strong> {{ $ruleofmeet->title }}<a href="#" data-bs-toggle="modal" data-bs-target="#ruleofmeet_{{ $ruleofmeet->id }}"><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a></p>
                                                 </li>
+
+                                                <!-- Modal สำหรับแสดงรายละเอียดข้อบังคับ -->
+                                                <div class="modal fade" id="ruleofmeet_{{ $ruleofmeet->id }}" tabindex="-1" aria-labelledby="ruleofmeet_{{ $ruleofmeet->id }}Label" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="ruleofmeet_{{ $ruleofmeet->id }}Label">ข้อบังคับ: {{ $ruleofmeet->title }}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <object data="{{ asset($ruleofmeet->pdf) }}" type="application/pdf" width="100%" height="600px">
+                                                                    <p>ไม่สามารถแสดง PDF ได้</p>
+                                                                </object>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endforeach
                                         </ul>
                                     @else

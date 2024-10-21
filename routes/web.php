@@ -9,6 +9,7 @@ use App\Http\Controllers\Category\RuleCategoryController;
 use App\Http\Controllers\MainMeetingController;
 use App\Http\Controllers\MeetingAgendaController;
 use App\Http\Controllers\MeetingApprovalController;
+use App\Http\Controllers\MeetingApprovalListController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MeetingFormatController;
 use App\Http\Controllers\MeetingReportController;
@@ -259,6 +260,9 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::post('/meeting-approval/{id}', [MeetingApprovalController::class, 'store'])->name('meeting.approval.store');
     // Route::get('/meeting-approvals', [MeetingApprovalController::class, 'index'])->name('meeting.approvals.index');
     Route::get('/meeting-approval-details/{id}', [MeetingApprovalController::class, 'getApprovalDetails'])->name('meeting.approval.details');
+
+    // Routes สำหรับการรับรองรายงานการประชุม
+    Route::get('/meeting/list/approval/{meeting_type_id}/{committee_id}', [MeetingApprovalListController::class, 'list'])->name('meeting.list.approval'); //** */
 
 }); // end of admin middleware
 

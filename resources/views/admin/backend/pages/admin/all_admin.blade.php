@@ -1,5 +1,6 @@
 @extends('admin.admin_dashboard')
 @section('admin')
+
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -15,8 +16,6 @@
             <div class="ms-auto">
                 <div class="btn-group">
                     <a href="{{ route('add.admin') }}" class="btn btn-primary  ">Add Admin </a>
-
-
                 </div>
             </div>
         </div>
@@ -25,31 +24,31 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="example" class="table table-striped table-bordered" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                {{-- <th>Image </th> --}}
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Committee</th>
-                                <th>Role</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $committees = App\Models\CommitteeCategory::all();
-                                $prefixname = App\Models\PrefixName::all();
-                            @endphp
-                        <tbody>
-
-                            @foreach ($alladmin as $key => $item)
+                    @if ($alladmin->isEmpty())
+                        <h4 class="text-center">ไม่พบข้อมูลผู้ดูแลระบบ</h4>
+                    @else
+                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Committee</th>
+                                    <th>Meeting Type</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                                @php
+                                    $committees = App\Models\CommitteeCategory::all();
+                                    $meeting_types = App\Models\MeetingType::all();
+                                    $prefixname = App\Models\PrefixName::all();
+                                @endphp
+                            <tbody>
+                                @foreach ($alladmin as $key => $item)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    {{-- <td> <img
-                                            src="{{ !empty($item->photo) ? url('upload/admin_images/' . $item->photo) : url('upload/no_image.jpg') }}"
-                                            alt="" style="width: 70px; height:40px;"> </td> --}}
                                     <td>
                                         @foreach ($prefixname as $prefix)
                                             @if ($prefix->id == $item->prefix_name_id)
@@ -60,8 +59,25 @@
                                     </td>
                                     <td>{{ $item->email }}</td>
                                     <td>
-                                        @foreach ($item->committees as $committee)
-                                            <span class="badge bg-danger">{{ $committee->name }}</span>
+                                        @foreach ($item->meetingTypes as $meetingType)
+                                            <strong>{{ $meetingType->name }}:</strong><br>
+                                            @php
+                                                $committeeIds =
+                                                    json_decode($meetingType->pivot->committee_ids, true) ?? [];
+                                            @endphp
+                                            @foreach ($committeeIds as $committeeId)
+                                                @php
+                                                    $committee = $committees->find($committeeId);
+                                                @endphp
+                                                @if ($committee)
+                                                    <span class="badge bg-info">{{ $committee->name }}</span><br>
+                                                @endif
+                                            @endforeach
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($item->meetingTypes as $meetingtype)
+                                            <span class="badge bg-success">{{ $meetingtype->name }}</span>
                                         @endforeach
                                     </td>
                                     <td>
@@ -70,23 +86,25 @@
                                         @endforeach
                                     </td>
                                     <td>
-                                        <a href="{{ route('edit.admin', $item->id) }}" class="btn btn-info px-5">Edit
-                                        </a>
-                                        <a href="{{ route('delete.admin', $item->id) }}" class="btn btn-danger px-5"
-                                            id="delete">Delete </a>
+                                        @if ($item->UserOnline())
+                                            <span class="badge bg-success">Online</span>
+                                        @else
+                                            <span
+                                                class="badge bg-danger">{{ Carbon\Carbon::parse($item->last_seen)->diffForHumans() }}</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('edit.admin', $item->id) }}" class="btn btn-info px-5">Edit</a>
+                                        <a href="{{ route('delete.admin', $item->id) }}" class="btn btn-danger px-5" id="delete">Delete </a>
                                     </td>
                                 </tr>
                             @endforeach
-
-                        </tbody>
-
-                    </table>
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>
-
-
-
-
     </div>
+
 @endsection

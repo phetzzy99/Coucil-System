@@ -49,9 +49,29 @@
                                     </p>
                                 </div>
                                 <div class="card-footer bg-white border-top-0 d-flex align-items-center justify-content-center">
+                                    {{-- <a href="{{ route('meeting.approval.detail', $item->id) }}" class="btn btn-outline-primary btn-md">
+                                        <i class="lni lni-eye me-1"></i> ดูรายละเอียด
+                                    </a> --}}
+                                    @php
+                                        $user = Auth::user();
+                                        $userMeetingTypes = $user->meetingTypes;
+                                        $userCommitteeIds = [];
+                                        foreach ($userMeetingTypes as $meetingType) {
+                                            $committeeIds = json_decode($meetingType->pivot->committee_ids, true);
+                                            $userCommitteeIds = array_merge($userCommitteeIds, $committeeIds ?? []);
+                                        }
+                                        $userCommitteeIds = array_unique($userCommitteeIds);
+
+                                        $hasPermission = $userMeetingTypes->contains($item->meeting_type_id) &&
+                                                        in_array($item->committee_category_id, $userCommitteeIds);
+                                    @endphp
+                                    @if ($hasPermission)
                                     <a href="{{ route('meeting.approval.detail', $item->id) }}" class="btn btn-outline-primary btn-md">
                                         <i class="lni lni-eye me-1"></i> ดูรายละเอียด
                                     </a>
+                                    @else
+                                    <span class="text-muted">ไม่มีสิทธิ์เข้าถึง</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>

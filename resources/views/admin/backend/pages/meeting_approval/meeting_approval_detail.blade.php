@@ -298,11 +298,31 @@
                                         @foreach ($regulations as $regulation)
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                                 <p class="mb-0"><strong>ระเบียบ:</strong>{{ $regulation->regulation_title }} <a
-                                                        href="{{ asset($regulation->regulation_pdf) }}"
-                                                        target="_blank"><span
-                                                            class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a>
+                                                        href="javascript:;" data-bs-toggle="modal"
+                                                        data-bs-target="#regulationPdfModal_{{ $regulation->id }}"
+                                                        ><span class="badge rounded-pill bg-info text-dark">ดูรายละเอียด</span></a>
                                                 </p>
                                             </li>
+                                            <!-- Modal สำหรับแสดงรายละเอียดระเบียบ -->
+                                            <div class="modal fade" id="regulationPdfModal_{{ $regulation->id }}"
+                                                tabindex="-1" aria-labelledby="regulationPdfModalLabel_{{ $regulation->id }}"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title"
+                                                                id="regulationPdfModalLabel_{{ $regulation->id }}">ระเบียบ:
+                                                                {{ $regulation->regulation_title }}</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <embed src="{{ asset($regulation->regulation_pdf) }}"
+                                                                type="application/pdf" width="100%" height="600px" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endforeach
                                     </ul>
                                 @else

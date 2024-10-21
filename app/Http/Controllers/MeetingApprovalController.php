@@ -12,8 +12,19 @@ class MeetingApprovalController extends Controller
 {
     public function AllMeetingApproval()
     {
-        $user_id = Auth::user()->id;
-        $my_meetings = MeetingAgenda::where('status', 1)->get();
+        $user = Auth::user();
+        $userMeetingTypes = $user->meetingTypes;
+        $userCommitteeIds = [];
+        foreach ($userMeetingTypes as $meetingType) {
+            $committeeIds = json_decode($meetingType->pivot->committee_ids, true);
+            $userCommitteeIds = array_merge($userCommitteeIds, $committeeIds ?? []);
+        }
+        $userCommitteeIds = array_unique($userCommitteeIds);
+
+        $my_meetings = MeetingAgenda::whereIn('meeting_type_id', $userMeetingTypes->pluck('id'))
+            ->whereIn('committee_category_id', $userCommitteeIds)
+            ->where('status', 1)
+            ->get();
         // $my_meetings = MeetingAgenda::where('status', 1)->where('user_id', $user_id)->get();
 
         return view('admin.backend.pages.meeting_approval.all_meeting_approval', compact('my_meetings'));
@@ -121,4 +132,6 @@ class MeetingApprovalController extends Controller
 
         return view('admin.backend.pages.meeting_approval.approval_details', compact('approval'));
     }
+
+
 }

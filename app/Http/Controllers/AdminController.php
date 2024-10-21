@@ -19,13 +19,21 @@ use Spatie\Permission\Models\Permission;
 class AdminController extends Controller
 {
     public function AdminDashboard() {
-        return view('admin.admin_dashboard');
+        // return view('admin.admin_dashboard');
+        $user = Auth::user();
+        $user->load('meetingTypes','meetingFormat');
+        $committeecategories = CommitteeCategory::all();
+        // $meetingTypes = $user->meetingTypes;
+        // $meetingFormats = MeetingFormat::where('id', $user->meeting_format_id)->get();
+
+        return view('admin.index', compact('user', 'committeecategories'));
     }
 
     public function AllAdmin() {
         // $alladmin = User::where('role', 'admin')->get();
         $alladmin = User::all();
         $committeecategories = CommitteeCategory::all();
+
         return view('admin.backend.pages.admin.all_admin', compact('alladmin', 'committeecategories'));
     }
 
@@ -37,6 +45,7 @@ class AdminController extends Controller
         $positions = Position::all();
         $meeting_formats = MeetingFormat::all();
         $meeting_types = MeetingType::all();
+
         return view('admin.backend.pages.admin.add_admin', compact('roles', 'committeecategories', 'prefixnames', 'positions', 'meeting_formats', 'meeting_types'));
     }
 
@@ -59,8 +68,13 @@ class AdminController extends Controller
             // 'email' => 'required|email|unique:users,email',
             'password' => 'required|min:3',
             'roles' => 'required|exists:roles,name',
-            'committees' => 'nullable|array|exists:committee_categories,id',
+            // 'committees' => 'nullable|array|exists:committee_categories,id',
             'meeting_format_id' => 'required|exists:meeting_formats,id',
+            'meeting_types' => 'nullable|array',
+            'meeting_types.*' => 'exists:meeting_types,id',
+            'meeting_committees' => 'nullable|array',
+            'meeting_committees.*' => 'array',
+            'meeting_committees.*.*' => 'exists:committee_categories,id',
             // 'meeting_formats_id' => 'nullable|array|exists:meeting_formats,id',
         ]);
 
@@ -91,7 +105,18 @@ class AdminController extends Controller
             'status' => 1,
         ]);
 
-        $user->committees()->attach($validatedData['committees']);
+        // $user->committees()->attach($validatedData['committees']);
+
+        if ($request->has('meeting_types')) {
+            $user->meetingTypes()->attach($request->meeting_types);
+        }
+
+        if ($request->has('meeting_committees')) {
+            foreach ($request->meeting_committees as $meeting_type_id => $committee_ids) {
+                $user->meetingTypes()->attach($meeting_type_id, ['committee_ids' => json_encode($committee_ids)]);
+            }
+        }
+
         // Assign committees
         // if ($request->has('committees')) {
         //     $user->committees()->attach($request->committees);
@@ -121,8 +146,9 @@ class AdminController extends Controller
         $prefixnames = PrefixName::all();
         $positions = Position::all();
         $meeting_formats = MeetingFormat::all();
+        $meeting_types = MeetingType::all();
 
-        return view('admin.backend.pages.admin.edit_admin', compact('user', 'roles', 'committeecategories', 'prefixnames', 'positions', 'meeting_formats'));
+        return view('admin.backend.pages.admin.edit_admin', compact('user', 'roles', 'committeecategories', 'prefixnames', 'positions', 'meeting_formats', 'meeting_types'));
     }
 
     public function UpdateAdmin(Request $request, $id) {
@@ -162,8 +188,12 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users,email,'.$id,
             'password' => 'nullable|min:3',
             'roles' => 'required|exists:roles,name',
-            'committees' => 'nullable|array|exists:committee_categories,id',
+            // 'committees' => 'nullable|array|exists:committee_categories,id',
             'meeting_format_id' => 'required|exists:meeting_formats,id',
+            // 'meeting_types' => 'required|array|exists:meeting_types,id',
+            'meeting_committees' => 'nullable|array',
+            'meeting_committees.*' => 'array',
+            'meeting_committees.*.*' => 'exists:committee_categories,id',
         ]);
 
         $user->update([
@@ -182,11 +212,23 @@ class AdminController extends Controller
             $user->update(['password' => Hash::make($request->password)]);
         }
 
+        // อัปเดตความสัมพันธ์ระหว่างประเภทการประชุมและคณะกรรมการ
+        $user->meetingTypes()->detach(); // ลบความสัมพันธ์เดิมทั้งหมด
+        if ($request->has('meeting_committees')) {
+            foreach ($request->meeting_committees as $meeting_type_id => $committee_ids) {
+                $user->meetingTypes()->attach($meeting_type_id, ['committee_ids' => json_encode($committee_ids)]);
+
+            }
+        }
+
         // Update committees
-        $user->committees()->sync($request->committees ?? []);
+        // $user->committees()->sync($request->committees ?? []);
 
         // Update roles
         $user->syncRoles([$request->roles]);
+
+        // Update meeting types
+        // $user->meetingTypes()->sync($request->meeting_types);
 
         // $user->roles()->detach();
         // if($request->roles) {
@@ -202,20 +244,51 @@ class AdminController extends Controller
     }
 
     public function DeleteAdmin($id) {
+        try {
+            $user = User::findOrFail($id);
 
-        $user = User::find($id);
-        if (!is_null($user)) {
+            if (Auth::id() == $user->id) {
+                $notification = array(
+                    'message' => 'คุณไม่สามารถลบบัญชีของตัวเองได้',
+                    'alert-type' => 'error'
+                );
+                return redirect()->back()->with($notification);
+            }
+
+            $user->rolse()->detach();
+            $user->committees()->detach();
+            $user->meetingTypes()->detach();
+
             $user->delete();
+
+            $notification = array(
+                'message' => 'ลบบัญชีผู้ใช้เรียบร้อยแล้ว',
+                'alert-type' => 'success'
+            );
+            return redirect()->back()->with($notification);
+
+        } catch (\Exception $e) {
+
+            $notification = array(
+                'message' => $e->getMessage(),
+                'alert-type' => 'error'
+            );
+            return redirect()->back()->with($notification);
         }
 
-        // $user->roles()->detach();
+        // $user = User::find($id);
+        // if (!is_null($user)) {
+        //     $user->delete();
+        // }
 
-        $notification = array(
-            'message' => 'Admin Deleted Successfully',
-            'alert-type' => 'success'
-        );
+        // // $user->roles()->detach();
 
-        return redirect()->back()->with($notification);
+        // $notification = array(
+        //     'message' => 'Admin Deleted Successfully',
+        //     'alert-type' => 'success'
+        // );
+
+        // return redirect()->back()->with($notification);
     }
 
     public function AdminLogout(Request $request)
