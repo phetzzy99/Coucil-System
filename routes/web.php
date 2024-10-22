@@ -18,6 +18,7 @@ use App\Http\Controllers\PrefixNameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegulationMeetingController;
 use App\Http\Controllers\RuleMeetingController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\Role;
@@ -260,9 +261,16 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::post('/meeting-approval/{id}', [MeetingApprovalController::class, 'store'])->name('meeting.approval.store');
     // Route::get('/meeting-approvals', [MeetingApprovalController::class, 'index'])->name('meeting.approvals.index');
     Route::get('/meeting-approval-details/{id}', [MeetingApprovalController::class, 'getApprovalDetails'])->name('meeting.approval.details');
+    // Route::get('/meeting-approval/{id}/data', [MeetingApprovalController::class, 'getApprovalData'])->name('meeting.approval.data');
+    Route::post('/meeting-approval/{id}/update', [MeetingApprovalController::class, 'updateApproval'])->name('meeting.approval.update');
+    Route::get('/meeting-approval/edit/{id}', [MeetingApprovalController::class, 'editApproval'])->name('meeting.approval.edit');
 
     // Routes สำหรับการรับรองรายงานการประชุม
     Route::get('/meeting/list/approval/{meeting_type_id}/{committee_id}', [MeetingApprovalListController::class, 'list'])->name('meeting.list.approval'); //** */
+
+    // Settings route list
+    Route::get('/settings/approval-deadline', [SettingsController::class, 'editApprovalDeadline'])->name('settings.edit_approval_deadline');
+    Route::post('/settings/approval-deadline', [SettingsController::class, 'updateApprovalDeadline'])->name('settings.update_approval_deadline');
 
 }); // end of admin middleware
 

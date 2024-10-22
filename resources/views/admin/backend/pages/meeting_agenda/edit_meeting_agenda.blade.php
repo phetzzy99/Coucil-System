@@ -1,6 +1,7 @@
 @extends('admin.admin_dashboard')
 @section('admin')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
     <div class="page-content">
         <!--breadcrumb-->
@@ -72,6 +73,35 @@
                         <input type="text" name="meeting_location" class="form-control" id="input1"
                             value="{{ $meeting_agenda->meeting_location }}" required>
                     </div>
+
+                    <fieldset class="border border-primary rounded p-2 mt-3">
+                        <legend class="float-none w-auto">กำหนดการรับรอง</legend>
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="approval_deadline_date" class="form-label">วันที่สิ้นสุดการรับรอง</label>
+                                    <input type="date" name="approval_deadline_date"
+                                            class="form-control @error('approval_deadline_date') is-invalid @enderror"
+                                            value="{{ old('approval_deadline_date', isset($meeting_agenda->approval_deadline) ? date('Y-m-d', strtotime($meeting_agenda->approval_deadline)) : '') }}"
+                                            required>
+                                    @error('approval_deadline_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="approval_deadline_time" class="form-label">เวลาสิ้นสุดการรับรอง</label>
+                                    <input type="time" name="approval_deadline_time"
+                                            class="form-control @error('approval_deadline_time') is-invalid @enderror"
+                                            value="{{ old('approval_deadline_time', isset($meeting_agenda->approval_deadline) ? date('H:i', strtotime($meeting_agenda->approval_deadline)) : '') }}"
+                                            required>
+                                    @error('approval_deadline_time')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
 
                     <div class="form-group col-md-12">
                         <label for="input1" class="form-label">รายละเอียดระเบียบวาระการประชุม</label>

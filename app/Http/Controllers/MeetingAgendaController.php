@@ -8,9 +8,12 @@ use App\Models\MeetingAgendaItems;
 use App\Models\MeetingAgendaLecture;
 use App\Models\MeetingAgendaSection;
 use App\Models\MeetingFormat;
+use App\Models\MeetingParticipant;
 use App\Models\MeetingType;
 use App\Models\RegulationMeeting;
 use App\Models\RuleofMeeting;
+use App\Models\Setting;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +35,7 @@ class MeetingAgendaController extends Controller
         $committee_categories = CommitteeCategory::latest()->get();
         $rule_of_meetings = RuleofMeeting::latest()->get();
         $regulation_meetings = RegulationMeeting::latest()->get();
+
         return view('admin.backend.pages.meeting_agenda.add_meeting_agenda', compact('meeting_types', 'meeting_format', 'committee_categories', 'rule_of_meetings', 'regulation_meetings'));
     }
 
@@ -49,7 +53,9 @@ class MeetingAgendaController extends Controller
             'meeting_agenda_year' => 'required',
             'meeting_agenda_date' => 'required',
             'meeting_agenda_time' => 'required',
-            'meeting_location' => 'required'
+            'meeting_location' => 'required',
+            'approval_deadline_date' => 'required|date',
+            'approval_deadline_time' => 'required'
         ]);
 
         $meeting_agenda = new MeetingAgenda();
@@ -68,6 +74,15 @@ class MeetingAgendaController extends Controller
         $meeting_agenda->user_id = Auth::user()->id;
         $meeting_agenda->status = 1;
         $meeting_agenda->created_at = Carbon::now();
+
+        // เพิ่ม approval_deadline
+        // Set approval deadline
+        $deadlineDate = $request->approval_deadline_date;
+        $deadlineTime = $request->approval_deadline_time;
+        $meeting_agenda->approval_deadline = Carbon::parse("$deadlineDate $deadlineTime");
+
+        // $deadlineDays = Setting::where('key', 'approval_deadline_days')->first()->value ?? 7;
+        // $meeting_agenda->approval_deadline = Carbon::parse($request->meeting_agenda_date)->addDays($deadlineDays);
 
         if ($meeting_agenda->save()) {
             $notification = array(
@@ -107,9 +122,20 @@ class MeetingAgendaController extends Controller
             'meeting_agenda_year' => 'required',
             'meeting_agenda_date' => 'required',
             'meeting_agenda_time' => 'required',
-            'meeting_location' => 'required'
+            'meeting_location' => 'required',
+            'approval_deadline_date' => 'required|date',
+            'approval_deadline_time' => 'required'
         ]);
         $meeting_agenda = MeetingAgenda::findOrFail($request->id);
+
+        $approval_deadline = null;
+        if ($request->approval_deadline_date && $request->approval_deadline_time) {
+            $approval_deadline = Carbon::createFromFormat(
+                'Y-m-d H:i',
+                $request->approval_deadline_date . ' ' . $request->approval_deadline_time
+            );
+        }
+
         try {
             $meeting_agenda->meeting_type_id = $request->meeting_type_id;
             $meeting_agenda->meeting_agenda_title = $request->meeting_agenda_title;
@@ -119,6 +145,7 @@ class MeetingAgendaController extends Controller
             $meeting_agenda->meeting_agenda_time = $request->meeting_agenda_time;
             $meeting_agenda->meeting_location = $request->meeting_location;
             $meeting_agenda->description = $request->description;
+            $meeting_agenda->approval_deadline = $approval_deadline;
             $meeting_agenda->user_id = Auth::user()->id;
             $meeting_agenda->updated_at = Carbon::now();
             $meeting_agenda->save();

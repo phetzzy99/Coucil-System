@@ -8,8 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class MeetingApproval extends Model
 {
     use HasFactory;
-
     protected $guarded = [];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // ก่อนลบ MeetingApproval ให้ลบ MeetingApprovalDetail ที่เกี่ยวข้องด้วย
+        static::deleting(function($meetingApproval) {
+            $meetingApproval->approvalDetails()->delete();
+        });
+    }
 
     public function meeting() {
         return $this->belongsTo(Meeting::class, 'meeting_id', 'id');
@@ -50,11 +59,22 @@ class MeetingApproval extends Model
         return $this->belongsTo(RegulationMeeting::class, 'regulation_meeting_id', 'id');
     }
 
-    public function user() {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+    // public function user() {
+    //     return $this->belongsTo(User::class, 'user_id', 'id');
+    // }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
-    public function approvalDetails() {
-        return $this->hasMany(MeetingApprovalDetail::class, 'meeting_approval_id');
+    public function approvalDetails()
+    {
+        return $this->hasMany(MeetingApprovalDetail::class);
     }
+
+    // public function approvalDetails()
+    // {
+    //     return $this->hasMany(MeetingApprovalDetail::class, 'meeting_approval_id');
+    // }
 }

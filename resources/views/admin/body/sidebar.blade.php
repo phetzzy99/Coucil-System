@@ -465,6 +465,13 @@
             </ul>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('settings.edit_approval_deadline') }}">
+                <i class="fas fa-cog"></i>
+                <span>ตั้งค่า Deadline การรับรอง</span>
+            </a>
+        </li>
+
         @endif
 
         {{-- <li class="menu-label">Charts & Maps</li>
