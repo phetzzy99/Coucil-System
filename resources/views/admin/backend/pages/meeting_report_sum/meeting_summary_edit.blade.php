@@ -359,7 +359,7 @@ $(document).ready(function() {
 
 @endsection --}}
 
-{{-- @extends('admin.admin_dashboard')
+@extends('admin.admin_dashboard')
 @section('admin')
 <div class="page-content">
     <div class="container-fluid">
@@ -532,9 +532,9 @@ $(document).ready(function() {
 });
 </script>
 
-@endsection --}}
+@endsection
 
-@extends('admin.admin_dashboard')
+{{-- @extends('admin.admin_dashboard')
 @section('admin')
 <div class="page-content">
     <div class="container-fluid">
@@ -663,4 +663,4 @@ function cancelAdminApproval() {
 }
 </script>
 
-@endsection
+@endsection --}}

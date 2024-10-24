@@ -323,37 +323,46 @@
                                 <td>
                                     <!-- แก้ไขเฉพาะส่วน Action ในตาราง -->
                                         <div class="btn-group">
-                                            <!-- ปุ่มดูรายละเอียด - แสดงเสมอ -->
+                                            <!-- ปุ่มดูรายละเอียด -->
                                             <a href="{{ route('meeting.report.summary', $item->id) }}"
                                                 class="btn btn-info btn-sm"
+                                                data-bs-toggle="tooltip"
                                                 title="ดูรายละเอียด">
                                                 <i class="bx bx-show"></i>
                                             </a>
 
-                                            <!-- ปุ่มแก้ไข - แสดงเมื่อยังไม่รับรอง -->
-                                            @if(!$item->is_admin_approved)
-                                                <a href="{{ route('meeting.report.summary.edit', $item->id) }}"
-                                                    class="btn btn-warning btn-sm"
-                                                    title="แก้ไข">
-                                                    <i class="bx bx-edit"></i>
-                                                </a>
-                                            @endif
+                                            <!-- ปุ่มแก้ไขการรับรอง -->
+                                            <a href="{{ route('meeting.report.summary.edit', $item->id) }}"
+                                                class="btn btn-warning btn-sm"
+                                                data-bs-toggle="tooltip"
+                                                title="แก้ไขการรับรอง">
+                                                <i class="bx bx-edit"></i>
+                                            </a>
 
-                                            <!-- ปุ่มรับรอง - แสดงเมื่อการรับรองครบ 100% และยังไม่รับรองโดย admin -->
-                                            @if($percentage == 100 && !$item->is_admin_approved)
+                                            <!-- ปุ่มรับรองโดย Admin -->
+                                            @if(!$item->is_admin_approved)
                                                 <button type="button"
                                                     class="btn btn-success btn-sm"
                                                     onclick="showApprovalModal({{ $item->id }})"
-                                                    title="รับรองรายงาน">
-                                                    <i class="bx bx-check"></i>
+                                                    data-bs-toggle="tooltip"
+                                                    title="รับรองโดย Admin">
+                                                    <i class="bx bx-check-double"></i>
                                                 </button>
-                                            @endif
-
-                                            <!-- ปุ่มยกเลิกการรับรอง - แสดงเมื่อรับรองแล้ว -->
-                                            @if($item->is_admin_approved)
+                                            @else
+                                                <!-- แสดงสถานะเมื่อรับรองแล้ว -->
+                                                <button type="button"
+                                                    class="btn btn-secondary btn-sm"
+                                                    disabled
+                                                    data-bs-toggle="tooltip"
+                                                    title="รับรองแล้วโดย: {{ optional($item->adminApprovedBy)->first_name }}
+                                                           เมื่อ: {{ $item->admin_approved_at->format('d/m/Y H:i') }}">
+                                                    <i class="bx bx-check-double"></i>
+                                                </button>
+                                                <!-- ปุ่มยกเลิกการรับรอง -->
                                                 <button type="button"
                                                     class="btn btn-danger btn-sm"
                                                     onclick="cancelApproval({{ $item->id }})"
+                                                    data-bs-toggle="tooltip"
                                                     title="ยกเลิกการรับรอง">
                                                     <i class="bx bx-x"></i>
                                                 </button>
