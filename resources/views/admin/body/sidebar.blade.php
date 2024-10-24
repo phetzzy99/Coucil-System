@@ -125,7 +125,7 @@
         </li>
         <hr>
 
-        <li class="{{ request()->routeIs('all.meeting.report') ? 'mm-active' : '' }}">
+        {{-- <li class="{{ request()->routeIs('all.meeting.report') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
@@ -136,7 +136,7 @@
                 </li>
             </ul>
         </li>
-        <hr>
+        <hr> --}}
 
         <li class="{{ (request()->routeIs('all.meeting.agenda') || request()->routeIs('add.meeting.agenda') || request()->routeIs('edit.meeting.agenda')) ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -147,6 +147,15 @@
             <ul>
                 <li class="{{ request()->routeIs('all.meeting.agenda') ? 'mm-active' : '' }}"> <a href="{{ route('all.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> จัดการระเบียบวาระการประชุม </a>
                 </li>
+
+                <li>
+                    <a href="{{ route('meeting.report.summary.index') }}">
+                        <i class="bx bx-file"></i>
+                        <span>สรุปรายงานการประชุม</span>
+                    </a>
+                </li>
+
+                
                 {{-- <li class="{{ request()->routeIs('add.meeting.agenda') ? 'mm-active' : '' }}"> <a href="{{ route('add.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> เพิ่มระเบียบวาระการประชุม </a>
                 </li> --}}
                 {{-- <li> <a href=""><i class='bx bx-radio-circle'></i> จัดการประเภทคณะกรรมการ </a>
@@ -514,3 +523,77 @@
     </ul> --}}
     <!--end navigation-->
 </div>
+
+
+
+<style>
+    /* สไตล์สำหรับรายการประชุมล่าสุด */
+    .recent-meetings {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .meeting-link {
+        padding: 8px 15px;
+        transition: all 0.3s ease;
+    }
+
+    .meeting-link:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .meeting-title {
+        font-size: 0.9rem;
+        display: block;
+        color: #fff;
+    }
+
+    .meeting-info small {
+        font-size: 0.75rem;
+        opacity: 0.7;
+    }
+
+    .view-all {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 5px;
+        padding-top: 5px;
+    }
+
+    /* Scrollbar styling */
+    .recent-meetings::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .recent-meetings::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .recent-meetings::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+    }
+
+    /* Active state */
+    .recent-meetings .mm-active > a {
+        background: rgba(255, 255, 255, 0.1);
+        border-left: 3px solid #fff;
+    }
+</style>
+
+<script>
+// เพิ่ม tooltip สำหรับชื่อที่ยาวเกินไป
+$('.meeting-title').each(function() {
+    if (this.scrollWidth > this.offsetWidth) {
+        $(this).attr('title', $(this).text());
+    }
+});
+
+// Smooth scroll to active item
+if ($('.recent-meetings .mm-active').length) {
+    $('.recent-meetings').animate({
+        scrollTop: $('.recent-meetings .mm-active').offset().top -
+                  $('.recent-meetings').offset().top +
+                  $('.recent-meetings').scrollTop()
+    });
+}
+</script>

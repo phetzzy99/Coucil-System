@@ -105,4 +105,62 @@ class MeetingAgenda extends Model
         return $this->hasMany(MeetingAgendaSection::class);
     }
 
+    public function lectures()
+    {
+        return $this->hasMany(MeetingAgendaLecture::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(MeetingAgendaItems::class);
+    }
+
+    public function adminApprovedBy()
+    {
+        return $this->belongsTo(User::class, 'admin_approved_by');
+    }
+
+    public function adminEdits()
+    {
+        return $this->hasMany(MeetingAdminEdit::class);
+    }
+
+    public function adminUser()
+    {
+        return $this->belongsTo(User::class, 'admin_user_id');
+    }
+
+    public function getApprovalsBySections()
+    {
+        $approvalsBySection = [];
+
+        foreach ($this->sections as $section) {
+            $approvals = $section->approvalDetails()
+                ->with(['meetingApproval.user.position'])
+                ->get()
+                ->map(function($detail) {
+                    return [
+                        'user' => $detail->meetingApproval->user,
+                        'type' => $detail->approval_type,
+                        'comments' => $detail->comments,
+                        'created_at' => $detail->created_at,
+                        'approval_id' => $detail->meetingApproval->id
+                    ];
+                });
+
+            if ($approvals->isNotEmpty()) {
+                $approvalsBySection[$section->id] = $approvals;
+            }
+        }
+
+        return $approvalsBySection;
+    }
+
+    public function getSectionSummaries()
+    {
+        return $this->sections->mapWithKeys(function($section) {
+            return [$section->id => $section->getApprovalSummary()];
+        });
+    }
+
 }

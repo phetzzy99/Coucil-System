@@ -16,6 +16,13 @@ class MeetingAgendaSection extends Model
         return $this->hasMany(MeetingAgendaLecture::class, 'meeting_agenda_section_id');
     }
 
+    // แก้ไขการ join เพื่อเพิ่มประสิทธิภาพ
+    public function approvalDetails()
+    {
+        return $this->hasMany(MeetingApprovalDetail::class, 'meeting_agenda_section_id')
+                    ->with(['meetingApproval.user.position']); // eager load user และ position
+    }
+
     public function meetingAgendaItems()
     {
         return $this->hasMany(MeetingAgendaItems::class, 'meeting_agenda_section_id', 'id');

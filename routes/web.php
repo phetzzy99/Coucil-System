@@ -13,6 +13,7 @@ use App\Http\Controllers\MeetingApprovalListController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MeetingFormatController;
 use App\Http\Controllers\MeetingReportController;
+use App\Http\Controllers\MeetingReportSummaryController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\PrefixNameController;
 use App\Http\Controllers\ProfileController;
@@ -271,6 +272,15 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     // Settings route list
     Route::get('/settings/approval-deadline', [SettingsController::class, 'editApprovalDeadline'])->name('settings.edit_approval_deadline');
     Route::post('/settings/approval-deadline', [SettingsController::class, 'updateApprovalDeadline'])->name('settings.update_approval_deadline');
+
+    // Meeting Report Summary route list
+    // Route::get('/meeting/report/summary', [MeetingReportSummaryController::class, 'index'])->name('meeting.report.summary.index');
+    // Route::get('/meeting/report/summary', [MeetingReportSummaryController::class, 'allReportSummary'])->name('meeting.report.summary.index');
+    Route::get('/meeting/report/summary', [MeetingReportSummaryController::class, 'index'])->name('meeting.report.summary.index');
+    Route::get('/meeting/report/summary/{id}', [MeetingReportSummaryController::class, 'showSummary'])->name('meeting.report.summary');
+    Route::get('/meeting/report/summary/{id}/edit', [MeetingReportSummaryController::class, 'edit'])->name('meeting.report.summary.edit');
+    Route::post('/meeting/report/summary/{id}/update', [MeetingReportSummaryController::class, 'updateSummary'])->name('meeting.report.summary.update');
+    Route::post('/meeting/report/summary/{id}/admin-approve', [MeetingReportSummaryController::class, 'adminApprove'])->name('meeting.report.summary.admin.approve');
 
 }); // end of admin middleware
 
