@@ -255,11 +255,11 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h5 class="mb-0">รายการรายงานการประชุม</h5>
-                <div>
+                {{-- <div>
                     <button class="btn btn-outline-primary btn-sm" onclick="exportReport()">
                         <i class="bx bx-export me-1"></i> ส่งออกข้อมูล
                     </button>
-                </div>
+                </div> --}}
             </div>
 
             <div class="table-responsive">
@@ -311,7 +311,7 @@
                                         <div class="d-flex flex-column">
                                             <span class="badge bg-success mb-1">รับรองแล้ว</span>
                                             <small>
-                                                {{ $item->admin_approved_at->format('d/m/Y H:i') }}
+                                                {{ \Carbon\Carbon::parse($item->admin_approved_at)->format('d/m/Y H:i') }}
                                                 <br>
                                                 โดย: {{ optional($item->adminApprovedBy)->first_name }}
                                             </small>
@@ -355,7 +355,7 @@
                                                     disabled
                                                     data-bs-toggle="tooltip"
                                                     title="รับรองแล้วโดย: {{ optional($item->adminApprovedBy)->first_name }}
-                                                           เมื่อ: {{ $item->admin_approved_at->format('d/m/Y H:i') }}">
+                                                           เมื่อ: {{ \Carbon\Carbon::parse($item->admin_approved_at)->format('d/m/Y H:i') }}">
                                                     <i class="bx bx-check-double"></i>
                                                 </button>
                                                 <!-- ปุ่มยกเลิกการรับรอง -->
@@ -404,7 +404,7 @@
     </div>
 </div>
 
-<!-- Approval Modal -->
+<!-- Modal การรับรองโดย Admin -->
 <div class="modal fade" id="approvalModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -418,6 +418,7 @@
                     <div class="mb-3">
                         <label class="form-label required">บันทึกการรับรอง</label>
                         <textarea name="admin_approval_note" class="form-control" rows="3" required></textarea>
+                        <div class="form-text">โปรดระบุบันทึกหรือความคิดเห็นประกอบการรับรอง</div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -443,34 +444,43 @@
         });
     });
 
+    // ฟังก์ชันแสดง Modal รับรอง
     function showApprovalModal(id) {
-        $('#approvalForm').attr('action', `{{ url('meeting/report') }}/${id}/admin-approve`);
-        new bootstrap.Modal('#approvalModal').show();
+        const form = document.getElementById('approvalForm');
+        form.action = `{{ url('/meeting/report') }}/${id}/admin-approve`;
+        new bootstrap.Modal(document.getElementById('approvalModal')).show();
     }
 
-    // Handle form submission
-    $('#approvalForm').on('submit', function(e) {
-        e.preventDefault();
-        const form = $(this);
-        const submitBtn = form.find('button[type="submit"]');
-
-        submitBtn.prop('disabled', true);
-
-        $.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: form.serialize(),
-            success: function(response) {
-                toastr.success('รับรองรายงานการประชุมเรียบร้อยแล้ว');
-                setTimeout(() => window.location.reload(), 1500);
-            },
-            error: function(xhr) {
-                toastr.error('เกิดข้อผิดพลาดในการรับรองรายงาน');
-                submitBtn.prop('disabled', false);
+    // จัดการการส่งฟอร์มรับรอง
+    $.ajax({
+        url: form.action,
+        method: 'POST',
+        data: new FormData(form),
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    title: 'สำเร็จ!',
+                    text: 'รับรองรายงานการประชุมเรียบร้อยแล้ว',
+                    icon: 'success',
+                    timer: 1500
+                }).then(() => {
+                    window.location.reload();
+                });
             }
-        });
+        },
+        error: function(xhr) {
+            Swal.fire({
+                title: 'เกิดข้อผิดพลาด!',
+                text: xhr.responseJSON?.message || 'ไม่สามารถรับรองรายงานได้',
+                icon: 'error'
+            });
+            submitBtn.disabled = false;
+        }
     });
 
+    // ฟังก์ชันยกเลิกการรับรอง
     function cancelApproval(id) {
         Swal.fire({
             title: 'ยืนยันการยกเลิก?',
@@ -499,10 +509,10 @@
         });
     }
 
-    function exportReport() {
-        // Add export functionality here
-        toastr.info('กำลังเตรียมไฟล์สำหรับดาวน์โหลด...');
-    }
+    // function exportReport() {
+    //     // Add export functionality here
+    //     toastr.info('กำลังเตรียมไฟล์สำหรับดาวน์โหลด...');
+    // }
 </script>
 
 <style>

@@ -279,8 +279,10 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::get('/meeting/report/summary', [MeetingReportSummaryController::class, 'index'])->name('meeting.report.summary.index');
     Route::get('/meeting/report/summary/{id}', [MeetingReportSummaryController::class, 'showSummary'])->name('meeting.report.summary');
     Route::get('/meeting/report/summary/{id}/edit', [MeetingReportSummaryController::class, 'edit'])->name('meeting.report.summary.edit');
-    Route::post('/meeting/report/summary/{id}/update', [MeetingReportSummaryController::class, 'updateSummary'])->name('meeting.report.summary.update');
-    Route::post('/meeting/report/summary/{id}/admin-approve', [MeetingReportSummaryController::class, 'adminApprove'])->name('meeting.report.summary.admin.approve');
+    Route::post('/meeting/report/summary/{id}/update', [MeetingReportSummaryController::class, 'update'])->name('meeting.report.summary.update');
+    Route::post('/meeting/report/{id}/admin-approve', [MeetingReportSummaryController::class, 'adminApprove']);
+    Route::post('/meeting/report/{id}/admin-cancel', [MeetingReportSummaryController::class, 'adminCancel']);
+
 
 }); // end of admin middleware
 

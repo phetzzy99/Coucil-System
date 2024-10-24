@@ -16,7 +16,8 @@ class MeetingAgenda extends Model
         'meeting_agenda_date',
         'approval_deadline',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'admin_approved_at'
     ];
 
     // Mutator สำหรับแปลงวันที่เป็น Carbon instance
@@ -118,6 +119,11 @@ class MeetingAgenda extends Model
     public function adminApprovedBy()
     {
         return $this->belongsTo(User::class, 'admin_approved_by');
+    }
+
+    public function approvalHistories()
+    {
+        return $this->hasMany(MeetingApprovalHistory::class);
     }
 
     public function adminEdits()

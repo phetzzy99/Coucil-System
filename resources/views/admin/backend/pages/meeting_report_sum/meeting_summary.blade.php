@@ -5,22 +5,81 @@
         <!-- Meeting Content -->
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title mb-4">รายงานการประชุม
-                    <span class="text-muted">
-                        ครั้งที่ {{ $meetingAgenda->meeting_agenda_number }}/{{ $meetingAgenda->meeting_agenda_year }}
-                    </span>
+                <h5 class="card-title mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            รายงานการประชุม
+                            <span class="text-muted">
+                                ครั้งที่ {{ $meetingAgenda->meeting_agenda_number }}/{{ $meetingAgenda->meeting_agenda_year }}
+                            </span>
+                        </div>
+                        <div>
+                            <a href="{{ route('meeting.report.summary.index') }}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-arrow-left"></i> กลับ
+                            </a>
+                        </div>
+                    </div>
                 </h5>
+
+                <!-- ข้อมูลทั่วไปของการประชุม -->
+                <div class="mb-4 p-3 bg-light rounded">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>ประเภทการประชุม:</strong> {{ $meetingAgenda->meeting_type->name }}</p>
+                            <p class="mb-2"><strong>วันที่ประชุม:</strong> {{ \Carbon\Carbon::parse($meetingAgenda->meeting_agenda_date)->format('d/m/Y') }}</p>
+                            <p class="mb-2"><strong>เวลา:</strong> {{ \Carbon\Carbon::parse($meetingAgenda->meeting_agenda_time)->format('H:i') }} น.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>สถานที่:</strong> {{ $meetingAgenda->meeting_location }}</p>
+                            <p class="mb-2"><strong>รูปแบบการประชุม:</strong> {{ $meetingAgenda->meetingFormat->name }}</p>
+                        </div>
+                    </div>
+                </div>
 
                 @foreach($meetingAgenda->sections as $section)
                     <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="text-primary">{{ $section->section_title }}</h6>
-                            <span class="badge bg-info">
-                                {{ $section->approvalDetails->count() }} การรับรอง
-                            </span>
+                        <!-- หัวข้อส่วน -->
+                        <div class="section-header bg-light p-3 rounded">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="text-primary mb-0">{{ $section->section_title }}</h6>
+                                <span class="badge bg-info">
+                                    {{ $section->approvalDetails->count() }} การรับรอง
+                                </span>
+                            </div>
                         </div>
 
-                        <!-- ส่วนแสดงความคิดเห็นและการรับรอง -->
+                        <!-- เนื้อหาส่วน -->
+                        @if($section->description)
+                            <div class="section-content mt-3 p-3">
+                                {!! $section->description !!}
+                            </div>
+                        @endif
+
+                        <!-- Lectures และ Items -->
+                        @foreach($section->meetingAgendaLectures as $lecture)
+                            <div class="lecture-content mt-3 p-3 border-start border-primary border-3">
+                                <h6 class="text-dark">{{ $lecture->lecture_title }}</h6>
+                                @if($lecture->content)
+                                    <div class="lecture-text mb-3">
+                                        {!! $lecture->content !!}
+                                    </div>
+                                @endif
+
+                                <!-- Items ภายใน Lecture -->
+                                @foreach($lecture->meetingAgendaItems as $item)
+                                    <div class="item-content ms-4 mt-2 p-2 border-start border-secondary">
+                                        <h6 class="text-secondary">{{ $item->item_title }}</h6>
+                                        @if($item->content)
+                                            <div class="item-text">
+                                                {!! $item->content !!}
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+
+                        <!-- ส่วนแสดงการรับรองและความคิดเห็น -->
                         @if(isset($approvalsBySection[$section->id]))
                             <div class="mt-3">
                                 <div class="card border shadow-none">
@@ -28,90 +87,10 @@
                                         <h6 class="mb-0">การรับรองและความคิดเห็น</h6>
                                     </div>
                                     <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 20%">ผู้รับรอง</th>
-                                                        <th style="width: 15%">สถานะ</th>
-                                                        <th style="width: 45%">ความคิดเห็น</th>
-                                                        <th style="width: 20%">วันที่รับรอง</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach($approvalsBySection[$section->id] as $approval)
-                                                        <tr>
-                                                            <td>
-                                                                <div class="d-flex align-items-center">
-                                                                    <div class="flex-shrink-0">
-                                                                        <div class="avatar avatar-xs me-2">
-                                                                            <span class="avatar-title rounded-circle bg-soft-primary text-primary">
-                                                                                {{ substr($approval['user']->first_name, 0, 1) }}
-                                                                            </span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="flex-grow-1 ms-2">
-                                                                        {{ $approval['user']->prefix_name }} {{ $approval['user']->first_name }} {{ $approval['user']->last_name }}
-                                                                        <div class="small text-muted">
-                                                                            {{ $approval['user']->position->name ?? '' }}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                @if($approval['type'] == 'no_changes')
-                                                                    <span class="badge bg-success">รับรองโดยไม่มีแก้ไข</span>
-                                                                @else
-                                                                    <span class="badge bg-warning">รับรองโดยมีแก้ไข</span>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                @if($approval['comments'])
-                                                                    <div class="comment-text">
-                                                                        {{ $approval['comments'] }}
-                                                                    </div>
-                                                                @else
-                                                                    <span class="text-muted">-</span>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                <div class="small text-muted">
-                                                                    {{-- {{ \Carbon\Carbon::parse($approval['created_at'])->format('d/m/Y H:i') }} --}}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <!-- สรุปการรับรอง -->
-                                        <div class="mt-3 p-3 bg-light rounded">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <strong>สรุปการรับรอง:</strong>
-                                                    <span class="ms-2">
-                                                        {{ count($approvalsBySection[$section->id]) }} การรับรอง
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    @php
-                                                        $noChangesCount = collect($approvalsBySection[$section->id])
-                                                            ->where('type', 'no_changes')
-                                                            ->count();
-                                                        $withChangesCount = collect($approvalsBySection[$section->id])
-                                                            ->where('type', 'with_changes')
-                                                            ->count();
-                                                    @endphp
-                                                    <span class="badge bg-success me-2">
-                                                        ไม่มีแก้ไข: {{ $noChangesCount }}
-                                                    </span>
-                                                    <span class="badge bg-warning">
-                                                        มีแก้ไข: {{ $withChangesCount }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <!-- [ส่วนแสดงตารางการรับรองและความคิดเห็นคงเดิม] -->
+                                        @include('admin.backend.pages.meeting_report_sum.partials.approval_table', [
+                                            'approvals' => $approvalsBySection[$section->id]
+                                        ])
                                     </div>
                                 </div>
                             </div>
@@ -125,35 +104,26 @@
 </div>
 
 <style>
-    .comment-text {
-        max-height: 100px;
-        overflow-y: auto;
-        padding: 8px;
+    .section-content {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    .lecture-content {
         background-color: #f8f9fa;
         border-radius: 4px;
-        font-size: 0.9rem;
     }
 
-    .table > :not(caption) > * > * {
-        padding: 0.75rem;
-        vertical-align: middle;
+    .item-content {
+        background-color: #fff;
+        border-radius: 4px;
     }
 
-    .avatar {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .lecture-text, .item-text {
+        font-size: 0.95rem;
+        line-height: 1.6;
     }
 
-    .avatar-title {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 500;
-    }
+    /* [CSS สำหรับส่วนอื่นๆ คงเดิม] */
 </style>
 @endsection
