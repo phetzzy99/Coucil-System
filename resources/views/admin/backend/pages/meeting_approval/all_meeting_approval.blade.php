@@ -111,6 +111,29 @@
                                     @endphp
 
                                     @if ($hasPermission)
+                                    <a href="{{ route('meeting.approval.detail', $item->id) }}"
+                                        class="btn {{ (!$item->isAdmin && $item->isDeadlinePassed) ? 'btn-secondary' : 'btn-outline-primary' }} btn-md"
+                                        {{ (!$item->isAdmin && $item->isDeadlinePassed) ? 'disabled' : '' }}
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="{{ (!$item->isAdmin && $item->isDeadlinePassed) ? 'หมดเวลารับรองแล้ว' : '' }}">
+                                        <i class="lni lni-eye me-1"></i>
+                                        @if ($hasViewed)
+                                            ดูรายละเอียดอีกครั้ง
+                                        @else
+                                            ดูรายละเอียด
+                                        @endif
+                                    </a>
+                                    @else
+                                    <button class="btn btn-secondary btn-md" disabled
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="ไม่มีสิทธิ์เข้าถึง">
+                                        <i class="lni lni-lock"></i> ไม่มีสิทธิ์เข้าถึง
+                                    </button>
+                                    @endif
+
+                                    {{-- @if ($hasPermission)
                                         <a href="{{ route('meeting.approval.detail', $item->id) }}"
                                         class="btn {{ $item->isDeadlinePassed ? 'btn-secondary' : 'btn-outline-primary' }} btn-md"
                                         {{ $item->isDeadlinePassed ? 'disabled' : '' }}
@@ -131,7 +154,7 @@
                                                 title="ไม่มีสิทธิ์เข้าถึง">
                                             <i class="lni lni-lock"></i> ไม่มีสิทธิ์เข้าถึง
                                         </button>
-                                    @endif
+                                    @endif --}}
                                 </div>
                             </div>
                         </div>

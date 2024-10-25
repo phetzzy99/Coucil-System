@@ -392,7 +392,7 @@ class MeetingAgendaController extends Controller
         try {
             $request->validate([
                 'item_title' => 'required',
-                'content' => 'required',
+                // 'content' => 'required',
             ]);
 
             $item = MeetingAgendaItems::findOrFail($itemId);

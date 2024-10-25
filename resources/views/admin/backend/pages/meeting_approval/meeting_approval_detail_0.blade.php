@@ -51,16 +51,41 @@
             ($approval_date->year + 543);
     @endphp
 
+
+    {{-- @php
+    $isAdmin = Auth::user()->role === 'admin' || Auth::user()->hasRole('admin');
+    @endphp --}}
+
+    @php
+        $isAdmin = Auth::user()->hasRole('Super Admin');  // หรือชื่อ role ที่คุณกำหนดไว้ในระบบ
+    @endphp
+
     <div class="container-fluid py-4">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
                 <div class="card shadow-sm mb-4">
                     <!-- ส่วนหัวของการ์ด -->
                     <div class="card-header bg-white py-3">
-                        <div class="d-flex justify-content-between align-items-center">
+                        {{-- <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">{{ $meetingAgenda->meeting_agenda_title }}</h5>
                             <div>
                                 @if (now()->lt($meetingAgenda->approval_deadline))
+                                    <span class="badge bg-info">
+                                        เหลือเวลา {{ now()->diffInDays($meetingAgenda->approval_deadline) }} วัน
+                                    </span>
+                                @else
+                                    <span class="badge bg-danger">หมดเวลารับรอง</span>
+                                @endif
+                            </div>
+                        </div> --}}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">{{ $meetingAgenda->meeting_agenda_title }}</h5>
+                            <div>
+                                @if($isAdmin)
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-user-shield me-1"></i> สิทธิ์ Admin - สามารถรับรองได้ตลอดเวลา
+                                    </span>
+                                @elseif(now()->lt($meetingAgenda->approval_deadline))
                                     <span class="badge bg-info">
                                         เหลือเวลา {{ now()->diffInDays($meetingAgenda->approval_deadline) }} วัน
                                     </span>
@@ -91,7 +116,7 @@
                         </div>
 
                         <!-- สถานะการรับรองปัจจุบัน -->
-                        <div class="alert {{ $hasApproved ? 'alert-success' : 'alert-warning' }} mb-4">
+                        {{-- <div class="alert {{ $hasApproved ? 'alert-success' : 'alert-warning' }} mb-4">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="mb-0">สถานะการรับรอง</h6>
@@ -105,16 +130,32 @@
                                                 <i class="fas fa-edit"></i> แก้ไขการรับรอง
                                             </a>
                                         @endif
-                                        {{-- @if ($hasApproved)
+                                    </p>
+                                </div>
+                                <div class="text-end">
+                                    <strong>ผู้รับรองทั้งหมด:</strong> {{ $approvals->count() }} คน
+                                </div>
+                            </div>
+                        </div> --}}
+
+                        <div class="alert {{ $hasApproved ? 'alert-success' : ($isAdmin ? 'alert-info' : 'alert-warning') }} mb-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">สถานะการรับรอง</h6>
+                                    <p class="mb-0">
+                                        @if ($hasApproved)
                                             คุณได้รับรองการประชุมนี้แล้ว
-                                            <small>(เมื่อ
-                                                {{ $approvals->where('user_id', Auth::id())->first()->approval_date }})</small>
-                                            <button class="btn btn-sm btn-warning ms-2 edit-approval-btn">
+                                            <small>(เมื่อ {{ $approvals->where('user_id', Auth::id())->first()->approval_date }})</small>
+                                            <a href="{{ route('meeting.approval.edit', $meetingAgenda->id) }}"
+                                            class="btn btn-sm btn-warning ms-2"
+                                            onclick="return confirm('คุณต้องการแก้ไขการรับรองใช่หรือไม่?')">
                                                 <i class="fas fa-edit"></i> แก้ไขการรับรอง
-                                            </button>
+                                            </a>
+                                        @elseif($isAdmin)
+                                            คุณมีสิทธิ์ Admin สามารถรับรองได้
                                         @else
                                             คุณยังไม่ได้รับรองการประชุมนี้
-                                        @endif --}}
+                                        @endif
                                     </p>
                                 </div>
                                 <div class="text-end">
@@ -167,12 +208,14 @@
                         @endif
 
                         <!-- แบบฟอร์มการรับรอง -->
-                        @if (!$hasApproved && now()->lt($meetingAgenda->approval_deadline))
+
+                        @if (!$hasApproved && now()->lt($meetingAgenda->approval_deadline) || $isAdmin)
                             <form id="meetingApprovalForm"
                                 action="{{ route('meeting.approval.store', $meetingAgenda->id) }}" method="POST"
                                 style="{{ $hasApproved && !session('editing_approval') ? 'display: none;' : '' }}">
                                 @csrf
 
+                                <!-- ซ่อนค่า input fields ต่างๆ -->
                                 <input type="hidden" name="meeting_agenda_id" value="{{ $my_meetings->id }}">
                                 <input type="hidden" name="meeting_type_id" value="{{ $my_meetings->meeting_type_id }}">
                                 <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
@@ -303,8 +346,9 @@
                                                     </div>
                                                 @endif
 
-                                                <!-- ส่วนของการรับรอง - แสดงเฉพาะเมื่อมีเนื้อหา -->
-                                                @if ($hasContent && !$hasApproved && now()->lt($meetingAgenda->approval_deadline))
+                                                <!-- ส่วนของการรับรอง - แสดงเฉพาะเมื่อมีเนื้อหาและเป็น admin หรือยังไม่เลย deadline -->
+                                                {{-- @if ($hasContent && !$hasApproved && now()->lt($meetingAgenda->approval_deadline)) --}}
+                                                @if ($hasContent && (!$hasApproved && (now()->lt($meetingAgenda->approval_deadline) || $isAdmin)))
                                                     <div class="approval-section mt-4 border-top pt-3">
                                                         <h6 class="mb-3">การรับรองวาระที่: {{ $section->section_title }}
                                                         </h6>
@@ -348,10 +392,25 @@
                                     </div>
                                 @endforeach
 
-                                <div class="d-grid gap-2">
+                                {{-- <div class="d-grid gap-2">
                                     <button type="submit" class="btn btn-primary">บันทึกการรับรอง</button>
+                                </div> --}}
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        @if($isAdmin && now()->gt($meetingAgenda->approval_deadline))
+                                            บันทึกการรับรอง (สิทธิ์ Admin)
+                                        @else
+                                            บันทึกการรับรอง
+                                        @endif
+                                    </button>
                                 </div>
                             </form>
+                        @endif
+                        <!-- แสดงข้อความเมื่อหมดเวลารับรองและไม่ใช่ admin -->
+                        @if(now()->gt($meetingAgenda->approval_deadline) && !$isAdmin && !$hasApproved)
+                        <div class="alert alert-warning">
+                            <i class="fas fa-clock me-2"></i> หมดเวลารับรองแล้ว
+                        </div>
                         @endif
                     </div>
                 </div>

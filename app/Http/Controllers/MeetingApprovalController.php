@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\DB;
 
 class MeetingApprovalController extends Controller
 {
+    private function isAdmin($user)
+    {
+        // return $user->role === 'admin' || $user->hasRole('admin');
+        return $user->hasRole('Super Admin');
+    }
+
     public function AllMeetingApproval()
     {
 
@@ -36,6 +42,7 @@ class MeetingApprovalController extends Controller
 
             // เพิ่มการเช็ค deadline สำหรับปุ่ม
             $item->isDeadlinePassed = $item->approval_deadline ? now()->gt(Carbon::parse($item->approval_deadline)) : false;
+            $item->isAdmin = $this->isAdmin($user); // เพิ่มการเช็คสถานะ admin
 
             return $item;
         });
@@ -65,14 +72,19 @@ class MeetingApprovalController extends Controller
         $meetingAgenda = MeetingAgenda::findOrFail($id);
 
         // ตรวจสอบสิทธิ์การเข้าถึง
-        // if (!$this->checkUserPermission($user, $meetingAgenda)) {
-        //     abort(403, 'Unauthorized action.');
-        // }
+        if (!$this->checkUserPermission($user, $meetingAgenda)) {
+            abort(403, 'Unauthorized action.');
+        }
 
-        // ตรวจสอบ deadline
-        if (Carbon::now()->isAfter($meetingAgenda->approval_deadline)) {
+            // อนุญาตให้ admin เข้าถึงได้แม้เลย deadline
+        if (!$this->isAdmin($user) && Carbon::now()->isAfter($meetingAgenda->approval_deadline)) {
             return redirect()->back()->with('error', 'เลยกำหนดเวลารับรองแล้ว');
         }
+
+        // ตรวจสอบ deadline
+        // if (Carbon::now()->isAfter($meetingAgenda->approval_deadline)) {
+        //     return redirect()->back()->with('error', 'เลยกำหนดเวลารับรองแล้ว');
+        // }
 
         // ตรวจสอบสิทธิ์การเข้าถึง
         if (!$this->checkUserPermission($user, $meetingAgenda)) {
