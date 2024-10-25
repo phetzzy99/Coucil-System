@@ -59,6 +59,7 @@ class MeetingReportSummaryController extends Controller
             'adminApprovedBy',
             'sections.approvalDetails'
         ])
+        ->where('status', true)
         ->orderBy('meeting_agenda_date', 'desc')
         ->get();
 

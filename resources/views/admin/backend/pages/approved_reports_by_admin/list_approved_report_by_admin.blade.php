@@ -21,78 +21,103 @@
     $thai_date = "วัน" . $thai_days[$meeting_date->dayOfWeek] . "ที่ " . $meeting_date->day . ' ' . $thai_months[$meeting_date->month] . ' พ.ศ. ' . ($meeting_date->year + 543);
 @endphp
 
-    <div class="page-content">
-        <div class="container-fluid">
-            <div class="card">
-                <div class="card-body">
-                    <div class="mb-4">
-                        <span class="badge bg-success px-3 py-2">
-                            <i class="fas fa-check-circle me-1"></i>
-                            รับรองแล้วโดย: {{ $report->adminApprovedBy->username }}
-                            {{-- {{ $report->adminApprovedBy->last_name }} --}}
-                            เมื่อ {{ \Carbon\Carbon::parse($report->admin_approved_at)->format('d/m/Y H:i') }}
-                        </span>
+<div class="page-content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <!-- ส่วนแสดงผู้รับรอง -->
+                <div class="mb-4">
+                    <span class="badge bg-success px-3 py-2">
+                        <i class="fas fa-check-circle me-1"></i>
+                        รับรองแล้วโดย: {{ $report->adminApprovedBy->username }}
+                        เมื่อ {{ \Carbon\Carbon::parse($report->admin_approved_at)->format('d/m/Y H:i') }}
+                    </span>
+                </div>
+
+                <div class="mb-4">
+                    <a href="{{ route('all.approved.meeting.reports') }}" class="btn btn-danger btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i> กลับ
+                    </a>
+                </div>
+
+                <div class="word-document p-5 bg-white shadow-sm">
+                    <!-- ส่วนหัวรายงาน -->
+                    <div class="text-center mb-5">
+                        <h4 class="report-title">รายงานการประชุม{{ $report->meeting_type->name }}</h4>
+                        <h5>ครั้งที่ {{ $report->meeting_agenda_number }}/{{ $report->meeting_agenda_year }}</h5>
+                        <h5>{{ $thai_date }}</h5>
+                        <h5>เวลา {{ \Carbon\Carbon::parse($report->meeting_agenda_time)->format('H:i') }} น.</h5>
+                        <h5>{{ $report->meeting_location }}</h5>
                     </div>
 
-                    <div class="mb-4">
-                        <a href="{{ route('all.approved.meeting.reports') }}" class="btn btn-danger btn-sm"><i class="fas fa-arrow-left me-1"></i> กลับ</a>
-                    </div>
-                    <!-- ส่วน Header คงเดิม -->
-                    <h5 class="card-title mb-4">...</h5>
+                    <!-- เนื้อหารายงาน -->
+                    @foreach($report->sections as $section)
+                        <div class="section-content mb-4">
+                            <h5 class="section-title">{{ $section->section_title }}</h5>
 
-                    <!-- เพิ่มส่วนเนื้อหารายงานการประชุมแบบ MS Word -->
-                    <div class="word-document p-5 bg-white shadow-sm">
-                        <!-- Header ของรายงาน -->
-                        <div class="text-center mb-5">
-                            <h4 class="report-title">รายงานการประชุม{{ $report->meeting_type->name }}</h4>
-                            <h5>ครั้งที่ {{ $report->meeting_agenda_number }}/{{ $report->meeting_agenda_year }}</h5>
-                            <h5>{{ $thai_date }}</h5>
-                            <h5>เวลา {{ \Carbon\Carbon::parse($report->meeting_agenda_time)->format('H:i') }} น.</h5>
-                            <h5>{{ $report->meeting_location }}</h5>
-                        </div>
+                            @if($section->description)
+                                <div class="section-description mb-3">
+                                    {!! $section->description !!}
+                                </div>
+                            @endif
 
-                        <!-- เนื้อหารายงานแต่ละส่วน -->
-                        @foreach($report->sections as $section)
-                            <div class="section-content mb-4">
-                                <h5 class="section-title">{{ $section->section_title }}</h5>
+                            <!-- แสดงเนื้อหา Lectures และ Items -->
+                            @foreach($section->meetingAgendaLectures as $lecture)
+                                <div class="lecture-content ms-4 mb-3">
+                                    <h6 class="lecture-title">{{ $lecture->lecture_title }}</h6>
+                                    @if($lecture->content)
+                                        <div class="lecture-text mb-2">
+                                            {!! $lecture->content !!}
+                                        </div>
+                                    @endif
 
-                                @if($section->description)
-                                    <div class="section-description mb-3">
-                                        {!! $section->description !!}
-                                    </div>
-                                @endif
+                                    @foreach($lecture->meetingAgendaItems as $item)
+                                        <div class="item-content ms-4 mb-2">
+                                            <p class="item-title mb-1">{{ $item->item_title }}</p>
+                                            @if($item->content)
+                                                <div class="item-text">
+                                                    {!! $item->content !!}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
 
-                                <!-- Lectures -->
-                                @foreach($section->meetingAgendaLectures as $lecture)
-                                    <div class="lecture-content ms-4 mb-3">
-                                        <h6 class="lecture-title">{{ $lecture->lecture_title }}</h6>
-
-                                        @if($lecture->content)
-                                            <div class="lecture-text mb-2">
-                                                {!! $lecture->content !!}
-                                            </div>
-                                        @endif
-
-                                        <!-- Items -->
-                                        @foreach($lecture->meetingAgendaItems as $item)
-                                            <div class="item-content ms-4 mb-2">
-                                                <p class="item-title mb-1">{{ $item->item_title }}</p>
-                                                @if($item->content)
-                                                    <div class="item-text">
-                                                        {!! $item->content !!}
+                            <!-- แสดงการรับรองท้ายแต่ละวาระ -->
+                            @if($section->approvalDetails->isNotEmpty())
+                                <div class="approval-section mt-3 p-3 bg-light rounded">
+                                    <h6 class="text-primary mb-2">การรับรองวาระนี้</h6>
+                                    <div class="approval-list">
+                                        @foreach($section->approvalDetails as $detail)
+                                            <div class="approval-item mb-2">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge {{ $detail->approval_type == 'no_changes' ? 'bg-success' : 'bg-warning' }} me-2">
+                                                        {{ $detail->approval_type == 'no_changes' ? 'รับรองโดยไม่มีแก้ไข' : 'รับรองโดยมีแก้ไข' }}
+                                                    </span>
+                                                    <span class="text-muted">
+                                                        โดย {{ $detail->meetingApproval->user->first_name }}
+                                                        {{ $detail->meetingApproval->user->last_name }}
+                                                        ({{ $detail->meetingApproval->user->position->name ?? '-' }})
+                                                    </span>
+                                                </div>
+                                                @if($detail->comments)
+                                                    <div class="ms-4 mt-1 text-muted">
+                                                        <small><i class="fas fa-comment-dots me-1"></i>{{ $detail->comments }}</small>
                                                     </div>
                                                 @endif
                                             </div>
                                         @endforeach
                                     </div>
-                                @endforeach
-                            </div>
-                        @endforeach
-                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 <style>
 /* Word Document Styling */

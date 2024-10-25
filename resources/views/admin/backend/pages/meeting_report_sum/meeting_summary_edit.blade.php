@@ -409,71 +409,134 @@ $(document).ready(function() {
         <form action="{{ route('meeting.report.summary.update', $meetingAgenda->id) }}" method="POST">
             @csrf
             @foreach($meetingAgenda->sections as $section)
-                @if(isset($approvalsBySection[$section->id]))
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">{{ $section->section_title }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            <th style="width: 25%">ผู้รับรอง</th>
-                                            <th style="width: 15%">สถานะ</th>
-                                            <th style="width: 40%">ความคิดเห็น</th>
-                                            <th style="width: 20%">ดำเนินการ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($approvalsBySection[$section->id] as $approval)
-                                            <tr>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="avatar-xs me-2">
-                                                            <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
-                                                                <i class="bi bi-person"></i>
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            <h6 class="mb-0">{{ $approval['user']->prefix_name }} {{ $approval['user']->first_name }}</h6>
-                                                            <small class="text-muted">{{ $approval['user']->position->name ?? '' }}</small>
+                <div class="card mb-4">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ $section->section_title }}</h5>
+                        @if(isset($approvalsBySection[$section->id]))
+                            <span class="badge bg-info">
+                                {{ count($approvalsBySection[$section->id]) }} การรับรอง
+                            </span>
+                        @endif
+                    </div>
+
+                    <!-- เพิ่มส่วนแสดงรายละเอียดวาระ -->
+                    <div class="card-body">
+                        <!-- ส่วนแสดงรายละเอียดหลักของวาระ -->
+                        @if($section->description)
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bx bx-detail me-1"></i>รายละเอียดวาระ
+                                </h6>
+                                <div class="bg-light p-3 rounded">
+                                    {!! $section->description !!}
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- ส่วนแสดงวาระย่อย (Lectures) -->
+                        @if($section->meetingAgendaLectures->count() > 0)
+                            <div class="mb-4">
+                                {{-- <h6 class="fw-bold mb-3">
+                                    <i class="bx bx-list-ul me-1"></i>วาระย่อย
+                                </h6> --}}
+                                @foreach($section->meetingAgendaLectures as $lecture)
+                                    <div class="border-start border-primary border-3 ps-3 mb-4">
+                                        <div class="mb-3">
+                                            <h6 class="fw-bold text-black mb-2">{{ $lecture->lecture_title }}</h6>
+                                            @if($lecture->content)
+                                                <div class="bg-light p-3 rounded">
+                                                    {!! $lecture->content !!}
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <!-- ส่วนแสดงรายการย่อย (Items) -->
+                                        @if($lecture->meetingAgendaItems->count() > 0)
+                                            <div class="ms-4">
+                                                @foreach($lecture->meetingAgendaItems as $item)
+                                                    <div class="mb-3">
+                                                        <div class="d-flex align-items-start">
+                                                            {{-- <i class="bx bx-right-arrow-alt me-2 mt-1 text-primary"></i> --}}
+                                                            <div class="flex-grow-1">
+                                                                <h6 class="fw-bold mb-2">{{ $item->item_title }}</h6>
+                                                                <div class="p-3 rounded">
+                                                                    {!! $item->content !!}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td>
-                                                    <select class="form-select form-select-sm"
-                                                        name="approvals[{{ $section->id }}][{{ $approval['approval_id'] }}][type]">
-                                                        <option value="no_changes"
-                                                            {{ $approval['type'] == 'no_changes' ? 'selected' : '' }}>
-                                                            รับรองโดยไม่มีแก้ไข
-                                                        </option>
-                                                        <option value="with_changes"
-                                                            {{ $approval['type'] == 'with_changes' ? 'selected' : '' }}>
-                                                            รับรองโดยมีแก้ไข
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <textarea class="form-control form-control-sm"
-                                                        name="approvals[{{ $section->id }}][{{ $approval['approval_id'] }}][comments]"
-                                                        rows="2">{{ $approval['comments'] }}</textarea>
-                                                </td>
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-danger btn-sm delete-approval"
-                                                        data-approval-id="{{ $approval['approval_id'] }}"
-                                                        data-section-id="{{ $section->id }}">
-                                                        <i class="bx bx-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
                             </div>
-                        </div>
+                        @endif
+
+                        <!-- ส่วนแสดงการรับรอง -->
+                        @if(isset($approvalsBySection[$section->id]))
+                            <div class="mt-4">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bx bx-check-circle me-1"></i>การรับรองและความคิดเห็น
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th style="width: 25%">ผู้รับรอง</th>
+                                                <th style="width: 15%">สถานะ</th>
+                                                <th style="width: 40%">ความคิดเห็น</th>
+                                                <th style="width: 20%">ดำเนินการ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($approvalsBySection[$section->id] as $approval)
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="avatar-xs me-2">
+                                                                <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
+                                                                    {{ substr($approval['user']->first_name, 0, 1) }}
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <h6 class="mb-0">{{ $approval['user']->prefix_name }} {{ $approval['user']->first_name }}</h6>
+                                                                <small class="text-muted">{{ $approval['user']->position->name ?? '' }}</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select form-select-sm"
+                                                            name="approvals[{{ $section->id }}][{{ $approval['approval_id'] }}][type]">
+                                                            <option value="no_changes" {{ $approval['type'] == 'no_changes' ? 'selected' : '' }}>
+                                                                รับรองโดยไม่มีแก้ไข
+                                                            </option>
+                                                            <option value="with_changes" {{ $approval['type'] == 'with_changes' ? 'selected' : '' }}>
+                                                                รับรองโดยมีแก้ไข
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <textarea class="form-control form-control-sm"
+                                                            name="approvals[{{ $section->id }}][{{ $approval['approval_id'] }}][comments]"
+                                                            rows="2">{{ $approval['comments'] }}</textarea>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" class="btn btn-danger btn-sm delete-approval"
+                                                            data-approval-id="{{ $approval['approval_id'] }}"
+                                                            data-section-id="{{ $section->id }}">
+                                                            <i class="bx bx-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        @endif
                     </div>
-                @endif
+                </div>
             @endforeach
 
             <!-- Action Buttons -->

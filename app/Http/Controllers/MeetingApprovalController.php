@@ -174,7 +174,7 @@ class MeetingApprovalController extends Controller
                     'rule_of_meeting_id' => $request->rule_of_meeting_id,
                     'regulation_meeting_id' => $request->regulation_meeting_id,
                     'approval_date' => now(),
-                    // 'status' => 'approved'
+                    'status' => 'approved'
                 ]
             );
 
@@ -422,7 +422,8 @@ class MeetingApprovalController extends Controller
                     'meeting_format_id' => $request->meeting_format_id,
                     'rule_of_meeting_id' => $request->rule_of_meeting_id,
                     'regulation_meeting_id' => $request->regulation_meeting_id,
-                    'approval_date' => now()
+                    'approval_date' => now(),
+                    'status' => 'approved'
                 ]
             );
 

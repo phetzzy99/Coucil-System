@@ -148,7 +148,7 @@
                                                     <td>
                                                         <span
                                                             class="badge {{ $approval->status === 'approved' ? 'bg-success' : 'bg-warning' }}">
-                                                            {{ $approval->status === 'approved' ? 'รับรอง' : 'รอดำเนินการ' }}
+                                                            {{ $approval->status === 'approved' ? 'รับรองแล้ว' : 'รอดำเนินการ' }}
                                                         </span>
                                                     </td>
                                                     <td>

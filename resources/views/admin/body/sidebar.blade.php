@@ -166,19 +166,19 @@
         </li>
         <hr>
 
-        <li class="{{ request()->routeIs('my.meetings') ? 'mm-active' : '' }}">
+        {{-- <li class="{{ request()->routeIs('my.meetings') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
                 <div class="menu-title"> การประชุม </div>
             </a>
             <ul>
-                {{-- <li> <a href="{{ route('all.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการการประชุม </a>
-                </li> --}}
+                <li> <a href="{{ route('all.meeting') }}"><i class='bx bx-radio-circle'></i> จัดการการประชุม </a>
+                </li>
                 <li class="{{ request()->routeIs('my.meetings') ? 'mm-active' : '' }}"> <a href="{{ route('my.meetings') }}"><i class='bx bx-radio-circle'></i> แสดงรายงานการประชุม </a>
                 </li>
             </ul>
-        </li>
+        </li> --}}
 
         @endif
 
@@ -321,7 +321,7 @@
             </ul>
         </li>
         <hr>
-
+        @endif
 
         <li>
             <a href="javascript:;" class="has-arrow">
@@ -352,7 +352,6 @@
             </ul>
             </a>
         </li>
-        @endif
         <hr>
 
         @if(Auth::user()->can('category.menu'))

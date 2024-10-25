@@ -78,8 +78,8 @@
 
                                 <!-- Items ภายใน Lecture -->
                                 @foreach($lecture->meetingAgendaItems as $item)
-                                    <div class="item-content ms-4 mt-2 p-2 border-start border-secondary">
-                                        <h6 class="text-secondary">{{ $item->item_title }}</h6>
+                                    <div class="item-content ms-4 mt-2 p-2 border-start border-primary border-3">
+                                        <h6 class="text-dark">{{ $item->item_title }}</h6>
                                         @if($item->content)
                                             <div class="item-text">
                                                 {!! $item->content !!}
