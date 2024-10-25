@@ -5,6 +5,17 @@
         <!-- Meeting Content -->
         <div class="card">
             <div class="card-body">
+
+                <!-- แสดงสถานะการรับรอง -->
+                @if($meetingAgenda->is_admin_approved)
+                    <div class="mb-3">
+                        <span class="badge bg-success px-3 py-2">
+                            <i class="fas fa-check-circle me-1"></i>
+                            รายงานการประชุมนี้ได้รับการรับรองแล้ว
+                        </span>
+                    </div>
+                @endif
+
                 <h5 class="card-title mb-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -104,6 +115,10 @@
 </div>
 
 <style>
+    .badge {
+    font-size: 0.9rem;
+    font-weight: normal;
+    }
     .section-content {
         background-color: #fff;
         border-radius: 4px;

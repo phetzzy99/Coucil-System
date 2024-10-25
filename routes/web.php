@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ApprovedMeetingReportController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Category\CommitteeCategoryController;
 use App\Http\Controllers\Category\MeetingTypeController;
@@ -283,6 +284,8 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::post('/meeting/report/{id}/admin-approve', [MeetingReportSummaryController::class, 'adminApprove']);
     Route::post('/meeting/report/{id}/admin-cancel', [MeetingReportSummaryController::class, 'adminCancel']);
 
+    Route::get('/approved-meeting-reports', [ApprovedMeetingReportController::class, 'allApprovedByAdmin'])->name('all.approved.meeting.reports');
+    Route::get('/approved-meeting-reports/{id}', [ApprovedMeetingReportController::class, 'ListApprovedByAdmin'])->name('list.approved.meeting.reports');
 
 }); // end of admin middleware
 

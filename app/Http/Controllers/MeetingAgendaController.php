@@ -333,7 +333,7 @@ class MeetingAgendaController extends Controller
                 'section_id' => 'required',
                 'lecture_id' => 'required',
                 'item_title' => 'required',
-                'content' => 'required',
+                // 'content' => 'required',
             ]);
 
             $meeting_agenda_item = new MeetingAgendaItems();

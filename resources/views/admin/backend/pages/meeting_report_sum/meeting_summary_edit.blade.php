@@ -422,6 +422,7 @@ $(document).ready(function() {
                                             <th style="width: 25%">ผู้รับรอง</th>
                                             <th style="width: 15%">สถานะ</th>
                                             <th style="width: 40%">ความคิดเห็น</th>
+                                            <th style="width: 20%">ดำเนินการ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -458,7 +459,13 @@ $(document).ready(function() {
                                                         name="approvals[{{ $section->id }}][{{ $approval['approval_id'] }}][comments]"
                                                         rows="2">{{ $approval['comments'] }}</textarea>
                                                 </td>
-
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-danger btn-sm delete-approval"
+                                                        data-approval-id="{{ $approval['approval_id'] }}"
+                                                        data-section-id="{{ $section->id }}">
+                                                        <i class="bx bx-trash"></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>

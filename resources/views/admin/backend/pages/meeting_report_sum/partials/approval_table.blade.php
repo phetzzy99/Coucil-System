@@ -30,7 +30,7 @@
                     </td>
                     <td>
                         @if($approval['type'] == 'no_changes')
-                            <span class="badge bg-success">รับรองโดยไม่มีแก้ไขss</span>
+                            <span class="badge bg-success">รับรองโดยไม่มีแก้ไข</span>
                         @else
                             <span class="badge bg-warning">รับรองโดยมีแก้ไข</span>
                         @endif

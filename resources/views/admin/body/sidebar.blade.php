@@ -97,7 +97,7 @@
         </li>
 
         <hr>
-            <li>
+            {{-- <li>
                 <a href="javascript:;" class="has-arrow">
                     <div class="parent-icon"><i class='bx bx-cart'></i>
                     </div>
@@ -108,7 +108,7 @@
                     </li>
                 </ul>
             </li>
-        <hr>
+        <hr> --}}
 
         <li class="{{ (request()->routeIs('all.meeting.type') || request()->routeIs('all.committee.category')) ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -155,7 +155,7 @@
                     </a>
                 </li>
 
-                
+
                 {{-- <li class="{{ request()->routeIs('add.meeting.agenda') ? 'mm-active' : '' }}"> <a href="{{ route('add.meeting.agenda') }}"><i class='bx bx-radio-circle'></i> เพิ่มระเบียบวาระการประชุม </a>
                 </li> --}}
                 {{-- <li> <a href=""><i class='bx bx-radio-circle'></i> จัดการประเภทคณะกรรมการ </a>
@@ -223,18 +223,53 @@
                     $user = Auth::user();
                     $userMeetingTypes = $user->meetingTypes;
                     $userCommitteeIds = [];
+
                     foreach ($userMeetingTypes as $meetingType) {
                         $committeeIds = json_decode($meetingType->pivot->committee_ids, true);
                         $userCommitteeIds = array_merge($userCommitteeIds, $committeeIds ?? []);
                     }
                     $userCommitteeIds = array_unique($userCommitteeIds);
 
-                    $meetingAgendas = \App\Models\MeetingAgenda::where('status', 1)
+                    // ดึงระเบียบวาระการประชุมตามสิทธิ์
+                    $meetingAgendas = \App\Models\MeetingAgenda::with(['meeting_type', 'sections'])
+                        ->where('status', 1)
                         ->whereIn('meeting_type_id', $userMeetingTypes->pluck('id'))
                         ->whereIn('committee_category_id', $userCommitteeIds)
+                        ->orderBy('meeting_agenda_date', 'desc')
                         ->get();
                 @endphp
-                @if ($meetingAgendas->count() > 0)
+
+            @forelse ($meetingAgendas as $agenda)
+            <li class="agenda-group">
+                <a href="javascript:;" class="has-arrow">
+                    <i class='bx bx-folder'></i>
+                    <span class="agenda-title" title="{{ $agenda->meeting_agenda_title }}">
+                        {{ $agenda->meeting_type->name }} ครั้งที่ {{ $agenda->meeting_agenda_number }}/{{ $agenda->meeting_agenda_year }}
+                    </span>
+                </a>
+                <ul>
+                    @foreach ($agenda->sections as $section)
+                        <li class="{{ request()->routeIs('meeting.section.detail') && request()->route('id') == $section->id ? 'mm-active' : '' }}">
+                            <a href="{{ route('meeting.section.detail', $section->id) }}" class="agenda-section">
+                                <i class='bx bx-right-arrow-alt'></i>
+                                <span title="{{ $section->section_title }}">{{ $section->section_title }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </li>
+                @empty
+                <li>
+                    <a href="javascript:void(0);" class="no-meetings">
+                        <i class='bx bx-info-circle'></i>
+                        ไม่พบระเบียบวาระการประชุมที่คุณมีสิทธิ์เข้าถึง
+                    </a>
+                </li>
+                @endforelse
+                </ul>
+            </li>
+
+                {{-- @if ($meetingAgendas->count() > 0)
                     @foreach ($meetingAgendas as $agenda)
                         @php
                             $meetingAgendaSections = \App\Models\MeetingAgendaSection::where('meeting_agenda_id', $agenda->id)->get();
@@ -257,9 +292,36 @@
                     </li>
                 @endif
             </ul>
-        </li>
+        </li> --}}
 
+        @if (Auth::user()->can('university.council.menu'))
         <hr>
+        <li class="{{ request()->routeIs('approved.meeting.reports') ? 'mm-active' : '' }}">
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-check-circle'></i></div>
+                <div class="menu-title">รายงานการประชุมวาระสืบเนื่อง</div>
+            </a>
+            <ul>
+                @if(Auth::check())
+                    <li class="{{ request()->routeIs('all.approved.meeting.reports') ? 'mm-active' : '' }}">
+                        <a href="{{ route('all.approved.meeting.reports') }}">
+                            <div class="parent-icon">
+                                <i class='bx bx-check-circle'></i>
+                            </div>
+                            <div class="menu-title">รายงานการประชุมวาระสืบเนื่อง</div>
+                        </a>
+                    </li>
+                @endif
+                {{-- <li class="{{ request()->routeIs('approved.meeting.reports') ? 'mm-active' : '' }}">
+                    <a href="{{ route('all.approved.meeting.reports') }}">
+                        <i class='bx bx-file'></i>
+                        รายงานการประชุมวาระสืบเนื่อง (รายงานที่รับรองแล้ว)
+                    </a>
+                </li> --}}
+            </ul>
+        </li>
+        <hr>
+
 
         <li>
             <a href="javascript:;" class="has-arrow">
@@ -290,6 +352,7 @@
             </ul>
             </a>
         </li>
+        @endif
         <hr>
 
         @if(Auth::user()->can('category.menu'))
@@ -474,12 +537,12 @@
             </ul>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link" href="{{ route('settings.edit_approval_deadline') }}">
                 <i class="fas fa-cog"></i>
                 <span>ตั้งค่า Deadline การรับรอง</span>
             </a>
-        </li>
+        </li> --}}
 
         @endif
 

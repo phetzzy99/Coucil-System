@@ -216,6 +216,7 @@
             agendaContainer.lastElementChild.remove();
         }
 
+        // บันทึก agenda item ต่อมาจาก add agenda section
         function saveAgendaItem(courseId, sectionId, lectureId, containerId) {
             const agendaContainer = document.getElementById(containerId);
             const agendaTitle = agendaContainer.querySelector('input[type="text"]').value;
@@ -258,10 +259,11 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    const errorMessage = JSON.parse(error.message);
                     Swal.fire({
                         icon: 'error',
                         title: 'ขออภัย',
-                        text: 'เกิดข้อผิดพลาด: ' + error.message,
+                        text: `เกิดข้อผิดพลาด: ${errorMessage.th} (${errorMessage.en})`,
                     });
                 });
         }
@@ -294,7 +296,9 @@
                                     <button class="btn btn-sm btn-danger" onclick="deleteAgendaItem(${item.id}, '${containerId}')">Delete</button>
                                 </div>
                             </div>
-                            <div class="text-sm text-muted ms-4 mb-0">${item.content}</div>
+                            <div class="text-sm text-muted ms-4 mb-0">
+                                ${item.content ? item.content : 'ไม่มีการลงรายละเอียด'}
+                            </div>
                             <hr>
                         `;
                         agendaContainer.appendChild(agendaItem);

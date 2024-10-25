@@ -233,7 +233,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <div class="card radius-10 border-info border-start border-0 border-4">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
@@ -247,7 +247,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Main Table -->
@@ -271,7 +271,7 @@
                             <th style="width: 20%">ชื่อวาระการประชุม</th>
                             <th style="width: 10%">ครั้งที่/ปี</th>
                             <th style="width: 10%">วันที่</th>
-                            <th style="width: 15%">สถานะการรับรอง</th>
+                            {{-- <th style="width: 15%">สถานะการรับรอง</th> --}}
                             <th style="width: 15%">สถานะ Admin</th>
                             <th style="width: 10%">ดำเนินการ</th>
                         </tr>
@@ -286,7 +286,7 @@
                                     {{ $item->meeting_agenda_number }}/{{ $item->meeting_agenda_year }}
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($item->meeting_agenda_date)->format('d/m/Y') }}</td>
-                                <td>
+                                {{-- <td>
                                     @php
                                         $totalApprovals = $item->approvals->count();
                                         $completedApprovals = $item->approvals->where('status', 'approved')->count();
@@ -305,7 +305,7 @@
                                     <small class="text-muted">
                                         ({{ $completedApprovals }}/{{ $totalApprovals }} ท่าน)
                                     </small>
-                                </td>
+                                </td> --}}
                                 <td class="text-center">
                                     @if($item->is_admin_approved)
                                         <div class="d-flex flex-column">
