@@ -29,7 +29,8 @@ class Meeting extends Model
 
     public function ruleOfMeeting()
     {
-        return $this->belongsTo(RuleofMeeting::class, 'rule_of_meeting_id', 'id');
+        // return $this->belongsTo(RuleofMeeting::class, 'rule_of_meeting_id', 'id');
+        return $this->belongsToMany(RuleOfMeeting::class);
     }
 
     public function regulationMeeting()
@@ -44,7 +45,7 @@ class Meeting extends Model
     public function meetingAgendaLecture() {
         return $this->belongsTo(MeetingAgendaLecture::class, 'meeting_agenda_lecture_id', 'id');
     }
-    
+
     public function meetingAgendaItems() {
         return $this->belongsTo(MeetingAgendaItems::class, 'meeting_agenda_items_id', 'id');
     }

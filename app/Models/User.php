@@ -76,6 +76,16 @@ class User extends Authenticatable
         // return $this->belongsTo(CommitteeCategory::class, 'committee_id', 'id');
     }
 
+    public function committeeCategories()
+    {
+        return $this->belongsToMany(CommitteeCategory::class, 'committee_category_user');
+    }
+
+    public function hasCommitteePermission($committeeCategoryId)
+    {
+        return $this->committeeCategories->contains('id', $committeeCategoryId);
+    }
+
     public function meetingTypes()
     {
         return $this->belongsToMany(MeetingType::class)

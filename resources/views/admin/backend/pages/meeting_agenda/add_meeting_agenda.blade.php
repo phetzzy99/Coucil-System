@@ -66,7 +66,8 @@
 
                     <fieldset style="border: 1px solid #007bff; border-radius: 5px;" class="p-2">
                         <p class="mb-0 text-center text-secondary fst-italic">* ข้อบังคับ / ระเบียบ</p>
-                        <div class="form-group col-md-6">
+
+                        {{-- <div class="form-group col-md-6">
                             <label for="input1" class="form-label">ข้อบังคับ</label>
                             <select name="rule_of_meeting_id" class="form-select mb-3" aria-label="Default select example">
                                 <option selected="" disabled>เลือกกฎการประชุม</option>
@@ -74,7 +75,7 @@
                                     <option value="{{ $item->id }}">{{ $item->title }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group col-md-6">
                             <label for="input1" class="form-label">ระเบียบ</label>
@@ -83,6 +84,15 @@
                                 <option selected="" disabled>เลือกระเบียบการประชุม</option>
                                 @foreach ($regulation_meetings as $item)
                                     <option value="{{ $item->id }}">{{ $item->regulation_title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">ข้อบังคับ*</label>
+                            <select name="rule_of_meeting_ids[]" class="form-select form-select-sm" data-placeholder="เลือกกฎการประชุม" id="small-bootstrap-class-multiple-field" multiple>
+                                @foreach ($rule_of_meetings as $item)
+                                    <option value="{{ $item->id }}">{{ $item->title }}</option>
                                 @endforeach
                             </select>
                         </div>

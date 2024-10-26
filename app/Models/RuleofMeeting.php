@@ -14,4 +14,9 @@ class RuleofMeeting extends Model
     public function rule_category() {
         return $this->belongsTo(RuleCategory::class, 'rule_category_id', 'id');
     }
+
+    public function meetingAgendas()
+    {
+        return $this->belongsToMany(MeetingAgenda::class, 'meeting_agenda_rule_of_meeting');
+    }
 }

@@ -78,7 +78,8 @@ class MeetingAgenda extends Model
 
     public function ruleOfMeeting()
     {
-        return $this->belongsTo(RuleofMeeting::class);
+        // return $this->belongsTo(RuleofMeeting::class);
+        return $this->belongsToMany(RuleofMeeting::class, 'meeting_agenda_rule_of_meeting');
     }
 
     public function regulationMeeting()

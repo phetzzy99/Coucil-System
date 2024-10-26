@@ -22,10 +22,11 @@
         <div class="card">
             <div class="card-body p-4">
                 <h5 class="mb-4">แก้ไขระเบียบวาระการประชุม</h5>
-                <form id="myForm" action="{{ route('update.meeting.agenda', $meeting_agenda->id) }}" method="post"
+                <form id="myForm" action="{{ route('update.meeting.agenda') }}" method="post"
                     class="row g-3" enctype="multipart/form-data">
                     @csrf
-                    @method('POST')
+                    <input type="hidden" name="id" value="{{ $meeting_agenda->id }}">
+                    {{-- @method('POST') --}}
 
                     <div class="form-group col-md-6">
                         <label for="input1" class="form-label">ประเภทการประชุม</label>
@@ -34,6 +35,50 @@
                             @foreach ($meeting_types as $item)
                                 <option value="{{ $item->id }}" @if ($meeting_agenda->meeting_type_id == $item->id) selected @endif>
                                     {{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="committee_category_id" class="form-label">หมวดหมู่คณะกรรมการ</label>
+                        <select name="committee_category_id" class="form-select" required>
+                            @foreach($committee_categories as $category)
+                                <option value="{{ $category->id }}" {{ $meeting_agenda->committee_category_id == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="meeting_format_id" class="form-label">รูปแบบการประชุม</label>
+                        <select name="meeting_format_id" class="form-select" required>
+                            @foreach($meeting_formats as $format)
+                                <option value="{{ $format->id }}" {{ $meeting_agenda->meeting_format_id == $format->id ? 'selected' : '' }}>
+                                    {{ $format->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="regulation_meeting_id" class="form-label">ระเบียบการประชุม</label>
+                        <select name="regulation_meeting_id" class="form-select" required>
+                            @foreach($regulation_meetings as $regulation)
+                                <option value="{{ $regulation->id }}" {{ $meeting_agenda->regulation_meeting_id == $regulation->id ? 'selected' : '' }}>
+                                    {{ $regulation->regulation_title }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="rule_of_meeting_ids" class="form-label">ข้อบังคับการประชุม</label>
+                        <select name="rule_of_meeting_ids[]" class="form-select" id="small-bootstrap-class-multiple-field" multiple required>
+                            @foreach($rule_of_meetings as $rule)
+                                <option value="{{ $rule->id }}" {{ in_array($rule->id, $meeting_agenda->ruleOfMeeting->pluck('id')->toArray()) ? 'selected' : '' }}>
+                                    {{ $rule->title }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
