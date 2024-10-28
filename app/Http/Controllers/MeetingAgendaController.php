@@ -69,7 +69,7 @@ class MeetingAgendaController extends Controller
                 $meeting_agenda->committee_category_id = $request->committee_category_id;
                 $meeting_agenda->meeting_format_id = $request->meeting_format_id;
                 // $meeting_agenda->rule_of_meeting_id = $request->rule_of_meeting_id;
-                $meeting_agenda->regulation_meeting_id = $request->regulation_meeting_id;
+                // $meeting_agenda->regulation_meeting_id = $request->regulation_meeting_id;
                 $meeting_agenda->meeting_agenda_title = $request->meeting_agenda_title;
                 $meeting_agenda->meeting_agenda_number = $request->meeting_agenda_number;
                 $meeting_agenda->meeting_agenda_year = $request->meeting_agenda_year;
@@ -88,7 +88,13 @@ class MeetingAgendaController extends Controller
                 $meeting_agenda->approval_deadline = Carbon::parse("$deadlineDate $deadlineTime");
                 $meeting_agenda->save();
 
-                $meeting_agenda->ruleOfMeeting()->sync($request->rule_of_meeting_ids);
+                if ($request->has('rule_of_meeting_ids')) {
+                    $meeting_agenda->ruleOfMeeting()->sync($request->rule_of_meeting_ids);
+                }
+
+                if ($request->has('regulation_meeting_ids')) {
+                    $meeting_agenda->regulationMeeting()->sync($request->regulation_meeting_ids);
+                }
 
                 DB::commit();
 
@@ -169,7 +175,7 @@ class MeetingAgendaController extends Controller
     public function EditMeetingAgenda($id)
     {
         try {
-            $meeting_agenda = MeetingAgenda::with('ruleOfMeeting')->findOrFail($id);
+            $meeting_agenda = MeetingAgenda::with('ruleOfMeeting', 'regulationMeeting')->findOrFail($id);
             $meeting_types = MeetingType::all();
             $committee_categories = CommitteeCategory::all();
             $meeting_formats = MeetingFormat::all();
@@ -243,7 +249,19 @@ class MeetingAgendaController extends Controller
             $meeting_agenda->save();
 
             // อัพเดทความสัมพันธ์กับ RuleofMeeting
-            $meeting_agenda->ruleOfMeeting()->sync($request->rule_of_meeting_ids);
+            // $meeting_agenda->ruleOfMeeting()->sync($request->rule_of_meeting_ids);
+
+            if ($request->has('rule_of_meeting_ids')) {
+                $meeting_agenda->ruleOfMeeting()->sync($request->rule_of_meeting_ids);
+            } else {
+                $meeting_agenda->ruleOfMeeting()->detach();
+            }
+
+            if ($request->has('regulation_meeting_ids')) {
+                $meeting_agenda->regulationMeeting()->sync($request->regulation_meeting_ids);
+            } else {
+                $meeting_agenda->regulationMeeting()->detach();
+            }
 
             $notification = array(
                 'message' => 'แก้ไขระเบียบวาระการประชุมแล้ว',

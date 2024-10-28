@@ -125,7 +125,7 @@
         </li>
         <hr>
 
-        {{-- <li class="{{ request()->routeIs('all.meeting.report') ? 'mm-active' : '' }}">
+        <li class="{{ request()->routeIs('all.meeting.report') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
@@ -136,7 +136,7 @@
                 </li>
             </ul>
         </li>
-        <hr> --}}
+        <hr>
 
         <li class="{{ (request()->routeIs('all.meeting.agenda') || request()->routeIs('add.meeting.agenda') || request()->routeIs('edit.meeting.agenda')) ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -294,7 +294,7 @@
             </ul>
         </li> --}}
 
-        @if (Auth::user()->can('university.council.menu'))
+        {{-- @if (Auth::user()->can('university.council.menu')) --}}
         <hr>
         <li class="{{ request()->routeIs('approved.meeting.reports') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -321,7 +321,7 @@
             </ul>
         </li>
         <hr>
-        @endif
+        {{-- @endif --}}
 
         <li>
             <a href="javascript:;" class="has-arrow">

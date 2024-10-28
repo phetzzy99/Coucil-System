@@ -61,11 +61,22 @@
                         </select>
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    {{-- <div class="col-md-6 mb-3">
                         <label for="regulation_meeting_id" class="form-label">ระเบียบการประชุม</label>
                         <select name="regulation_meeting_id" class="form-select" required>
                             @foreach($regulation_meetings as $regulation)
                                 <option value="{{ $regulation->id }}" {{ $meeting_agenda->regulation_meeting_id == $regulation->id ? 'selected' : '' }}>
+                                    {{ $regulation->regulation_title }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div> --}}
+
+                    <div class="col-md-6 mb-3">
+                        <label for="regulation_meeting_ids" class="form-label">ระเบียบการประชุม</label>
+                        <select name="regulation_meeting_ids[]" class="form-select" id="regulation-meeting-multiple-field" multiple required>
+                            @foreach($regulation_meetings as $regulation)
+                                <option value="{{ $regulation->id }}" {{ in_array($regulation->id, $meeting_agenda->regulationMeeting->pluck('id')->toArray()) ? 'selected' : '' }}>
                                     {{ $regulation->regulation_title }}
                                 </option>
                             @endforeach
@@ -193,6 +204,17 @@
             });
         });
     </script>
+
+<script>
+$(document).ready(function() {
+    $('#regulation-meeting-multiple-field, #rule-of-meeting-multiple-field').select2({
+        theme: "bootstrap-5",
+        width: '100%',
+        placeholder: $(this).data('placeholder'),
+        allowClear: true
+    });
+});
+</script>
 
 @endsection
 

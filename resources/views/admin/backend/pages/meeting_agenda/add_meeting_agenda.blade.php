@@ -77,7 +77,7 @@
                             </select>
                         </div> --}}
 
-                        <div class="form-group col-md-6">
+                        {{-- <div class="form-group col-md-6">
                             <label for="input1" class="form-label">ระเบียบ</label>
                             <select name="regulation_meeting_id" class="form-select mb-3"
                                 aria-label="Default select example">
@@ -86,11 +86,20 @@
                                     <option value="{{ $item->id }}">{{ $item->regulation_title }}</option>
                                 @endforeach
                             </select>
+                        </div> --}}
+
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">ระเบียบ*</label>
+                            <select name="regulation_meeting_ids[]" class="form-select" data-placeholder="เลือกระเบียบการประชุม" id="regulation-meeting-multiple-field" multiple>
+                                @foreach ($regulation_meetings as $item)
+                                    <option value="{{ $item->id }}">{{ $item->regulation_title }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="form-group col-md-6">
                             <label for="input1" class="form-label">ข้อบังคับ*</label>
-                            <select name="rule_of_meeting_ids[]" class="form-select form-select-sm" data-placeholder="เลือกกฎการประชุม" id="small-bootstrap-class-multiple-field" multiple>
+                            <select name="rule_of_meeting_ids[]" class="form-select" data-placeholder="เลือกกฎการประชุม" id="small-bootstrap-class-multiple-field" multiple>
                                 @foreach ($rule_of_meetings as $item)
                                     <option value="{{ $item->id }}">{{ $item->title }}</option>
                                 @endforeach
@@ -173,6 +182,17 @@
 
     <script>
         CKEDITOR.replace('description');
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#regulation-meeting-multiple-field, #rule-of-meeting-multiple-field').select2({
+                theme: "bootstrap-5",
+                width: '100%',
+                placeholder: $(this).data('placeholder'),
+                allowClear: true
+            });
+        });
     </script>
 
 
