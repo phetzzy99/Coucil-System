@@ -49,7 +49,7 @@ class MeetingAgendaController extends Controller
             // 'rule_of_meeting_id' => 'required',
             'rule_of_meeting_ids' => 'required|array',
             'rule_of_meeting_ids.*' => 'exists:ruleof_meetings,id',
-            'regulation_meeting_id' => 'required',
+            // 'regulation_meeting_id' => 'required',
 
             'meeting_agenda_title' => 'required',
             'meeting_agenda_number' => 'required',

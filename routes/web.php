@@ -210,7 +210,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/add/meeting-agenda', 'AddMeetingAgenda')->name('add.meeting.agenda');
         Route::post('/store/meeting-agenda', 'StoreMeetingAgenda')->name('store.meeting.agenda');
         Route::get('/edit/meeting-agenda/{id}', 'EditMeetingAgenda')->name('edit.meeting.agenda');
-        Route::post('/update/meeting-agenda/{id}', 'UpdateMeetingAgenda')->name('update.meeting.agenda');
+        Route::post('/update/meeting-agenda/', 'UpdateMeetingAgenda')->name('update.meeting.agenda');
 
         Route::post('/update/status/meeting-agenda/{id}', 'UpdateStatusMeetingAgenda')->name('update.status.meeting.agenda');
 

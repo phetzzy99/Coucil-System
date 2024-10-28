@@ -54,7 +54,7 @@
         </li>
         <hr>
 
-        <li class="">
+        {{-- <li class="">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
@@ -67,9 +67,9 @@
                 </li>
             </ul>
         </li>
-        <hr>
+        <hr> --}}
 
-        <li class="">
+        {{-- <li class="">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
@@ -82,7 +82,7 @@
                 </li>
             </ul>
         </li>
-        <hr>
+        <hr> --}}
 
         <li class="{{ request()->routeIs('all.meeting.format') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -114,7 +114,7 @@
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-line-chart'></i>
                 </div>
-                <div class="menu-title"> ประเภทการประชุม / คณะกรรมการ (ยุบเป็น Main Meeting)</div>
+                <div class="menu-title"> ประเภทการประชุม / คณะกรรมการ </div>
             </a>
             <ul>
                 <li class="{{ request()->routeIs('all.meeting.type') ? 'mm-active' : '' }}"> <a href="{{ route('all.meeting.type') }}"><i class='bx bx-radio-circle'></i> จัดการประเภทการประชุม </a>

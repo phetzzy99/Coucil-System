@@ -8,6 +8,7 @@ use App\Models\MeetingAgendaLecture;
 use App\Models\MeetingAgendaSection;
 use App\Models\MeetingApproval;
 use App\Models\MeetingApprovalDetail;
+use App\Models\MeetingType;
 use App\Models\MeetingView;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,9 +27,11 @@ class MeetingApprovalController extends Controller
     {
 
         $user = Auth::user();
+        $meeting_types = MeetingType::all(); // เพิ่มการดึงข้อมูล meeting types
+
         $my_meetings = MeetingAgenda::whereIn('meeting_type_id', $user->meetingTypes->pluck('id'))
             ->whereIn('committee_category_id', $this->getUserCommitteeIds($user))
-            ->where('status', 1)
+            // ->where('status', 1)
             // ->where('approval_deadline', '>', now()) // ตรวจสอบ deadline
             ->get();
 
@@ -63,7 +66,7 @@ class MeetingApprovalController extends Controller
 
         // $my_meetings = MeetingAgenda::where('status', 1)->where('user_id', $user_id)->get();
 
-        return view('admin.backend.pages.meeting_approval.all_meeting_approval', compact('my_meetings'));
+        return view('admin.backend.pages.meeting_approval.all_meeting_approval', compact('my_meetings', 'meeting_types'));
     }
 
     public function MeetingApprovalDetail($id)
