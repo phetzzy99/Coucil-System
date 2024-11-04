@@ -4,12 +4,12 @@
             <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
             </div>
 
-            {{-- <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal"
+            <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal"
                 data-bs-target="#SearchModal">
                 <input class="form-control px-5" disabled type="search" placeholder="Search">
                 <span class="position-absolute top-50 search-show ms-3 translate-middle-y start-0 top-50 fs-5"><i
                         class='bx bx-search'></i></span>
-            </div> --}}
+            </div>
 
 
             <div class="top-menu ms-auto">

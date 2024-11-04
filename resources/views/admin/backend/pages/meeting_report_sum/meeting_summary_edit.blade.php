@@ -486,7 +486,7 @@ $(document).ready(function() {
                                                 <th style="width: 25%">ผู้รับรอง</th>
                                                 <th style="width: 15%">สถานะ</th>
                                                 <th style="width: 40%">ความคิดเห็น</th>
-                                                <th style="width: 20%">ดำเนินการ</th>
+                                                {{-- <th style="width: 20%">ดำเนินการ</th> --}}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -506,8 +506,10 @@ $(document).ready(function() {
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <select class="form-select form-select-sm"
-                                                            name="approvals[{{ $section->id }}][{{ $approval['approval_id'] }}][type]">
+                                                        <select class="form-select form-select-sm approval-status"
+                                                            name="approvals[{{ $section->id }}][{{ $approval['approval_id'] }}][type]"
+                                                            data-approval-id="{{ $approval['approval_id'] }}"
+                                                            data-section-id="{{ $section->id }}">
                                                             <option value="no_changes" {{ $approval['type'] == 'no_changes' ? 'selected' : '' }}>
                                                                 รับรองโดยไม่มีแก้ไข
                                                             </option>
@@ -517,16 +519,11 @@ $(document).ready(function() {
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <textarea class="form-control form-control-sm"
+                                                        <textarea class="form-control form-control-sm approval-comment"
                                                             name="approvals[{{ $section->id }}][{{ $approval['approval_id'] }}][comments]"
-                                                            rows="2">{{ $approval['comments'] }}</textarea>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <button type="button" class="btn btn-danger btn-sm delete-approval"
-                                                            data-approval-id="{{ $approval['approval_id'] }}"
-                                                            data-section-id="{{ $section->id }}">
-                                                            <i class="bx bx-trash"></i>
-                                                        </button>
+                                                            rows="2"
+                                                            style="{{ $approval['type'] == 'no_changes' ? 'display: none;' : '' }}"
+                                                        >{{ $approval['comments'] }}</textarea>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -601,6 +598,29 @@ $(document).ready(function() {
     });
 });
 </script>
+
+@push('body-scripts')
+    <script>
+    $(document).ready(function() {
+        $('.approval-status').on('change', function() {
+            var approvalId = $(this).data('approval-id');
+            var sectionId = $(this).data('section-id');
+            var textarea = $(`textarea[name="approvals[${sectionId}][${approvalId}][comments]"]`);
+
+            if ($(this).val() === 'with_changes') {
+                textarea.show();
+            } else {
+                textarea.hide().val('');  // ซ่อนและล้างค่า textarea
+            }
+        });
+
+        // เริ่มต้นซ่อน/แสดง textarea ตามค่าเริ่มต้น
+        $('.approval-status').each(function() {
+            $(this).trigger('change');
+        });
+    });
+    </script>
+@endpush
 
 @endsection
 

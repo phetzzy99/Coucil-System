@@ -41,6 +41,7 @@
                             <option value="คณะกรรมการนโยบายด้านการจบริหารจัดการ">คณะกรรมการนโยบายด้านการจบริหารจัดการ</option>
                             <option value="คณะกรรมการนโยบายด้านการวิจัยฯ">คณะกรรมการนโยบายด้านการวิจัยฯ</option>
                             <option value="Category">Category</option>
+                            <option value="Approval">Approval</option>
                             <option value="All User">All User </option>
                             <option value="Role and Permission">Role and Permission</option>
 

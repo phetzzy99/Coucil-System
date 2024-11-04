@@ -1,7 +1,9 @@
 @extends('admin.admin_dashboard')
 @section('admin')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    {{-- <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script> --}}
+    {{-- <script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script> --}}
+    <script src="{{ asset('backend/assets/plugins/ckeditor/ckeditor.js') }}"></script>
 
     <div class="page-content">
         <div class="row">
@@ -19,6 +21,8 @@
                             </div>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal">Add Section</button>
+                            <div style="width: 20px;"></div>
+                            <a href="{{ route('all.meeting.agenda') }}" class="btn btn-danger">Cancel</a>
                         </div>
                     </div>
                 </div>
@@ -135,7 +139,10 @@
     </script>
 
     @push('scripts')
-    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    {{-- <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script> --}}
+    {{-- <script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script> --}}
+    <script src="{{ asset('backend/assets/plugins/ckeditor/ckeditor.js') }}"></script>
+
     <script>
         CKEDITOR.replace('section_content', {
             language: 'th',

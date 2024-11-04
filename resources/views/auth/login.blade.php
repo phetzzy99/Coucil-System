@@ -50,3 +50,6 @@
         </div>
     </form>
 </x-guest-layout>
+<footer class="text-center mt-4">
+    <p>&copy; พัฒนาโดย ศูนย์นวัตกรรมและเทคโนโลยีดิจิทัล IDTC {{ date('Y') }}. All rights reserved.</p>
+</footer>

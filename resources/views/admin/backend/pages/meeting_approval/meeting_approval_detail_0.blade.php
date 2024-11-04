@@ -93,6 +93,10 @@
                                     <span class="badge bg-danger">หมดเวลารับรอง</span>
                                 @endif
                             </div>
+                            <div class="mt-3">
+                                {{-- <a href="{{ url()->previous() }}" class="btn btn-danger"><i class="fas fa-chevron-left me-2"></i>กลับ</a> --}}
+                                <a href="{{ route('all.meeting.approval') }}" class="btn btn-danger"><i class="fas fa-chevron-left me-2"></i>กลับ</a>
+                            </div>
                         </div>
                     </div>
 

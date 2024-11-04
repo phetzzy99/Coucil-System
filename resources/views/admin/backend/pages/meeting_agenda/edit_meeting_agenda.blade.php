@@ -74,7 +74,7 @@
 
                     <div class="col-md-6 mb-3">
                         <label for="regulation_meeting_ids" class="form-label">ระเบียบการประชุม</label>
-                        <select name="regulation_meeting_ids[]" class="form-select" id="regulation-meeting-multiple-field" multiple required>
+                        <select name="regulation_meeting_ids[]" class="form-select" id="regulation-meeting-multiple-field" multiple >
                             @foreach($regulation_meetings as $regulation)
                                 <option value="{{ $regulation->id }}" {{ in_array($regulation->id, $meeting_agenda->regulationMeeting->pluck('id')->toArray()) ? 'selected' : '' }}>
                                     {{ $regulation->regulation_title }}
@@ -85,7 +85,7 @@
 
                     <div class="col-md-6 mb-3">
                         <label for="rule_of_meeting_ids" class="form-label">ข้อบังคับการประชุม</label>
-                        <select name="rule_of_meeting_ids[]" class="form-select" id="small-bootstrap-class-multiple-field" multiple required>
+                        <select name="rule_of_meeting_ids[]" class="form-select" id="small-bootstrap-class-multiple-field" multiple >
                             @foreach($rule_of_meetings as $rule)
                                 <option value="{{ $rule->id }}" {{ in_array($rule->id, $meeting_agenda->ruleOfMeeting->pluck('id')->toArray()) ? 'selected' : '' }}>
                                     {{ $rule->title }}
