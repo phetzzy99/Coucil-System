@@ -22,6 +22,7 @@ use App\Http\Controllers\RegulationMeetingController;
 use App\Http\Controllers\RuleMeetingController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserProfileController;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\Role;
 use App\Models\Meeting;
@@ -58,6 +59,12 @@ require __DIR__.'/auth.php';
 // Admin Group Middleware
 Route::middleware(['auth', 'roles:admin'])->group(function () {
 
+    Route::get('/notifications', function() {
+        $notifications = auth()->user()->unreadNotifications;
+        auth()->user()->unreadNotifications->markAsRead();
+        return response()->json($notifications);
+    });
+
     Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
     Route::get('/admin/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');
 
@@ -91,6 +98,10 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::get('/admin/admin/{id}/edit', [AdminController::class, 'EditAdmin'])->name('edit.admin');
     Route::post('/admin/update/{id}', [AdminController::class, 'UpdateAdmin'])->name('update.admin');
     Route::get('/delete/admin/{id}', [AdminController::class, 'DeleteAdmin'])->name('delete.admin');
+
+    // General User Update
+    Route::get('/profile/edit', [UserProfileController::class, 'editProfile'])->name('user.profile.edit');
+    Route::post('/profile/update', [UserProfileController::class, 'updateProfile'])->name('user.profile.update');
 
     // Prefix Name Route
     Route::get('/all/prefix-name', [PrefixNameController::class, 'AllPrefixName'])->name('all.prefix.name');
@@ -221,7 +232,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/add/meeting/agenda/section', 'AddMeetingAgendaSection')->name('add.meeting.agenda.section');
 
         Route::get('/edit/meeting/agenda/section/{id}',[MeetingAgendaController::class, 'EditMeetingAgendaSection'])->name('edit.meeting.agenda.section');
-        Route::post('/update/meeting/agenda/section/',[MeetingAgendaController::class, 'UpdateMeetingAgendaSection'])->name('update.meeting.agenda.section');
+        Route::post('/update/meeting/agenda/section/{id}',[MeetingAgendaController::class, 'UpdateMeetingAgendaSection'])->name('update.meeting.agenda.section');
 
 
         Route::post('/save/meeting/agenda/lecture/',[MeetingAgendaController::class, 'SaveMeetingAgendaLecture'])->name('save.meeting.agenda.lecture');
@@ -248,10 +259,11 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/delete/meeting/{id}', 'DeleteMeeting')->name('delete.meeting');
     });
 
-    // Show Meeting
+    // Show Meeting section and lecture
     Route::get('/my/meetings', [MeetingController::class, 'MyMeetings'])->name('my.meetings');
     Route::get('/meeting/details/{id}', [MeetingController::class, 'MeetingDetails'])->name('meeting.detail');
     Route::get('/meeting/section/detail/{id}', [MeetingController::class, 'sectionAgendaItemDetail'])->name('meeting.section.detail');
+    Route::get('/meeting/lecture/detail/{id}', [MeetingController::class, 'lectureSectionDetail'])->name('meeting.lecture.detail');
     // Route::get('/show/meeting/{id}', [MeetingController::class, 'ShowMeeting'])->name('show.meeting');
 
     // Meeting Approval route list
@@ -286,6 +298,8 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
     Route::get('/approved-meeting-reports', [ApprovedMeetingReportController::class, 'allApprovedByAdmin'])->name('all.approved.meeting.reports');
     Route::get('/approved-meeting-reports/{id}', [ApprovedMeetingReportController::class, 'ListApprovedByAdmin'])->name('list.approved.meeting.reports');
+
+    Route::get('/reports/{id}/export/{type}', [ApprovedMeetingReportController::class, 'export'])->name('reports.export');
 
 }); // end of admin middleware
 

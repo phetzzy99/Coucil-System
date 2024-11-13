@@ -40,10 +40,17 @@
                     </a>
                 </div>
 
+                <!-- เพิ่มปุ่ม Export -->
+                <div class="position-absolute top-0 end-0 mt-3 me-3">
+                    {{-- <a href="{{ route('reports.export', ['id' => $report->id, 'type' => 'pdf']) }}" class="btn btn-danger me-2">Export เป็น PDF</a> --}}
+                    <a href="{{ route('reports.export', ['id' => $report->id, 'type' => 'word']) }}" class="btn btn-primary">Export เป็น Word</a>
+                </div>
+
                 <div class="word-document p-5 bg-white shadow-sm">
                     <!-- ส่วนหัวรายงาน -->
                     <div class="text-center mb-5">
-                        <h4 class="report-title">รายงานการประชุม{{ $report->meeting_type->name }}</h4>
+                        {{-- <h4 class="report-title">รายงานการประชุม{{ $report->meeting_type->name }}</h4> --}}
+                        <h5>{{ $report->meeting_agenda_title }}</h5>
                         <h5>ครั้งที่ {{ $report->meeting_agenda_number }}/{{ $report->meeting_agenda_year }}</h5>
                         <h5>{{ $thai_date }}</h5>
                         <h5>เวลา {{ \Carbon\Carbon::parse($report->meeting_agenda_time)->format('H:i') }} น.</h5>

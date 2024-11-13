@@ -4,6 +4,7 @@
     {{-- <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script> --}}
     {{-- <script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script> --}}
     <script src="{{ asset('backend/assets/plugins/ckeditor/ckeditor.js') }}"></script>
+    {{-- <script src="//cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script> --}}
 
     <div class="page-content">
         <div class="row">
@@ -16,7 +17,7 @@
                             <div class="flex-grow-1 ms-3">
                                 <h5 class="mt-0">{{ $meeting_agenda->meeting_agenda_title }}</h5>
                                 <p class="mb-0">
-                                    {{ 'ครั้งที่ ' . $meeting_agenda->meeting_agenda_number . ' ปี ' . $meeting_agenda->meeting_agenda_year . ' วันที่ ' . $meeting_agenda->meeting_agenda_date }}
+                                    {{ 'ครั้งที่ ' . $meeting_agenda->meeting_agenda_number . ' ปี ' . $meeting_agenda->meeting_agenda_year . ' วันที่ ' . \Carbon\Carbon::parse($meeting_agenda->meeting_agenda_date)->locale('th')->isoFormat('LL') }}
                                 </p>
                             </div>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -326,10 +327,24 @@
                     Swal.fire({
                         title: 'Edit Agenda Item',
                         html:
-                            `<input id="swal-input1" class="swal2-input" value="${item.item_title}" placeholder="Enter item title">` +
+                            `<input id="swal-input1" class="swal2-input" value="${item.item_title}" placeholder="Enter item title" style="width:100%">` +
                             `<textarea id="swal-input2" class="swal2-textarea">${item.content}</textarea>`,
+                        width: '90%', // Make modal width 90% of screen
+                        height: '90vh', // Set height to 90% of viewport height
+                        customClass: {
+                            popup: 'swal-wide',
+                            content: 'swal-tall'
+                        },
                         didOpen: () => {
-                            CKEDITOR.replace('swal-input2');
+                            CKEDITOR.replace('swal-input2', {
+                                height: '60vh', // Make editor 60% of viewport height
+                                // enterMode : CKEDITOR.ENTER_BR,
+                                // toolbar : [
+                                // ['Font', 'FontSize'], ['TextColor', 'BGColor'], ['Bold', 'Italic', 'Underline', 'Strike'], ['Subscript', 'Superscript'],
+                                // ['JustifyLeft', 'JustifyRight', 'JustifyCenter', 'JustifyBlock'], ['NumberedList', 'BulletedList'], ['Outdent', 'Indent', 'Blockquote'], ['Table', 'HorizontalRule', 'SpecialChar'], ['Link', 'Unlink', 'Image'],
+                                // ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'], ['Undo', 'Redo', '-', 'Find', 'Replace', '-', 'SelectAll', 'RemoveFormat'], ['Source']
+                                // ]
+                            });
                         },
                         preConfirm: () => {
                             return {
@@ -437,7 +452,10 @@
         function SaveMeetingAgendaLecture(courseId, sectionId, containerId) {
             const lectureContainer = document.getElementById(containerId);
             const lectureTitle = lectureContainer.querySelector('input[type="text"]').value;
-            const lectureContent = lectureContainer.querySelector('textarea').value;
+            // const lectureContent = lectureContainer.querySelector('textarea').value;
+
+            // Get CKEditor content using the editor instance
+            const lectureContent = CKEDITOR.instances[`editor-${containerId}`].getData();
 
             fetch('{{ route('save.meeting.agenda.lecture') }}', {
                     method: 'POST',
@@ -467,7 +485,7 @@
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,
-                        timer: 3000
+                        timer: 10000
                     });
 
                     Toast.fire({
@@ -484,6 +502,7 @@
                     });
                 });
         }
+
     </script>
 
 @endsection

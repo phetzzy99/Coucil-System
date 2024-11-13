@@ -19,6 +19,8 @@
 
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css">
 
+    <link rel="stylesheet" href="{{ asset('frontend/assets/plugins/notifications/css/lobibox.min.css') }}" />
+
     <!--plugins-->
     <link href="{{ asset('backend/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css') }}" rel="stylesheet" />
     <link href="{{ asset('backend/assets/plugins/simplebar/css/simplebar.css') }}" rel="stylesheet" />
@@ -81,6 +83,10 @@
         @include('admin.body.footer')
     </div>
     <!--end wrapper-->
+
+    <script src="{{ asset('frontend/assets/plugins/notifications/js/lobibox.min.js') }}"></script>
+    <script src="{{ asset('frontend/assets/plugins/notifications/js/messageboxes.min.js') }}"></script>
+    <script src="{{ asset('frontend/assets/plugins/notifications/js/notifications.min.js') }}"></script>
 
 
     <!--end switcher-->
@@ -184,6 +190,43 @@
               });
           });
       </script>
+
+    <!-- script การตั้งค่า Lobibox -->
+    <script>
+        // กำหนดค่าเริ่มต้นสำหรับ Lobibox Notification
+        Lobibox.notify.DEFAULTS = {
+            soundPath: "{{ asset('frontend/assets/plugins/notifications/sounds/') }}", // path ไฟล์เสียง
+            iconSource: "fontAwesome", // ใช้ icon จาก FontAwesome
+            delay: 5000, // แสดง 5 วินาที
+            rounded: true, // มุมโค้ง
+            delayIndicator: true, // แสดง indicator เวลา
+            position: 'top right', // ตำแหน่งที่แสดง
+            size: 'mini', // ขนาด notification
+            sound: true, // เปิดเสียง
+            msg: '' // ข้อความเริ่มต้น
+        };
+
+        // ฟังก์ชั่นตรวจสอบการแจ้งเตือน
+        function checkNotifications() {
+            $.get('/notifications', function(data) {
+                data.forEach(function(notification) {
+                    Lobibox.notify('info', {
+                        title: 'Login',
+                        msg: notification.data.message,
+                        icon: 'fa fa-user',
+                        sound: 'sound4', // เสียงแจ้งเตือน
+                        delay: 5000,
+                        position: 'top right',
+                        showClass: 'fadeInDown', // animation class
+                        hideClass: 'fadeOutUp'
+                    });
+                });
+            });
+        }
+        
+        // เรียกใช้ทุก 5 วินาที
+        setInterval(checkNotifications, 5000);
+    </script>
 
     @stack('body-scripts')
 

@@ -253,7 +253,7 @@
                     $userCommitteeIds = array_unique($userCommitteeIds);
 
                     // ดึงระเบียบวาระการประชุมตามสิทธิ์
-                    $meetingAgendas = \App\Models\MeetingAgenda::with(['meeting_type', 'sections'])
+                    $meetingAgendas = \App\Models\MeetingAgenda::with(['meeting_type', 'sections.meetingAgendaLectures'])
                         ->where('status', 1)
                         ->whereIn('meeting_type_id', $userMeetingTypes->pluck('id'))
                         ->whereIn('committee_category_id', $userCommitteeIds)
@@ -276,10 +276,24 @@
                                     class="{{ request()->routeIs('meeting.section.detail') && request()->route('id') == $section->id ? 'mm-active' : '' }}">
                                     <a href="{{ route('meeting.section.detail', $section->id) }}"
                                         class="agenda-section">
-                                        <i class='bx bx-right-arrow-alt'></i>
+                                        <i class='bx bx-chevron-down-circle'></i>
                                         <span
                                             title="{{ $section->section_title }}">{{ $section->section_title }}</span>
                                     </a>
+                                    <!-- Add sub-menu for lectures -->
+                                    <ul>
+                                        @foreach ($section->meetingAgendaLectures as $lecture)
+                                            <li class="{{ request()->routeIs('meeting.lecture.detail') && request()->route('id') == $lecture->id ? 'mm-active' : '' }}">
+                                                <a href="{{ route('meeting.lecture.detail', $lecture->id ) }}"
+                                                   class="agenda-lecture">
+                                                    <i class='bx bx-right-arrow-alt'></i>
+                                                    <span title="{{ $lecture->lecture_title }}">
+                                                        {{ \Str::limit($lecture->lecture_title, 30) }}
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
                                 </li>
                             @endforeach
                         </ul>
@@ -321,7 +335,9 @@
         </li> --}}
 
         {{-- @if (Auth::user()->can('university.council.menu')) --}}
+
         <hr>
+        @if (Auth::user() && Auth::user()->can('approval.menu'))
         <li class="{{ request()->routeIs('approved.meeting.reports') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class='bx bx-check-circle'></i></div>
@@ -349,7 +365,7 @@
         <hr>
         {{-- @endif --}}
 
-        @if (Auth::user()->can('approval.menu'))
+        {{-- @if (Auth::user() && Auth::user()->can('approval.menu')) --}}
         <li>
             <a href="javascript:;" class="has-arrow">
                 <i class='bx bx-select-multiple'></i>

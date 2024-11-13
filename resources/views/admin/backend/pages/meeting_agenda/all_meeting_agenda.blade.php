@@ -33,6 +33,7 @@
                                 <th>ครั้งที่</th>
                                 <th>ปี</th>
                                 <th>วันที่</th>
+                                <th>สร้างโดย</th>
                                 <th>status</th>
                                 <th>Action</th>
                             </tr>
@@ -46,6 +47,7 @@
                                     <td>{{ $item->meeting_agenda_number }}</td>
                                     <td>{{ $item->meeting_agenda_year }}</td>
                                     <td>{{ $item->meeting_agenda_date }}</td>
+                                    <td>{{ $item->user->username }}</td>
                                     <td>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="status{{ $item->id }}"

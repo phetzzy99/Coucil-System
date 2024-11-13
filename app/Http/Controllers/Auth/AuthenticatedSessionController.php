@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
+use App\Notifications\LoginNotification;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,6 +30,15 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        // Send notification to all admin users
+        $admins = User::where('role', 'admin')
+                        ->where('id', '!=', $request->user()->id)                
+                        ->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new LoginNotification($request->user()));
+        }
 
         $notification = array(
             'message' => 'Login Successfully',

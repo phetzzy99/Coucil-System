@@ -24,8 +24,12 @@ class MeetingAgendaController extends Controller
 
     public function AllMeetingAgenda(Request $request)
     {
-        $user_id = Auth::user()->id;
-        $meeting_agendas = MeetingAgenda::where('user_id', $user_id)->orderBy('id', 'desc')->get();
+        $user = Auth::user();
+        if ($user->hasRole(['Admin', 'Super Admin'])) { // Add roles that should see all agendas
+            $meeting_agendas = MeetingAgenda::orderBy('id', 'desc')->get();
+        } else {
+            $meeting_agendas = MeetingAgenda::where('user_id', $user->id)->orderBy('id', 'desc')->get();
+        }
         return view('admin.backend.pages.meeting_agenda.all_meeting_agenda', compact('meeting_agendas'));
     }
 
@@ -47,8 +51,8 @@ class MeetingAgendaController extends Controller
             'committee_category_id' => 'required',
             'meeting_format_id' => 'required',
             // 'rule_of_meeting_id' => 'required',
-            'rule_of_meeting_ids' => 'required|array',
-            'rule_of_meeting_ids.*' => 'exists:ruleof_meetings,id',
+            // 'rule_of_meeting_ids' => 'required|array',
+            // 'rule_of_meeting_ids.*' => 'exists:ruleof_meetings,id',
             // 'regulation_meeting_id' => 'required',
 
             'meeting_agenda_title' => 'required',
@@ -355,6 +359,7 @@ class MeetingAgendaController extends Controller
         }
     }
 
+    // ส่วนของการจัดการหัวข้อเรื่องรายงานวาระการประชุม
     public function SaveMeetingAgendaLecture(Request $request)
     {
         try {
@@ -381,49 +386,68 @@ class MeetingAgendaController extends Controller
         return view('admin.backend.pages.lecture.edit_meeting_agenda_lecture', compact('meeting_agenda_lecture'));
     }
 
+    /// Update Meeting Agenda Lecture
+
     public function UpdateMeetingAgendaLecture(Request $request)
     {
         try {
             $request->validate([
                 'id' => 'required|exists:meeting_agenda_lectures,id',
                 'lecture_title' => 'required|string|max:255',
-                'content' => 'required|string',
+                // 'content' => 'required'  // Add content validation
             ]);
 
-            $lecture = MeetingAgendaLecture::findOrFail($request->id);
-            $lecture->lecture_title = $request->lecture_title;
-            $lecture->content = $request->content;
-            $lecture->save();
+            $meeting_agenda_lecture = MeetingAgendaLecture::findOrFail($request->id);
+
+            $meeting_agenda_lecture->update([
+                'lecture_title' => $request->lecture_title,
+                'content' => $request->content,  // Update content field
+                'updated_at' => Carbon::now()
+            ]);
 
             $notification = array(
-                'message' => 'Meeting Agenda Lecture Updated Successfully',
+                'message' => 'ปรับปรุงหัวข้อเรื่องรายงานวาระการประชุมแล้ว',
                 'alert-type' => 'success'
             );
 
-            return redirect()->back()->with($notification);
+            return redirect()->route('add.meeting.agenda.lecture')->with($notification);
+
         } catch (\Exception $e) {
-            // \Log::error('Error in UpdateMeetingAgendaLecture: ' . $e->getMessage());
-
-            $notification = array(
-                'message' => 'Error updating Meeting Agenda Lecture: ' . $e->getMessage(),
-                'alert-type' => 'error'
-            );
-
-            return redirect()->back()->with($notification)->withInput();
+            return back()->with('error', 'Unable to update meeting agenda lecture. ' . $e->getMessage());
         }
-        // $meeting_lectures_id = $request->id;
-
-        // MeetingAgendaLecture::findOrFail($meeting_lectures_id)->update([
-        //     'lecture_title' => $request->lecture_title,
-        //     'updated_at' => Carbon::now()
-        // ]);
-
-        // $notification = array(
-        //     'message' => 'แก้ไขหัวข้อเรื่องรายงานวาระการประชุมแล้ว',
-        //     'alert-type' => 'success'
-        // );
-        // return redirect()->back()->with($notification);
     }
+
+    // public function UpdateMeetingAgendaLecture(Request $request)
+    // {
+    //     try {
+    //         $request->validate([
+    //             'id' => 'required|exists:meeting_agenda_lectures,id',
+    //             'lecture_title' => 'required|string|max:255',
+    //             // 'content' => 'required|string',
+    //         ]);
+
+    //         $lecture = MeetingAgendaLecture::findOrFail($request->id);
+    //         $lecture->lecture_title = $request->lecture_title;
+    //         $lecture->content = $request->content;
+    //         $lecture->save();
+
+    //         $notification = array(
+    //             'message' => 'Meeting Agenda Lecture Updated Successfully',
+    //             'alert-type' => 'success'
+    //         );
+
+    //         return redirect()->back()->with($notification);
+    //     } catch (\Exception $e) {
+    //         // \Log::error('Error in UpdateMeetingAgendaLecture: ' . $e->getMessage());
+
+    //         $notification = array(
+    //             'message' => 'Error updating Meeting Agenda Lecture: ' . $e->getMessage(),
+    //             'alert-type' => 'error'
+    //         );
+
+    //         return redirect()->back()->with($notification)->withInput();
+    //     }
+    // }
 
     public function DeleteMeetingAgendaLecture($id)
     {

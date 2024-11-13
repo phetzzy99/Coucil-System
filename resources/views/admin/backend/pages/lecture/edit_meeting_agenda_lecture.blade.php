@@ -1,7 +1,9 @@
 @extends('admin.admin_dashboard')
 @section('admin')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    {{-- <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script> --}}
+    {{-- <script src="//cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script> --}}
+<script src="{{ asset('backend/assets/plugins/ckeditor/ckeditor.js') }}"></script>
 
     <div class="page-content">
         <!-- ... (ส่วน breadcrumb คงเดิม) ... -->
@@ -22,7 +24,8 @@
 
                     <div class="form-group col-md-10">
                         <label for="editor" class="form-label">Lecture Description</label>
-                        <textarea name="content" id="editor">{!! $meeting_agenda_lecture->content !!}</textarea>
+                        {{-- <textarea name="content" id="editor">{!! $meeting_agenda_lecture->content !!}</textarea> --}}
+                        <textarea name="content" id="content" class="form-control">{{ $meeting_agenda_lecture->content }}</textarea>
                     </div>
 
                     <div class="col-md-12">
@@ -37,6 +40,10 @@
     </div>
 
     <script>
-        CKEDITOR.replace('editor');
+        CKEDITOR.replace('content', {
+            language: 'th',
+            height: 300,
+            removeButtons: 'PasteFromWord'
+        });
     </script>
 @endsection

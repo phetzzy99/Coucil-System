@@ -102,6 +102,17 @@ class MeetingController extends Controller
             compact('meetingAgendaSection', 'meetingAgendaItems', 'meetingAgenda', 'meetingAgendaLectures'));
     }
 
+    public function lectureSectionDetail($id)
+    {
+        $lecture = MeetingAgendaLecture::with([
+            'meetingAgendaSection',
+            'meetingAgendaItems',
+            'meetingAgendaSection.meetingAgenda'
+        ])->findOrFail($id);
+
+        return view('admin.backend.pages.meeting_section_detail.lecture_detail', compact('lecture'));
+    }
+
     // public function sectionAgendaItemDetail($id)
     // {
     //     $meetingAgendaSection = MeetingAgendaSection::findOrFail($id);

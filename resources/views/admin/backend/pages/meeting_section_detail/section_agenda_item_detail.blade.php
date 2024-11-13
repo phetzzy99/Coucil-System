@@ -9,7 +9,7 @@
         Carbon::setLocale('th');
 
         // แปลงวันที่เป็น Carbon instance
-        $meeting_date = Carbon::parse($meetingAgenda->meeting_date);
+        $meeting_date = Carbon::parse($meetingAgenda->meeting_agenda_date);
 
         // อาร์เรย์สำหรับชื่อวันภาษาไทย
         $thai_days = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];

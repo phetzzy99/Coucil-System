@@ -34,14 +34,14 @@
                                 </div>
                                 <div class="card-body p-3">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h5 class="card-title mb-0">
+                                        <h6 class="card-title mb-0">
                                             <a href="{{ route('meeting.detail', $item->id) }}"
                                                class="text-decoration-none text-dark hover-primary">
                                                 {{ $item->meeting_agenda_title }}
                                             </a>
-                                        </h5>
+                                        </h6>
                                         <span class="badge bg-primary">
-                                            {{ $item->meeting_type->name }}
+                                            {{ Str::limit($item->meeting_type->name, 10) }}
                                         </span>
                                     </div>
 

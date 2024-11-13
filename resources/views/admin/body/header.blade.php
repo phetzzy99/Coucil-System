@@ -367,6 +367,7 @@
             @php
                 $id = Auth::user()->id;
                 $profileData = App\Models\User::find($id);
+                $prefix = $profileData->prefixName;
             @endphp
 
             <div class="user-box dropdown px-3">
@@ -375,11 +376,30 @@
                     <img src="{{ !empty($profileData->photo) ? url('uploads/admin_images/' . $profileData->photo) : url('uploads/no_image.jpg') }}"
                         class="user-img" alt="user avatar">
                     <div class="user-info">
-                        <p class="user-name mb-0">{{ $profileData->name }}</p>
+                        <p class="user-name mb-0">{{ $prefix->title }}{{ $profileData->first_name }} {{ $profileData->last_name }}</p>
                         <p class="designattion mb-0">{{ $profileData->email }}</p>
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
+                    @if(!auth()->user()->hasRole(['Super Admin', 'Admin']))
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="{{ route('user.profile.edit') }}">
+                            <i class="bx bx-user fs-5"></i>
+                            <span>แก้ไขข้อมูลส่วนตัว</span>
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <div class="dropdown-divider mb-0"></div>
+                    </li>
+                    @endif
+                    
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.logout') }}">
+                            <i class="bx bx-log-out-circle"></i>
+                            <span>ออกจากระบบ</span>
+                        </a>
+                    </li>
                     {{-- <li><a class="dropdown-item d-flex align-items-center" href=""><i
                                 class="bx bx-user fs-5"></i><span>Profile</span></a>
                     </li>
@@ -399,11 +419,54 @@
                     <li>
                         <div class="dropdown-divider mb-0"></div>
                     </li> --}}
-                    <li><a class="dropdown-item d-flex align-items-center" href="{{ route('admin.logout') }}"><i
+                    {{-- <li><a class="dropdown-item d-flex align-items-center" href="{{ route('admin.logout') }}"><i
                                 class="bx bx-log-out-circle"></i><span>Logout</span></a>
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
         </nav>
     </div>
 </header>
+
+<script>
+    // แสดงข้อความแจ้งเตือนเมื่อมีการอัปเดตข้อมูล
+    @if(session('success'))
+        Swal.fire({
+            title: 'สำเร็จ!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonText: 'ตกลง'
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            title: 'ขออภัย!',
+            text: "{{ session('error') }}",
+            icon: 'error',
+            confirmButtonText: 'ตกลง'
+        });
+    @endif
+</script>
+
+<style>
+    .dropdown-menu {
+        min-width: 200px;
+    }
+    
+    .dropdown-item {
+        padding: 8px 16px;
+    }
+    
+    .dropdown-item i {
+        margin-right: 10px;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .dropdown-divider {
+        margin: 4px 0;
+    }
+</style>
