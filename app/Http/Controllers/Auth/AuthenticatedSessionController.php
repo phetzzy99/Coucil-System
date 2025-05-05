@@ -33,12 +33,25 @@ class AuthenticatedSessionController extends Controller
 
         // Send notification to all admin users
         $admins = User::where('role', 'admin')
-                        ->where('id', '!=', $request->user()->id)                
+                        ->where('id', '!=', $request->user()->id)
                         ->get();
 
+        // Send notification only once per admin
         foreach ($admins as $admin) {
-            $admin->notify(new LoginNotification($request->user()));
+            // Check if a similar notification was sent in the last minute to prevent duplicates
+            $recentNotification = $admin->notifications()
+                ->where('type', LoginNotification::class)
+                ->where('created_at', '>=', now()->subMinute())
+                ->first();
+
+            if (!$recentNotification) {
+                $admin->notify(new LoginNotification($request->user()));
+            }
         }
+
+        // foreach ($admins as $admin) {
+        //     $admin->notify(new LoginNotification($request->user()));
+        // }
 
         $notification = array(
             'message' => 'Login Successfully',

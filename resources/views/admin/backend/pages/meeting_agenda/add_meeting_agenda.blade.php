@@ -107,67 +107,114 @@
                         </div>
 
                     </fieldset>
-
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">ชื่อระเบียบวาระการประชุม</label>
-                        <input type="text" name="meeting_agenda_title" class="form-control" id="input1" required>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">เลขที่ระเบียบวาระการประชุม</label>
-                        <input type="text" name="meeting_agenda_number" class="form-control" id="input1" required>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">ปีระเบียบวาระการประชุม</label>
-                        <input type="text" name="meeting_agenda_year" class="form-control" id="input1" required>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">วันที่วาระการประชุม</label>
-                        <input type="date" name="meeting_agenda_date" class="form-control" id="input1" required>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="input1" class="form-label">เวลาระเบียบวาระการประชุม</label>
-                        <input type="time" name="meeting_agenda_time" class="form-control" id="input1" required>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <label for="input1" class="form-label">สถานที่ระเบียบวาระการประชุม</label>
-                        <input type="text" name="meeting_location" class="form-control" id="input1" required>
-                    </div>
-
-                    <div class="col-md-6">
+                    {{-- เพิ่มวันที่ 3/12/2567 --}}
+                    {{-- <fieldset style="border: 1px solid #007bff; border-radius: 5px;" class="p-2">
+                        <legend>ตั้งค่าการแสดงผล</legend>
                         <div class="form-group">
-                            <label for="approval_deadline_date" class="form-label">วันที่สิ้นสุดการรับรอง</label>
-                            <input type="date" name="approval_deadline_date"
-                                   class="form-control @error('approval_deadline_date') is-invalid @enderror"
-                                   value="{{ old('approval_deadline_date', isset($meeting_agenda) ? $meeting_agenda->approval_deadline?->format('Y-m-d') : '') }}"
-                                   required>
-                            @error('approval_deadline_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="show_committee_opinion" id="showCommitteeOpinion" checked>
+                                <label class="form-check-label" for="showCommitteeOpinion">
+                                    เปิดการแสดงผลการลงความเห็นของคณะกรรมการกลั่นกรอง
+                                </label>
+                            </div>
+                            <small class="text-muted">
+                                * หากปิดการแสดงผล ผู้เข้าร่วมประชุมจะไม่สามารถเห็นผลการลงความเห็นของคณะกรรมการกลั่นกรองได้
+                            </small>
                         </div>
-                    </div>
-                    <div class="col-md-6">
+                    </fieldset> --}}
+
+                    <fieldset style="border: 1px solid #007bff; border-radius: 5px;" class="p-2">
+                        <legend>ตั้งค่าการแสดงผลความเห็นคณะกรรมการ</legend>
+                        <div class="form-group mb-3">
+                            <label for="committeeOpinionTitle" class="form-label">ข้อความหัวข้อ</label>
+                            <input type="text"
+                                class="form-control"
+                                id="committeeOpinionTitle"
+                                name="committee_opinion_title"
+                                value="ความเห็นคณะกรรมการกลั่นกรอง"
+                                required>
+                            <small class="text-muted">
+                                * กำหนดข้อความที่จะแสดงเป็นหัวข้อในส่วนของการลงความเห็น
+                            </small>
+                        </div>
+
                         <div class="form-group">
-                            <label for="approval_deadline_time" class="form-label">เวลาสิ้นสุดการรับรอง</label>
-                            <input type="time" name="approval_deadline_time"
-                                   class="form-control @error('approval_deadline_time') is-invalid @enderror"
-                                   value="{{ old('approval_deadline_time', isset($meeting_agenda) ? $meeting_agenda->approval_deadline?->format('H:i') : '') }}"
-                                   required>
-                            @error('approval_deadline_time')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="show_committee_opinion" id="showCommitteeOpinion" checked>
+                                <label class="form-check-label" for="showCommitteeOpinion">
+                                    เปิดการแสดงผลการลงความเห็นของคณะกรรมการกลั่นกรอง
+                                </label>
+                            </div>
+                            <small class="text-muted">
+                                * หากปิดการแสดงผล ผู้เข้าร่วมประชุมจะไม่สามารถเห็นผลการลงความเห็นของคณะกรรมการกลั่นกรองได้
+                            </small>
                         </div>
-                    </div>
+                    </fieldset>
+                    
+                    {{-- เพิ่มวันที่ 3/12/2567 --}}
+
+                    <fieldset style="border: 1px solid #007bff; border-radius: 5px;" class="p-2">
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">ชื่อระเบียบวาระการประชุม</label>
+                            <input type="text" name="meeting_agenda_title" class="form-control" id="input1" required>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">เลขที่ระเบียบวาระการประชุม</label>
+                            <input type="text" name="meeting_agenda_number" class="form-control" id="input1" required>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">ปีระเบียบวาระการประชุม</label>
+                            <input type="text" name="meeting_agenda_year" class="form-control" id="input1" required>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">วันที่วาระการประชุม</label>
+                            <input type="date" name="meeting_agenda_date" class="form-control" id="input1" required>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="input1" class="form-label">เวลาระเบียบวาระการประชุม</label>
+                            <input type="time" name="meeting_agenda_time" class="form-control" id="input1" required>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label for="input1" class="form-label">สถานที่ระเบียบวาระการประชุม</label>
+                            <input type="text" name="meeting_location" class="form-control" id="input1" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="approval_deadline_date" class="form-label">วันที่สิ้นสุดการรับรอง</label>
+                                <input type="date" name="approval_deadline_date"
+                                    class="form-control @error('approval_deadline_date') is-invalid @enderror"
+                                    value="{{ old('approval_deadline_date', isset($meeting_agenda) ? $meeting_agenda->approval_deadline?->format('Y-m-d') : '') }}"
+                                    required>
+                                @error('approval_deadline_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="approval_deadline_time" class="form-label">เวลาสิ้นสุดการรับรอง</label>
+                                <input type="time" name="approval_deadline_time"
+                                    class="form-control @error('approval_deadline_time') is-invalid @enderror"
+                                    value="{{ old('approval_deadline_time', isset($meeting_agenda) ? $meeting_agenda->approval_deadline?->format('H:i') : '') }}"
+                                    required>
+                                @error('approval_deadline_time')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
 
 
-                    <div class="form-group col-md-12">
-                        <label for="input1" class="form-label">รายละเอียดระเบียบวาระการประชุม</label>
-                        <textarea name="description" class="form-control" rows="10"></textarea>
-                    </div>
+                        <div class="form-group col-md-12">
+                            <label for="input1" class="form-label">รายละเอียดระเบียบวาระการประชุม</label>
+                            <textarea name="description" class="form-control" rows="10"></textarea>
+                        </div>
+                    </fieldset>
 
                     <div class="col-md-12">
                         <div class="d-md-flex d-grid align-items-center gap-3">

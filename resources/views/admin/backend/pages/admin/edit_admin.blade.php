@@ -45,10 +45,10 @@
                             value="{{ $user->last_name }}" required>
                     </div>
 
-                    <div class="form-group col-md-3">
-                        <label for="position_id" class="form-label">ตำแหน่ง</label>
-                        <select name="position_id" class="form-select mb-3" required>
-                            <option disabled>เลือกตำแหน่ง</option>
+                    <div class="form-group col-md-7">
+                        <label for="position_select" class="form-label">ตำแหน่ง</label>
+                        <select name="position_id" class="form-select mb-3" id="position_select" required>
+                            <option disabled></option>
                             @foreach ($positions as $position)
                                 <option value="{{ $position->id }}"
                                     {{ $user->position_id == $position->id ? 'selected' : '' }}>{{ $position->name }}
@@ -206,4 +206,24 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Initialize Select2 Elements
+            $('#prefix_select').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: $(this).data('placeholder'),
+                allowClear: true
+            });
+
+            $('#position_select').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: $(this).data('placeholder'),
+                allowClear: true
+            });
+        });
+    </script>
+
 @endsection

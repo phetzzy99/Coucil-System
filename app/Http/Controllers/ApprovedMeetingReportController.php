@@ -74,10 +74,7 @@ class ApprovedMeetingReportController extends Controller
             })
             ->findOrFail($id);
 
-        return view(
-            'admin.backend.pages.approved_reports_by_admin.list_approved_report_by_admin',
-            compact('report')
-        );
+        return view('admin.backend.pages.approved_reports_by_admin.list_approved_report_by_admin',compact('report'));
 
         // return view('admin.backend.pages.approved_reports_by_admin.list_approved_report_by_admin', compact('report'));
     }

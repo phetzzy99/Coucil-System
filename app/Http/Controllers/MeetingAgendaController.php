@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CommitteeCategory;
+use App\Models\CommitteeOpinion;
 use App\Models\MeetingAgenda;
 use App\Models\MeetingAgendaItems;
 use App\Models\MeetingAgendaLecture;
@@ -18,6 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class MeetingAgendaController extends Controller
 {
@@ -62,7 +64,8 @@ class MeetingAgendaController extends Controller
             'meeting_agenda_time' => 'required',
             'meeting_location' => 'required',
             'approval_deadline_date' => 'required|date',
-            'approval_deadline_time' => 'required'
+            'approval_deadline_time' => 'required',
+            'committee_opinion_title' => 'required|string|max:255' // This
         ]);
 
         DB::beginTransaction();
@@ -84,6 +87,10 @@ class MeetingAgendaController extends Controller
                 $meeting_agenda->user_id = Auth::user()->id;
                 $meeting_agenda->status = 1;
                 $meeting_agenda->created_at = Carbon::now();
+
+                // เพิ่มการบันทึกค่า show_committee_opinion และ committee_opinion_title
+                $meeting_agenda->show_committee_opinion = $request->has('show_committee_opinion'); //This
+                $meeting_agenda->committee_opinion_title = $request->committee_opinion_title; //This
 
                 // เพิ่ม approval_deadline
                 // Set approval deadline
@@ -176,6 +183,25 @@ class MeetingAgendaController extends Controller
         // return response()->json(['status' => $meeting_agenda->status, 'message' => 'Status Updated Successfully']);
     }
 
+    public function updateStatus($id, Request $request)
+    {
+        try {
+            $meetingAgenda = MeetingAgenda::findOrFail($id);
+            $meetingAgenda->status = $request->status;
+            $meetingAgenda->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'อัพเดทสถานะสำเร็จ'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาดในการอัพเดทสถานะ'
+            ], 500);
+        }
+    }
+
     public function EditMeetingAgenda($id)
     {
         try {
@@ -224,7 +250,8 @@ class MeetingAgendaController extends Controller
             'meeting_agenda_time' => 'required',
             'meeting_location' => 'required',
             'approval_deadline_date' => 'required|date',
-            'approval_deadline_time' => 'required'
+            'approval_deadline_time' => 'required',
+            'committee_opinion_title' => 'required|string|max:255' // This
         ]);
         $meeting_agenda = MeetingAgenda::findOrFail($request->id);
 
@@ -250,6 +277,11 @@ class MeetingAgendaController extends Controller
             $meeting_agenda->approval_deadline = $approval_deadline;
             $meeting_agenda->user_id = Auth::user()->id;
             $meeting_agenda->updated_at = Carbon::now();
+
+            // อัพเดทการตั้งค่าความเห็นคณะกรรมการ
+            $meeting_agenda->show_committee_opinion = $request->has('show_committee_opinion'); //This
+            $meeting_agenda->committee_opinion_title = $request->committee_opinion_title; //This
+
             $meeting_agenda->save();
 
             // อัพเดทความสัมพันธ์กับ RuleofMeeting
@@ -360,23 +392,84 @@ class MeetingAgendaController extends Controller
     }
 
     // ส่วนของการจัดการหัวข้อเรื่องรายงานวาระการประชุม
+    // public function SaveMeetingAgendaLecture(Request $request)
+    // {
+    //     try {
+    //         $meeting_agenda_lecture = new MeetingAgendaLecture();
+    //         $meeting_agenda_lecture->meeting_agenda_id = $request->meeting_agenda_id;
+    //         $meeting_agenda_lecture->meeting_agenda_section_id = $request->meeting_agenda_section_id;
+    //         $meeting_agenda_lecture->lecture_title = $request->lecture_title;
+    //         $meeting_agenda_lecture->content = $request->content;
+    //         $meeting_agenda_lecture->created_at = Carbon::now();
+
+    //         if ($meeting_agenda_lecture->save()) {
+    //             return response()->json(['success' => 'เพิ่มหัวข้อเรื่องรายงานวาระการประชุมแล้ว'], 200);
+    //         }
+
+    //         return response()->json(['error' => 'เพิ่มหัวข้อเรื่องรายงานวาระการประชุมไม่สําเร็จ'], 400);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
+
     public function SaveMeetingAgendaLecture(Request $request)
     {
         try {
+            DB::beginTransaction();
+
+            // Validate request data
+            $request->validate([
+                'meeting_agenda_id' => 'required',
+                'meeting_agenda_section_id' => 'required',
+                'lecture_title' => 'required|string',
+                'content' => 'nullable',
+                'committee_review' => 'nullable|array'
+            ]);
+
+            // Create new lecture record
             $meeting_agenda_lecture = new MeetingAgendaLecture();
             $meeting_agenda_lecture->meeting_agenda_id = $request->meeting_agenda_id;
             $meeting_agenda_lecture->meeting_agenda_section_id = $request->meeting_agenda_section_id;
             $meeting_agenda_lecture->lecture_title = $request->lecture_title;
             $meeting_agenda_lecture->content = $request->content;
+
+            // บันทึกความเห็นคณะกรรมการ
+            if ($request->has('committee_review')) {
+                $meeting_agenda_lecture->committee_opinion = $request->committee_review['general_opinion'] ?? null;
+                $meeting_agenda_lecture->approve_comment = $request->committee_review['approve']['comment'] ?? null;
+                $meeting_agenda_lecture->approve_votes = $request->committee_review['approve']['votes'] ?? 0;
+                $meeting_agenda_lecture->disapprove_comment = $request->committee_review['disapprove']['comment'] ?? null;
+                $meeting_agenda_lecture->disapprove_votes = $request->committee_review['disapprove']['votes'] ?? 0;
+            }
+
             $meeting_agenda_lecture->created_at = Carbon::now();
 
             if ($meeting_agenda_lecture->save()) {
-                return response()->json(['success' => 'เพิ่มหัวข้อเรื่องรายงานวาระการประชุมแล้ว'], 200);
+                DB::commit();
+                return response()->json([
+                    'success' => 'เพิ่มหัวข้อเรื่องรายงานวาระการประชุมแล้ว',
+                    'lecture_id' => $meeting_agenda_lecture->id
+                ], 200);
             }
 
-            return response()->json(['error' => 'เพิ่มหัวข้อเรื่องรายงานวาระการประชุมไม่สําเร็จ'], 400);
+            throw new \Exception('ไม่สามารถบันทึกข้อมูลได้');
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => [
+                    'th' => 'ข้อมูลไม่ถูกต้อง',
+                    'en' => $e->getMessage()
+                ]
+            ], 422);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            DB::rollBack();
+            return response()->json([
+                'error' => [
+                    'th' => 'เกิดข้อผิดพลาดในการบันทึกข้อมูล',
+                    'en' => $e->getMessage()
+                ]
+            ], 500);
         }
     }
 
@@ -388,34 +481,108 @@ class MeetingAgendaController extends Controller
 
     /// Update Meeting Agenda Lecture
 
+    // public function UpdateMeetingAgendaLecture(Request $request)
+    // {
+    //     try {
+    //         $request->validate([
+    //             'id' => 'required|exists:meeting_agenda_lectures,id',
+    //             'lecture_title' => 'required|string|max:255',
+    //             // 'content' => 'required'  // Add content validation
+    //         ]);
+
+    //         $meeting_agenda_lecture = MeetingAgendaLecture::findOrFail($request->id);
+
+    //         $meeting_agenda_lecture->update([
+    //             'lecture_title' => $request->lecture_title,
+    //             'content' => $request->content,  // Update content field
+    //             'updated_at' => Carbon::now()
+    //         ]);
+
+    //         $notification = array(
+    //             'message' => 'ปรับปรุงหัวข้อเรื่องรายงานวาระการประชุมแล้ว',
+    //             'alert-type' => 'success'
+    //         );
+
+    //         return redirect()->route('add.meeting.agenda.lecture')->with($notification);
+
+    //     } catch (\Exception $e) {
+    //         return back()->with('error', 'Unable to update meeting agenda lecture. ' . $e->getMessage());
+    //     }
+    // }
+
+    // ------------------------------------------------------
+
     public function UpdateMeetingAgendaLecture(Request $request)
     {
+        DB::beginTransaction();
         try {
+            // Validate request
             $request->validate([
                 'id' => 'required|exists:meeting_agenda_lectures,id',
                 'lecture_title' => 'required|string|max:255',
-                // 'content' => 'required'  // Add content validation
+                'content' => 'nullable',
+                'committee_opinion' => 'nullable',
+                'approve_comment' => 'nullable|string',
+                'approve_votes' => 'nullable|integer|min:0',
+                'disapprove_comment' => 'nullable|string',
+                'disapprove_votes' => 'nullable|integer|min:0'
             ]);
 
+            // Find lecture
             $meeting_agenda_lecture = MeetingAgendaLecture::findOrFail($request->id);
 
-            $meeting_agenda_lecture->update([
+            // Prepare update data
+            $updateData = [
                 'lecture_title' => $request->lecture_title,
-                'content' => $request->content,  // Update content field
+                'content' => $request->content,
+                'committee_opinion' => $request->committee_opinion,
+                'approve_comment' => $request->approve_comment,
+                'approve_votes' => $request->approve_votes ?? 0,
+                'disapprove_comment' => $request->disapprove_comment,
+                'disapprove_votes' => $request->disapprove_votes ?? 0,
                 'updated_at' => Carbon::now()
-            ]);
+            ];
 
-            $notification = array(
+            // Update record
+            $meeting_agenda_lecture->update($updateData);
+
+            // Get meeting agenda id for redirect
+            $meeting_agenda_id = $meeting_agenda_lecture->meeting_agenda_id;
+
+            DB::commit();
+
+            $notification = [
                 'message' => 'ปรับปรุงหัวข้อเรื่องรายงานวาระการประชุมแล้ว',
                 'alert-type' => 'success'
-            );
+            ];
 
-            return redirect()->route('add.meeting.agenda.lecture')->with($notification);
+            // Redirect to meeting agenda lecture page
+            return redirect()->back()->with($notification);
+            // return redirect()
+            //     ->route('add.meeting.agenda.lecture', ['id' => $meeting_agenda_id])
+            //     ->with($notification);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return back()
+                ->withErrors($e->errors())
+                ->withInput()
+                ->with([
+                    'message' => 'กรุณาตรวจสอบข้อมูลที่กรอก',
+                    'alert-type' => 'error'
+                ]);
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Unable to update meeting agenda lecture. ' . $e->getMessage());
+            DB::rollBack();
+            return back()
+                ->with([
+                    'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage(),
+                    'alert-type' => 'error'
+                ]);
         }
     }
+
+    // -------------------------------------------------------
 
     // public function UpdateMeetingAgendaLecture(Request $request)
     // {

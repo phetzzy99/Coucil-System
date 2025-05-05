@@ -20,10 +20,23 @@
                                     {{ 'ครั้งที่ ' . $meeting_agenda->meeting_agenda_number . ' ปี ' . $meeting_agenda->meeting_agenda_year . ' วันที่ ' . \Carbon\Carbon::parse($meeting_agenda->meeting_agenda_date)->locale('th')->isoFormat('LL') }}
                                 </p>
                             </div>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">Add Section</button>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="meetingStatusSwitch"
+                                    {{ $meeting_agenda->status == 1 ? 'checked' : '' }}
+                                    data-meeting-id="{{ $meeting_agenda->id }}"
+                                    onchange="updateMeetingStatus(this)"
+                                    style="width: 3em; height: 1.5em;">
+                                <label class="form-check-label" for="meetingStatusSwitch" style="font-size: 1.2em; margin-left: 10px;">
+                                    สถานะ: <span id="statusText" class="{{ $meeting_agenda->status == 1 ? 'text-success' : 'text-danger' }}">{{ $meeting_agenda->status == 1 ? 'เปิดการมองเห็น' : 'ปิดการมองเห็น' }}</span>
+                                </label>
+                            </div>
+
                             <div style="width: 20px;"></div>
-                            <a href="{{ route('all.meeting.agenda') }}" class="btn btn-danger">Cancel</a>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">เพิ่มวาระ</button>
+                            <div style="width: 20px;"></div>
+                            <a href="{{ route('all.meeting.agenda') }}" class="btn btn-danger">กลับ</a>
                         </div>
                     </div>
                 </div>
@@ -42,18 +55,17 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger px-2 ms-auto me-2"
-                                                        onclick="return confirm('Are you sure you want to delete this section?')">Delete
-                                                        Section </button>
+                                                        onclick="return confirm('คุณต้องการลบวาระนี้ใช่หรือไม่?')">ลบวาระ </button>
                                                 </form>
-                                                <a style="margin-left: 10px" class="btn btn-warning ms-2" href="{{ route('edit.meeting.agenda.section', ['id' => $item->id]) }}">Edit Section</a>
+                                                <a style="margin-left: 10px" class="btn btn-warning ms-2" href="{{ route('edit.meeting.agenda.section', ['id' => $item->id]) }}">แก้ไขวาระ</a>
                                                 <a style="margin-left: 10px" class="btn btn-primary ms-2"
                                                     onclick="addLectureDiv({{ $meeting_agenda->id }}, {{ $item->id }}, 'lectureContainer{{ $key }}')"
-                                                    id="addLectureBtn($key)">Add Agenda item</a>
+                                                    id="addLectureBtn($key)">เพิ่มหัวข้อย่อย</a>
                                             </div>
                                         </div>
 
                                         <div class="courseHide" id="lectureContainer{{ $key }}">
-                                            <div class="container">
+                                            {{-- <div class="container">
                                                 @foreach ($item->meetingAgendaLectures as $lecture)
                                                     <div class="lectureDiv mb-3">
                                                         <div class="d-flex align-items-center justify-content-between">
@@ -61,8 +73,7 @@
                                                                 style="margin-left: 10px">{{ $lecture->lecture_title }}</strong>
                                                             <div class="btn-group">
                                                                 <a class="btn btn-sm btn-primary me-2"
-                                                                    onclick="addAgendaDiv({{ $meeting_agenda->id }}, {{ $item->id }}, {{ $lecture->id }}, 'agendaContainer{{ $lecture->id }}')">Add
-                                                                    Item</a>
+                                                                    onclick="addAgendaDiv({{ $meeting_agenda->id }}, {{ $item->id }}, {{ $lecture->id }}, 'agendaContainer{{ $lecture->id }}')">เพิ่มรายการ</a>
                                                                 <a href="{{ route('edit.meeting.agenda.lecture', ['id' => $lecture->id]) }}"
                                                                     class="btn btn-sm btn-success"><i
                                                                         class="bx bx-edit"></i></a>
@@ -70,7 +81,34 @@
                                                                     class="btn btn-sm btn-danger" id="delete"><i
                                                                         class="bx bx-trash"></i></a>
                                                             </div>
-                                                        </div>
+                                                        </div> --}}
+                                                        <div class="container">
+                                                            @foreach ($item->meetingAgendaLectures as $lecture)
+                                                                <div class="lectureDiv mb-3">
+                                                                    <div class="d-flex align-items-center justify-content-between">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <strong style="margin-left: 10px">{{ $lecture->lecture_title }}</strong>
+                                                                            <div class="form-check form-switch ms-3">
+                                                                                <input class="form-check-input" type="checkbox"
+                                                                                    id="showCommitteeOpinion{{ $lecture->id }}"
+                                                                                    onchange="updateCommitteeOpinionVisibility({{ $lecture->id }})"
+                                                                                    {{ $lecture->show_committee_opinion ? 'checked' : '' }}>
+                                                                                <label class="form-check-label" for="showCommitteeOpinion{{ $lecture->id }}">
+                                                                                    แสดงความเห็นคณะกรรมการ
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="btn-group">
+                                                                            <a class="btn btn-sm btn-primary me-2"
+                                                                                onclick="addAgendaDiv({{ $meeting_agenda->id }}, {{ $item->id }}, {{ $lecture->id }}, 'agendaContainer{{ $lecture->id }}')">เพิ่มรายการ</a>
+                                                                            <a href="{{ route('edit.meeting.agenda.lecture', ['id' => $lecture->id]) }}"
+                                                                                class="btn btn-sm btn-success"><i
+                                                                                    class="bx bx-edit"></i></a>
+                                                                            <a href="{{ route('delete.meeting.agenda.lecture', ['id' => $lecture->id]) }}"
+                                                                                class="btn btn-sm btn-danger" id="delete"><i
+                                                                                    class="bx bx-trash"></i></a>
+                                                                        </div>
+                                                                    </div>
                                                         <div id="agendaContainer{{ $lecture->id }}" class="mt-2">
                                                             <!-- Agenda items will be loaded here -->
                                                         </div>
@@ -300,8 +338,8 @@
                             <div class="d-flex justify-content-between align-items-center ml-4">
                                 <p class="mb-0"><strong>${item.item_title}</strong></p>
                                 <div class="btn-group" role="group">
-                                    <button class="btn btn-sm btn-primary" onclick="editAgendaItem(${item.id})">Edit</button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteAgendaItem(${item.id}, '${containerId}')">Delete</button>
+                                    <button class="btn btn-sm btn-primary" onclick="editAgendaItem(${item.id})">แก้ไข</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteAgendaItem(${item.id}, '${containerId}')">ลบ</button>
                                 </div>
                             </div>
                             <div class="text-sm text-muted ms-4 mb-0">
@@ -504,5 +542,69 @@
         }
 
     </script>
+
+    <script>
+        function updateMeetingStatus(element) {
+            const meetingId = element.dataset.meetingId;
+            const status = element.checked ? 1 : 0;
+
+            $.ajax({
+                url: `/update-meeting-status/${meetingId}`,
+                type: 'POST',
+                data: {
+                    status: status,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success('อัพเดทสถานะสำเร็จ');
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        toastr.error('เกิดข้อผิดพลาดในการอัพเดทสถานะ');
+                        element.checked = !element.checked;
+                    }
+                },
+                error: function() {
+                    toastr.error('เกิดข้อผิดพลาดในการอัพเดทสถานะ');
+                    element.checked = !element.checked;
+                }
+            });
+        }
+    </script>
+
+<script>
+    function updateCommitteeOpinionVisibility(lectureId) {
+        const checkbox = document.getElementById(`showCommitteeOpinion${lectureId}`);
+
+        // ส่ง AJAX request ไปอัพเดทค่าในฐานข้อมูล
+        fetch(`/update-committee-opinion-visibility/${lectureId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                show_committee_opinion: checkbox.checked
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // แสดง notification ว่าอัพเดทสำเร็จ
+                toastr.success('อัพเดทการแสดงผลความคิดเห็นเรียบร้อยแล้ว');
+            } else {
+                toastr.error('เกิดข้อผิดพลาดในการอัพเดท');
+                checkbox.checked = !checkbox.checked; // revert checkbox state
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            toastr.error('เกิดข้อผิดพลาดในการอัพเดท');
+            checkbox.checked = !checkbox.checked; // revert checkbox state
+        });
+    }
+</script>
 
 @endsection

@@ -4,12 +4,50 @@
             <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
             </div>
 
-            <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal"
+            <div class="d-flex justify-content-center align-items-center w-100">
+                <div class="system-name text-center">
+                    <h2 class="fw-bold mb-0" style="font-size: 1.2rem; letter-spacing: 0.8px;
+                        background: linear-gradient(90deg,
+                            #0300a5,
+                            #042a8a,
+                            #064719,
+                            #0f6d2b,
+                            #f3750e,
+                            #ffa54d,
+                            #ffdf9b,
+                            #ffeda8,
+                            #0300a5
+                        );
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-size: 800% 100%;
+                        animation: gradientFlow 25s linear infinite;">
+                        SRU e-Meeting
+                    </h2>
+                    <div class="border-top border-1 border-gradient my-1"></div>
+                    <style>
+                        .border-gradient {
+                            border-image: linear-gradient(to right,#0300a5,#094924,#f3750e,#ffdf9b);
+                            border-image-slice: 1;
+                        }
+                        @keyframes gradientFlow {
+                            0% { background-position: 100% 50% }
+                            100% { background-position: -200% 50% }
+                        }
+                    </style>
+                    <p class="text-secondary fw-semibold mb-0" style="font-size: 0.6rem; letter-spacing: 0.6px;">
+                        SURATTHANI RAJABHAT UNIVERSITY
+                    </p>
+                </div>
+            </div>
+
+
+            {{-- <div class="position-relative search-bar d-lg-block d-none" data-bs-toggle="modal"
                 data-bs-target="#SearchModal">
                 <input class="form-control px-5" disabled type="search" placeholder="Search">
                 <span class="position-absolute top-50 search-show ms-3 translate-middle-y start-0 top-50 fs-5"><i
                         class='bx bx-search'></i></span>
-            </div>
+            </div> --}}
 
 
             <div class="top-menu ms-auto">
@@ -388,12 +426,12 @@
                             <span>แก้ไขข้อมูลส่วนตัว</span>
                         </a>
                     </li>
-                    
+
                     <li>
                         <div class="dropdown-divider mb-0"></div>
                     </li>
                     @endif
-                    
+
                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.logout') }}">
                             <i class="bx bx-log-out-circle"></i>
@@ -453,19 +491,19 @@
     .dropdown-menu {
         min-width: 200px;
     }
-    
+
     .dropdown-item {
         padding: 8px 16px;
     }
-    
+
     .dropdown-item i {
         margin-right: 10px;
     }
-    
+
     .dropdown-item:hover {
         background-color: #f8f9fa;
     }
-    
+
     .dropdown-divider {
         margin: 4px 0;
     }

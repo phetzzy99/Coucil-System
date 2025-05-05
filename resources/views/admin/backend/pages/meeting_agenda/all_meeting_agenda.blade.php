@@ -30,6 +30,7 @@
                                 <th>ลำดับ</th>
                                 <th>ประเภทการประชุม</th>
                                 <th>ชื่อวาระการประชุม</th>
+                                <th>ประเภทการประชุม</th>
                                 <th>ครั้งที่</th>
                                 <th>ปี</th>
                                 <th>วันที่</th>
@@ -44,12 +45,13 @@
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $item->meeting_type->name }}</td>
                                     <td>{{ $item->meeting_agenda_title }}</td>
+                                    <td>{{ $item->meetingFormat->name }}</td>
                                     <td>{{ $item->meeting_agenda_number }}</td>
                                     <td>{{ $item->meeting_agenda_year }}</td>
                                     <td>{{ $item->meeting_agenda_date }}</td>
                                     <td>{{ $item->user->username }}</td>
-                                    <td>
-                                        <div class="form-check form-switch">
+                                    <td class="text-center">
+                                        <div class="form-check form-switch d-flex justify-content-center">
                                             <input class="form-check-input" type="checkbox" id="status{{ $item->id }}"
                                                 {{ $item->status == 1 ? 'checked' : '' }}
                                                 onchange="updateStatus({{ $item->id }})">
@@ -97,6 +99,10 @@
                         }
                         // แสดงข้อความสำเร็จ
                         toastr.success(response.message);
+                        // หน่วงเวลา 3 วินาทีก่อนรีเฟรชหน้า
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);

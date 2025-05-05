@@ -45,10 +45,10 @@
                         <input type="text" name="last_name" class="form-control" id="input1" required>
                     </div>
 
-                    <div class="form-group col-md-3">
-                        <label for="input1" class="form-label"> ตำแหน่ง</label>
-                        <select name="position_id" class="form-select mb-3" required>
-                            <option selected="" disabled>เลือกตำแหน่ง</option>
+                    <div class="form-group col-md-7">
+                        <label for="position_select" class="form-label">ตำแหน่ง</label>
+                        <select name="position_id" class="form-select" id="position_select" data-placeholder="เลือกตำแหน่ง" required>
+                            <option></option>
                             @foreach ($positions as $position)
                                 <option value="{{ $position->id }}"
                                     {{ old('position_id') == $position->id ? 'selected' : '' }}>{{ $position->name }}
@@ -237,4 +237,24 @@
         </div>
     </div>
 
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Initialize Select2 Elements
+            $('#prefix_select').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: $(this).data('placeholder'),
+                allowClear: true
+            });
+
+            $('#position_select').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: $(this).data('placeholder'),
+                allowClear: true
+            });
+        });
+    </script>
+
 @endsection
+

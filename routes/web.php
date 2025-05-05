@@ -7,7 +7,12 @@ use App\Http\Controllers\Category\CommitteeCategoryController;
 use App\Http\Controllers\Category\MeetingTypeController;
 use App\Http\Controllers\Category\RegulationCategoryController;
 use App\Http\Controllers\Category\RuleCategoryController;
+use App\Http\Controllers\CommitteeOpinionController;
+use App\Http\Controllers\CommitteeVoteController;
+use App\Http\Controllers\LegalDatabaseController;
 use App\Http\Controllers\MainMeetingController;
+use App\Http\Controllers\ManagementCategoryController;
+use App\Http\Controllers\ManagementKeywordController;
 use App\Http\Controllers\MeetingAgendaController;
 use App\Http\Controllers\MeetingApprovalController;
 use App\Http\Controllers\MeetingApprovalListController;
@@ -15,6 +20,8 @@ use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MeetingFormatController;
 use App\Http\Controllers\MeetingReportController;
 use App\Http\Controllers\MeetingReportSummaryController;
+use App\Http\Controllers\MeetingResolutionController;
+use App\Http\Controllers\MeetingResolutionTypeController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\PrefixNameController;
 use App\Http\Controllers\ProfileController;
@@ -45,7 +52,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect('/admin/dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -59,6 +66,7 @@ require __DIR__.'/auth.php';
 // Admin Group Middleware
 Route::middleware(['auth', 'roles:admin'])->group(function () {
 
+    // Notification Route
     Route::get('/notifications', function() {
         $notifications = auth()->user()->unreadNotifications;
         auth()->user()->unreadNotifications->markAsRead();
@@ -299,7 +307,85 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::get('/approved-meeting-reports', [ApprovedMeetingReportController::class, 'allApprovedByAdmin'])->name('all.approved.meeting.reports');
     Route::get('/approved-meeting-reports/{id}', [ApprovedMeetingReportController::class, 'ListApprovedByAdmin'])->name('list.approved.meeting.reports');
 
+    // Export Report after approval
     Route::get('/reports/{id}/export/{type}', [ApprovedMeetingReportController::class, 'export'])->name('reports.export');
+
+    // Export Report meeting agenda
+    Route::get('/meeting/export/{id}', [MeetingController::class, 'exportToWord'])->name('meeting.export.word');
+
+    // บันทึกความเห็นคณะกรรมการ
+    Route::post('/committee/feedback/store', [CommitteeOpinionController::class, 'store'])->name('committee.feedback.store');
+    Route::get('/committee/feedback/{lectureId}', [CommitteeOpinionController::class, 'getOpinions'])->name('committee.feedback.get');
+    Route::get('/committee/feedback/{lectureId}/current', [CommitteeOpinionController::class, 'getCurrentUserOpinion'])->name('committee.feedback.current');
+
+    // อัพเดทสถานะการประชุมในส่วนของ Section
+    Route::post('/update-meeting-status/{id}', [MeetingAgendaController::class, 'updateStatus'])->name('update.meeting.status');
+
+    // Committee Opinion Visibility Update
+    Route::post('/update-committee-opinion-visibility/{id}', [MeetingController::class, 'updateCommitteeOpinionVisibility'])->name('update.committee.opinion.visibility');
+
+    // Show Meeting section and lecture
+    Route::get('/my/meetings', [MeetingController::class, 'MyMeetings'])->name('my.meetings');
+    Route::get('/meeting/type/{meeting_type_id?}', [MeetingController::class, 'ViewMeetingType'])->name('meeting.type.view');
+    Route::get('/meeting/details/{id}', [MeetingController::class, 'MeetingDetails'])->name('meeting.detail');
+
+    // Legal Database view
+    Route::get('/admin/legal-database', [LegalDatabaseController::class, 'index'])->name('admin.legal.database');
+
+    // Meeting Resolution route list
+    Route::get('/all/meeting/resolution', [MeetingResolutionController::class, 'AllMeetingResolution'])->name('all.meeting.resolution');
+    Route::get('/add/meeting/resolution', [MeetingResolutionController::class, 'AddMeetingResolution'])->name('add.meeting.resolution');
+    Route::post('/store/meeting/resolution', [MeetingResolutionController::class, 'StoreMeetingResolution'])->name('store.meeting.resolution');
+    Route::get('/edit/meeting/resolution/{id}', [MeetingResolutionController::class, 'EditMeetingResolution'])->name('edit.meeting.resolution');
+    Route::post('/update/meeting/resolution', [MeetingResolutionController::class, 'UpdateMeetingResolution'])->name('update.meeting.resolution');
+    Route::get('/delete/meeting/resolution/{id}', [MeetingResolutionController::class, 'DeleteMeetingResolution'])->name('delete.meeting.resolution');
+
+    // Search Meeting Resolution
+    Route::get('/search/meeting/resolution', [MeetingResolutionController::class, 'SearchMeetingResolution'])->name('search.meeting.resolution');
+    Route::get('/search/meeting/resolution/results', [MeetingResolutionController::class, 'SearchMeetingResolutionResults'])->name('search.meeting.resolution.results');
+
+    // Ajax Routes for Dependent Dropdowns
+    Route::get('/get-meeting-agenda-lectures/{section_id}', [MeetingResolutionController::class, 'GetMeetingAgendaLectures']);
+    Route::get('/get/meeting/agendas', [MeetingResolutionController::class, 'GetMeetingAgendas'])->name('get.meeting.agendas');
+    Route::get('/get/meeting/sections', [MeetingResolutionController::class, 'GetMeetingSections'])->name('get.meeting.sections');
+    Route::get('/get/meeting/lectures', [MeetingResolutionController::class, 'GetMeetingAgendaLectures'])->name('get.meeting.lectures');
+
+    // add 05/05/2025
+    // Meeting Resolution Type route list
+    Route::controller(MeetingResolutionTypeController::class)->group(function () {
+        Route::get('/all/meeting-resolution-type', 'AllMeetingResolutionTypes')->name('all.meeting.resolution.types');
+        Route::get('/add/meeting-resolution-type', 'AddMeetingResolutionType')->name('add.meeting.resolution.type');
+        Route::post('/store/meeting-resolution-type', 'StoreMeetingResolutionType')->name('store.meeting.resolution.type');
+        Route::get('/edit/meeting-resolution-type/{id}', 'EditMeetingResolutionType')->name('edit.meeting.resolution.type');
+        Route::post('/update/meeting-resolution-type', 'UpdateMeetingResolutionType')->name('update.meeting.resolution.type');
+        Route::get('/delete/meeting-resolution-type/{id}', 'DeleteMeetingResolutionType')->name('delete.meeting.resolution.type');
+
+        // AJAX Routes
+        Route::get('/get/meeting-resolution-types', 'GetMeetingResolutionTypes')->name('get.meeting.resolution.types');
+    });
+
+    // เส้นทางสำหรับค้นหามติที่ประชุม
+    Route::get('/meeting/resolution/types/search', [MeetingResolutionTypeController::class, 'SearchMeetingResolutionTypes'])->name('search.meeting.resolution.types');
+
+    // Management Category Routes
+    Route::controller(ManagementCategoryController::class)->group(function () {
+        Route::get('/all/management/categories', 'AllManagementCategories')->name('all.management.categories');
+        Route::get('/add/management/category', 'AddManagementCategory')->name('add.management.category');
+        Route::post('/store/management/category', 'StoreManagementCategory')->name('store.management.category');
+        Route::get('/edit/management/category/{id}', 'EditManagementCategory')->name('edit.management.category');
+        Route::post('/update/management/category', 'UpdateManagementCategory')->name('update.management.category');
+        Route::get('/delete/management/category/{id}', 'DeleteManagementCategory')->name('delete.management.category');
+    });
+
+    // Management Keyword Routes
+    Route::controller(ManagementKeywordController::class)->group(function () {
+        Route::get('/all/management/keywords', 'AllManagementKeywords')->name('all.management.keywords');
+        Route::get('/add/management/keyword', 'AddManagementKeyword')->name('add.management.keyword');
+        Route::post('/store/management/keyword', 'StoreManagementKeyword')->name('store.management.keyword');
+        Route::get('/edit/management/keyword/{id}', 'EditManagementKeyword')->name('edit.management.keyword');
+        Route::post('/update/management/keyword', 'UpdateManagementKeyword')->name('update.management.keyword');
+        Route::get('/delete/management/keyword/{id}', 'DeleteManagementKeyword')->name('delete.management.keyword');
+    });
 
 }); // end of admin middleware
 

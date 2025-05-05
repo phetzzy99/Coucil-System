@@ -25,7 +25,7 @@ class LoginNotification extends Notification
      *
      * @return array<int, string>
      */
-    public function via(object $notifiable): array
+    public function via($notifiable): array
     {
         // return ['mail'];
         return ['database'];
@@ -47,11 +47,13 @@ class LoginNotification extends Notification
      *
      * @return array<string, mixed>
      */
-    public function toArray(object $notifiable): array
+    public function toArray($notifiable): array
     {
         return [
-            'message' => $this->user->first_name . ' has logged in.',
-            'time' => now(),
+            'message' => $this->user->first_name . ' ' . $this->user->last_name . ' ได้เข้าสู่ระบบ',
+            'time' => now()->format('Y-m-d H:i:s'),
+            // 'message' => json_encode($this->user->first_name . ' ' . $this->user->last_name . ' ได้เข้าสู่ระบบ', JSON_UNESCAPED_UNICODE),
+            // 'time' => now(),
         ];
     }
 }

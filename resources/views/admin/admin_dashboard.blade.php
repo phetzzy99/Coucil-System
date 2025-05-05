@@ -19,6 +19,7 @@
 
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css">
 
+    <!-- แจ้งเตือน lobibox -->
     <link rel="stylesheet" href="{{ asset('frontend/assets/plugins/notifications/css/lobibox.min.css') }}" />
 
     <!--plugins-->
@@ -57,7 +58,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
 
 
-    <title>DMS </title>
+    <title>SRU e-Meeting </title>
 </head>
 
 <body>
@@ -84,6 +85,7 @@
     </div>
     <!--end wrapper-->
 
+    <!-- แจ้งเตือน lobibox -->
     <script src="{{ asset('frontend/assets/plugins/notifications/js/lobibox.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/plugins/notifications/js/messageboxes.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/plugins/notifications/js/notifications.min.js') }}"></script>
@@ -200,7 +202,7 @@
             delay: 5000, // แสดง 5 วินาที
             rounded: true, // มุมโค้ง
             delayIndicator: true, // แสดง indicator เวลา
-            position: 'top right', // ตำแหน่งที่แสดง
+            position: 'top center', // ตำแหน่งที่แสดง
             size: 'mini', // ขนาด notification
             sound: true, // เปิดเสียง
             msg: '' // ข้อความเริ่มต้น
@@ -210,20 +212,20 @@
         function checkNotifications() {
             $.get('/notifications', function(data) {
                 data.forEach(function(notification) {
-                    Lobibox.notify('info', {
+                    Lobibox.notify('default', {
                         title: 'Login',
                         msg: notification.data.message,
                         icon: 'fa fa-user',
                         sound: 'sound4', // เสียงแจ้งเตือน
                         delay: 5000,
-                        position: 'top right',
+                        position: 'top center',
                         showClass: 'fadeInDown', // animation class
                         hideClass: 'fadeOutUp'
                     });
                 });
             });
         }
-        
+
         // เรียกใช้ทุก 5 วินาที
         setInterval(checkNotifications, 5000);
     </script>

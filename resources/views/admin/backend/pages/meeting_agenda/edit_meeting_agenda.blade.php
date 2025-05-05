@@ -159,6 +159,41 @@
                         </div>
                     </fieldset>
 
+                    {{-- This --}}
+
+                    <fieldset style="border: 1px solid #007bff; border-radius: 5px;" class="p-2">
+                        <legend>ตั้งค่าการแสดงผลความเห็นคณะกรรมการ</legend>
+                        <div class="form-group mb-3">
+                            <label for="committeeOpinionTitle" class="form-label">ข้อความหัวข้อ</label>
+                            <input type="text"
+                                class="form-control"
+                                id="committeeOpinionTitle"
+                                name="committee_opinion_title"
+                                value="{{ $meeting_agenda->committee_opinion_title }}"
+                                required>
+                            <small class="text-muted">
+                                * กำหนดข้อความที่จะแสดงเป็นหัวข้อในส่วนของการลงความเห็น
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox"
+                                    name="show_committee_opinion"
+                                    id="showCommitteeOpinion"
+                                    {{ $meeting_agenda->show_committee_opinion ? 'checked' : '' }}>
+                                <label class="form-check-label" for="showCommitteeOpinion">
+                                    เปิดการแสดงผลการลงความเห็นของคณะกรรมการกลั่นกรอง
+                                </label>
+                            </div>
+                            <small class="text-muted">
+                                * หากปิดการแสดงผล ผู้เข้าร่วมประชุมจะไม่สามารถเห็นผลการลงความเห็นของคณะกรรมการกลั่นกรองได้
+                            </small>
+                        </div>
+                    </fieldset>
+
+                    {{-- This --}}
+
                     <div class="form-group col-md-12">
                         <label for="input1" class="form-label">รายละเอียดระเบียบวาระการประชุม</label>
                         <textarea name="description" class="form-control" rows="10">{{ $meeting_agenda->description }}</textarea>
@@ -217,4 +252,3 @@ $(document).ready(function() {
 </script>
 
 @endsection
-

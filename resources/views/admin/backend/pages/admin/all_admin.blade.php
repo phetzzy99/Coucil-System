@@ -77,7 +77,7 @@
                                     </td>
                                     <td>
                                         @foreach ($item->meetingTypes as $meetingtype)
-                                            <span class="badge bg-success">{{ $meetingtype->name }}</span>
+                                            <span class="badge bg-success d-block mb-1">{{ $meetingtype->name }}</span>
                                         @endforeach
                                     </td>
                                     <td>
@@ -94,8 +94,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('edit.admin', $item->id) }}" class="btn btn-info px-5">Edit</a>
-                                        <a href="{{ route('delete.admin', $item->id) }}" class="btn btn-danger px-5" id="delete">Delete </a>
+                                        <a href="{{ route('edit.admin', $item->id) }}" class="btn btn-info px-2"><i class="bx bx-edit"></i></a>
+                                        <a href="{{ route('delete.admin', $item->id) }}" class="btn btn-danger px-2" id="delete"><i class="bx bx-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach

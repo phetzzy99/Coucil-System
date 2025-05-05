@@ -158,6 +158,63 @@
             </li>
             <hr>
 
+            <li class="{{ request()->routeIs('all.meeting.resolution') ? 'mm-active' : '' }}">
+                <a href="javascript:;" class="has-arrow">
+                    <div class="parent-icon"><i class='bx bxs-report'></i>
+                    </div>
+                    <div class="menu-title"> รายงานมติการประชุม </div>
+                </a>
+                <ul>
+                    <li class="{{ request()->routeIs('all.meeting.resolution') ? 'mm-active' : '' }}"> <a
+                            href="{{ route('all.meeting.resolution') }}"><i class='bx bx-upload'></i>
+                            จัดการรายงานมติการประชุม </a>
+                    </li>
+                    <li class=""> <a
+                            href="{{ route('all.meeting.resolution.types') }}"><i class='bx bx-category'></i>
+                            เพิ่ม O ประเภทคณะกรรมการของแต่ละด้าน </a>
+                    </li>
+                    <li class="{{ request()->routeIs('all.management.categories') || request()->routeIs('add.management.category') ? 'mm-active' : '' }}">
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class='lni lni-briefcase'></i>
+                            </div>
+                            <div class="menu-title">หมวดด้านการบริหาร</div>
+                        </a>
+                        <ul>
+                            <li class="{{ request()->routeIs('all.management.categories') ? 'mm-active' : '' }}"> <a
+                                    href="{{ route('all.management.categories') }}"><i class='bx bx-list-ul'></i>
+                                    รายการทั้งหมด</a>
+                            </li>
+                            <li class="{{ request()->routeIs('add.management.category') ? 'mm-active' : '' }}"> <a
+                                    href="{{ route('add.management.category') }}"><i class='bx bx-plus-circle'></i>
+                                    เพิ่มหมวดใหม่</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="{{ request()->routeIs('all.management.keywords') || request()->routeIs('add.management.keyword') ? 'mm-active' : '' }}">
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class='lni lni-keyword-research'></i>
+                            </div>
+                            <div class="menu-title">Keyword หมวดด้านการบริหาร</div>
+                        </a>
+                        <ul>
+                            <li class="{{ request()->routeIs('all.management.keywords') ? 'mm-active' : '' }}"> <a
+                                    href="{{ route('all.management.keywords') }}"><i class='bx bx-list-ul'></i>
+                                    รายการทั้งหมด</a>
+                            </li>
+                            <li class="{{ request()->routeIs('add.management.keyword') ? 'mm-active' : '' }}"> <a
+                                    href="{{ route('add.management.keyword') }}"><i class='bx bx-plus-circle'></i>
+                                    เพิ่ม Keyword ใหม่</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {{-- <li class="{{ request()->routeIs('search.meeting.resolution') ? 'mm-active' : '' }}"> <a
+                        href="{{ route('search.meeting.resolution') }}"><i class='bx bx-search'></i>
+                        สืบค้นข้อมูลมติการประชุม </a>
+                    </li> --}}
+                </ul>
+            </li>
+            <hr>
+
             <li
                 class="{{ request()->routeIs('all.meeting.agenda') || request()->routeIs('meeting.report.summary.index') || request()->routeIs('add.meeting.agenda') || request()->routeIs('edit.meeting.agenda') ? 'mm-active' : '' }}">
                 <a href="javascript:;" class="has-arrow">
@@ -204,7 +261,8 @@
         </li> --}}
         @endif
 
-        <hr>
+
+
 
         {{-- <li class="{{ request()->routeIs('meeting.section.detail') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
@@ -235,6 +293,126 @@
             </a>
         </li> --}}
 
+        <fieldset style="border: 1px solid #007bff; border-radius: 5px;" class="p-2">
+            <legend style="font-size: 0.9rem; text-align: center;">
+                <i class='bx bx-filter-alt'></i> เลือกประเภทการประชุม
+            </legend>
+            <div class="meeting-type-dropdown">
+                @php
+                    $user = Auth::user();
+
+                    // ดึงข้อมูล committee_ids ที่ผู้ใช้มีสิทธิ์
+                    $userCommitteeIds = [];
+                    foreach ($user->meetingTypes as $type) {
+                        $committeeIds = json_decode($type->pivot->committee_ids, true);
+                        if (is_array($committeeIds)) {
+                            $userCommitteeIds = array_merge($userCommitteeIds, $committeeIds);
+                        }
+                    }
+                    $userCommitteeIds = array_unique($userCommitteeIds);
+
+                    // ดึงประเภทการประชุมที่ผู้ใช้มีสิทธิ์เข้าถึง
+                    $userMeetingTypes = $user
+                        ->meetingTypes()
+                        ->whereHas('users', function ($query) use ($user) {
+                            $query->where('users.id', $user->id);
+                        })
+                        ->whereExists(function ($query) use ($userCommitteeIds) {
+                            $query
+                                ->from('meeting_agendas')
+                                ->whereColumn('meeting_types.id', 'meeting_agendas.meeting_type_id')
+                                ->whereIn('meeting_agendas.committee_category_id', $userCommitteeIds);
+                        })
+                        ->orderBy('name')
+                        ->get();
+
+                    $selectedMeetingTypeId = session('selected_meeting_type') ?? ($userMeetingTypes->first()->id ?? null);
+                @endphp
+
+                <select class="form-select" id="meetingTypeSelect" onchange="window.location.href=this.value">
+                    <option value="{{ route('meeting.type.view') }}">-- เลือกประเภทการประชุม --</option>
+                    @if ($userMeetingTypes->count() > 0)
+                        @foreach ($userMeetingTypes as $meetingType)
+                            @php
+                                $committeeIds = json_decode($meetingType->pivot->committee_ids, true) ?? [];
+                                $committees = \App\Models\CommitteeCategory::whereIn('id', $committeeIds)
+                                    ->pluck('name')
+                                    ->implode(', ');
+                            @endphp
+                            <option value="{{ route('meeting.type.view', ['meeting_type_id' => $meetingType->id]) }}"
+                                {{ $selectedMeetingTypeId == $meetingType->id ? 'selected' : '' }}
+                                title="คณะกรรมการ: {{ $committees }}">
+                                {{ Str::limit($meetingType->name, 10) }}
+                            </option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+        </fieldset>
+
+        <style>
+            .meeting-type-dropdown {
+                padding: 10px 15px;
+                background-color: #fff;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .meeting-type-dropdown .form-select {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                font-size: 14px;
+                color: #6c757d;
+                background-color: #fff;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .meeting-type-dropdown .form-select:hover {
+                border-color: #0d6efd;
+            }
+
+            .meeting-type-dropdown .form-select:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+                outline: none;
+            }
+
+            .meeting-type-dropdown .form-select option {
+                padding: 8px;
+            }
+        </style>
+
+        <hr>
+
+        <li>
+            <a href="{{ route('admin.legal.database') }}">
+                <div class="parent-icon"><i class='bx bx-data'></i>
+                </div>
+                <div class="menu-title">ฐานข้อมูลด้านกฎหมาย</div>
+                {{-- <span class="badge bg-info rounded-pill">ข้อมูลสำคัญ</span> --}}
+            </a>
+        </li>
+
+        <!-- เพิ่มเมนูสืบค้นข้อมูลมติการประชุม (สำหรับทุกคน) -->
+        {{-- <li class="{{ request()->routeIs('search.meeting.resolution') ? 'mm-active' : '' }}">
+            <a href="{{ route('search.meeting.resolution') }}">
+                <div class="parent-icon"><i class='bx bx-search'></i>
+                </div>
+                <div class="menu-title">สืบค้นข้อมูลมติการประชุม</div>
+            </a>
+        </li> --}}
+
+        <li>
+            <a href="{{ route('search.meeting.resolution.types') }}">
+                <div class="parent-icon"><i class="bx bx-search"></i></div>
+                <div class="menu-title">ค้นหามติที่ประชุม</div>
+            </a>
+        </li>
+
+        <hr>
+
         <li class="{{ request()->routeIs('meeting.section.detail') ? 'mm-active' : '' }}">
             <a href="javascript:;" class="has-arrow">
                 <i class='lni lni-comments-alt'></i>
@@ -242,23 +420,24 @@
             </a>
             <ul>
                 @php
-                    $user = Auth::user();
-                    $userMeetingTypes = $user->meetingTypes;
-                    $userCommitteeIds = [];
+                    $selectedMeetingType = $userMeetingTypes->where('id', $selectedMeetingTypeId)->first();
 
-                    foreach ($userMeetingTypes as $meetingType) {
-                        $committeeIds = json_decode($meetingType->pivot->committee_ids, true);
-                        $userCommitteeIds = array_merge($userCommitteeIds, $committeeIds ?? []);
+                    if ($selectedMeetingType) {
+                        $committeeIds = json_decode($selectedMeetingType->pivot->committee_ids, true) ?? [];
+
+                        // ดึงระเบียบวาระการประชุมตามประเภทที่เลือกและสิทธิ์ของผู้ใช้
+                        $meetingAgendas = \App\Models\MeetingAgenda::with([
+                            'meeting_type',
+                            'sections.meetingAgendaLectures',
+                        ])
+                            ->where('status', 1)
+                            ->where('meeting_type_id', $selectedMeetingType->id)
+                            ->whereIn('committee_category_id', array_intersect($committeeIds, $userCommitteeIds))
+                            ->orderBy('meeting_agenda_date', 'desc')
+                            ->get();
+                    } else {
+                        $meetingAgendas = collect();
                     }
-                    $userCommitteeIds = array_unique($userCommitteeIds);
-
-                    // ดึงระเบียบวาระการประชุมตามสิทธิ์
-                    $meetingAgendas = \App\Models\MeetingAgenda::with(['meeting_type', 'sections.meetingAgendaLectures'])
-                        ->where('status', 1)
-                        ->whereIn('meeting_type_id', $userMeetingTypes->pluck('id'))
-                        ->whereIn('committee_category_id', $userCommitteeIds)
-                        ->orderBy('meeting_agenda_date', 'desc')
-                        ->get();
                 @endphp
 
                 @forelse ($meetingAgendas as $agenda)
@@ -266,8 +445,13 @@
                         <a href="javascript:;" class="has-arrow">
                             <i class='bx bx-folder'></i>
                             <span class="agenda-title" title="{{ $agenda->meeting_agenda_title }}">
-                                {{ $agenda->meeting_type->name }} ครั้งที่
-                                {{ $agenda->meeting_agenda_number }}/{{ $agenda->meeting_agenda_year }}
+                                {{ $agenda->meeting_agenda_title }}
+                                @php
+                                    $committee = \App\Models\CommitteeCategory::find($agenda->committee_category_id);
+                                @endphp
+                                {{-- @if ($committee)
+                                    <small class="text-muted">({{ $committee->name }})</small>
+                                @endif --}}
                             </span>
                         </a>
                         <ul>
@@ -283,9 +467,10 @@
                                     <!-- Add sub-menu for lectures -->
                                     <ul>
                                         @foreach ($section->meetingAgendaLectures as $lecture)
-                                            <li class="{{ request()->routeIs('meeting.lecture.detail') && request()->route('id') == $lecture->id ? 'mm-active' : '' }}">
-                                                <a href="{{ route('meeting.lecture.detail', $lecture->id ) }}"
-                                                   class="agenda-lecture">
+                                            <li
+                                                class="{{ request()->routeIs('meeting.lecture.detail') && request()->route('id') == $lecture->id ? 'mm-active' : '' }}">
+                                                <a href="{{ route('meeting.lecture.detail', $lecture->id) }}"
+                                                    class="agenda-lecture">
                                                     <i class='bx bx-right-arrow-alt'></i>
                                                     <span title="{{ $lecture->lecture_title }}">
                                                         {{ \Str::limit($lecture->lecture_title, 30) }}
@@ -300,9 +485,9 @@
                     </li>
                 @empty
                     <li>
-                        <a href="javascript:void(0);" class="no-meetings">
-                            <i class='bx bx-info-circle'></i>
-                            ไม่พบระเบียบวาระการประชุมที่คุณมีสิทธิ์เข้าถึง
+                        <a href="#">
+                            <i class='bx bx-folder-open'></i>
+                            <span>ไม่พบวาระการประชุม</span>
                         </a>
                     </li>
                 @endforelse
@@ -338,41 +523,41 @@
 
         <hr>
         @if (Auth::user() && Auth::user()->can('approval.menu'))
-        <li class="{{ request()->routeIs('approved.meeting.reports') ? 'mm-active' : '' }}">
-            <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class='bx bx-check-circle'></i></div>
-                <div class="menu-title">รายงานการประชุมวาระสืบเนื่อง</div>
-            </a>
-            <ul>
-                @if (Auth::check())
-                    <li class="{{ request()->routeIs('all.approved.meeting.reports') ? 'mm-active' : '' }}">
-                        <a href="{{ route('all.approved.meeting.reports') }}">
-                            <div class="parent-icon">
-                                <i class='bx bx-check-circle'></i>
-                            </div>
-                            <div class="menu-title">รายงานการประชุมวาระสืบเนื่อง</div>
-                        </a>
-                    </li>
-                @endif
-                {{-- <li class="{{ request()->routeIs('approved.meeting.reports') ? 'mm-active' : '' }}">
+            <li class="{{ request()->routeIs('approved.meeting.reports') ? 'mm-active' : '' }}">
+                <a href="javascript:;" class="has-arrow">
+                    <div class="parent-icon"><i class='bx bx-check-circle'></i></div>
+                    <div class="menu-title">รายงานการประชุมวาระสืบเนื่อง</div>
+                </a>
+                <ul>
+                    @if (Auth::check())
+                        <li class="{{ request()->routeIs('all.approved.meeting.reports') ? 'mm-active' : '' }}">
+                            <a href="{{ route('all.approved.meeting.reports') }}">
+                                <div class="parent-icon">
+                                    <i class='bx bx-check-circle'></i>
+                                </div>
+                                <div class="menu-title">รายงานการประชุมวาระสืบเนื่อง</div>
+                            </a>
+                        </li>
+                    @endif
+                    {{-- <li class="{{ request()->routeIs('approved.meeting.reports') ? 'mm-active' : '' }}">
                     <a href="{{ route('all.approved.meeting.reports') }}">
                         <i class='bx bx-file'></i>
                         รายงานการประชุมวาระสืบเนื่อง (รายงานที่รับรองแล้ว)
                     </a>
                 </li> --}}
-            </ul>
-        </li>
-        <hr>
-        {{-- @endif --}}
+                </ul>
+            </li>
+            <hr>
+            {{-- @endif --}}
 
-        {{-- @if (Auth::user() && Auth::user()->can('approval.menu')) --}}
-        <li>
-            <a href="javascript:;" class="has-arrow">
-                <i class='bx bx-select-multiple'></i>
-                <div class="menu-title"> รับรองรายงานการประชุม </div>
-            </a>
-            <ul>
-                {{-- @php
+            {{-- @if (Auth::user() && Auth::user()->can('approval.menu')) --}}
+            <li>
+                <a href="javascript:;" class="has-arrow">
+                    <i class='bx bx-select-multiple'></i>
+                    <div class="menu-title"> รับรองรายงานการประชุม </div>
+                </a>
+                <ul>
+                    {{-- @php
                     $meetingAgendas = \App\Models\MeetingAgenda::where('status', 1)->get();
                 @endphp
                 @if ($meetingAgendas && $meetingAgendas->count() > 0)
@@ -391,13 +576,14 @@
                     <li> <a href=""><i class='bx bx-radio-circle'></i>ไม่พบหมวดวาระการประชุม</a>
                     </li>
                 @endif --}}
-                <li class="{{ request()->routeIs('all.meeting.approval') ? 'mm-active' : '' }}"> <a
-                        href="{{ route('all.meeting.approval') }}"><i class='bx bx-pencil'></i> รับรองรายงานการประชุม
-                    </a></li>
-            </ul>
-            </a>
-        </li>
-        <hr>
+                    <li class="{{ request()->routeIs('all.meeting.approval') ? 'mm-active' : '' }}"> <a
+                            href="{{ route('all.meeting.approval') }}"><i class='bx bx-pencil'></i>
+                            รับรองรายงานการประชุม
+                        </a></li>
+                </ul>
+                </a>
+            </li>
+            <hr>
         @endif
 
         @if (Auth::user()->can('category.menu'))
@@ -640,10 +826,98 @@
             </a>
         </li> --}}
     </ul>
-        <!--end navigation-->
+    <!--end navigation-->
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all menu items
+        const menuItems = document.querySelectorAll('.metismenu li');
 
+        // Get stored active menu from localStorage
+        const storedActiveMenu = localStorage.getItem('activeMenu');
+        const storedActiveParent = localStorage.getItem('activeParentMenu');
+        const storedScrollPosition = localStorage.getItem('sidebarScrollPosition');
+
+        // Function to scroll sidebar to specific position
+        function scrollSidebarToPosition(position) {
+            const simplebarContent = document.querySelector('.simplebar-content-wrapper');
+            if (simplebarContent) {
+                simplebarContent.scrollTo({
+                    top: position,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Set active state and scroll position from localStorage on page load
+        if (storedActiveMenu || storedActiveParent) {
+            menuItems.forEach(item => {
+                const link = item.querySelector('a');
+                if (link) {
+                    // Check if this is the stored active menu
+                    if (storedActiveMenu === link.getAttribute('href')) {
+                        item.classList.add('mm-active');
+                        // Scroll to the active menu position after a short delay
+                        setTimeout(() => {
+                            const activeItem = item.getBoundingClientRect();
+                            if (storedScrollPosition) {
+                                scrollSidebarToPosition(parseInt(storedScrollPosition));
+                            } else {
+                                scrollSidebarToPosition(activeItem.top - 100);
+                            }
+                        }, 100);
+                    }
+                    // Check if this is the stored active parent menu
+                    if (link.classList.contains('has-arrow') && storedActiveParent === link
+                        .getAttribute('href')) {
+                        item.classList.add('mm-active');
+                    }
+                }
+            });
+        }
+
+        // Add click event listeners to all menu items
+        menuItems.forEach(item => {
+            const link = item.querySelector('a');
+            if (link) {
+                link.addEventListener('click', function(e) {
+                    // Store menu state
+                    if (this.classList.contains('has-arrow')) {
+                        localStorage.setItem('activeParentMenu', this.getAttribute('href'));
+                    } else {
+                        localStorage.setItem('activeMenu', this.getAttribute('href'));
+                        // Store scroll position
+                        const simplebarContent = document.querySelector(
+                            '.simplebar-content-wrapper');
+                        if (simplebarContent) {
+                            localStorage.setItem('sidebarScrollPosition', simplebarContent
+                                .scrollTop);
+                        }
+                        // Clear parent menu if it's not a submenu item
+                        if (!item.closest('.has-arrow')) {
+                            localStorage.removeItem('activeParentMenu');
+                        }
+                    }
+                });
+            }
+        });
+
+        // Also handle current route active state
+        const currentPath = window.location.pathname;
+        menuItems.forEach(item => {
+            const link = item.querySelector('a');
+            if (link && link.getAttribute('href') === currentPath) {
+                item.classList.add('mm-active');
+                // If it's a submenu item, activate parent
+                const parentMenuItem = item.closest('.has-arrow')?.closest('li');
+                if (parentMenuItem) {
+                    parentMenuItem.classList.add('mm-active');
+                }
+            }
+        });
+    });
+</script>
 
 <style>
     /* สไตล์สำหรับรายการประชุมล่าสุด */
@@ -697,6 +971,10 @@
         background: rgba(255, 255, 255, 0.1);
         border-left: 3px solid #fff;
     }
+
+    .mm-active {
+        scroll-margin-top: 70px;
+    }
 </style>
 
 <script>
@@ -711,8 +989,8 @@
     if ($('.recent-meetings .mm-active').length) {
         $('.recent-meetings').animate({
             scrollTop: $('.recent-meetings .mm-active').offset().top -
-                      $('.recent-meetings').offset().top +
-                      $('.recent-meetings').scrollTop()
+                $('.recent-meetings').offset().top +
+                $('.recent-meetings').scrollTop()
         });
     }
 </script>

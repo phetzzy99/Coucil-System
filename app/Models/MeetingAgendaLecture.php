@@ -27,6 +27,26 @@ class MeetingAgendaLecture extends Model
         return $this->hasMany(MeetingAgendaItems::class, 'meeting_agenda_lecture_id');
     }
 
+    public function meetingAgenda()
+    {
+        return $this->belongsTo(MeetingAgenda::class, 'meeting_agenda_id');
+    }
+
+    /**
+     * Get committee opinions related to this lecture.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function committeeOpinions()
+    {
+        return $this->hasMany(CommitteeOpinion::class);
+    }
+
+
+    // public function committeeVotes() {
+    //     return $this->hasMany(CommitteeVote::class, 'lecture_id');
+    // }
+
     // Scope for active records
     public function scopeActive($query)
     {
